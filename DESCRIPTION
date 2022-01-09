@@ -1,0 +1,9 @@
+Name: molsim 
+Version: 0.1.0
+Date: 2022-07-01
+Author: Jesper Schmidt Hansen
+Maintainer: Jesper Schmidt Hansen, jesperschmidthansen@gmail.com
+Title: molsim
+Categories: molsim 
+Description: Wrapper for seplib, a molecular dynamics simulation library.
+License: GPLv3
