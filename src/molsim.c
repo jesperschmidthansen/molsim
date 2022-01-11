@@ -225,7 +225,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
       double cf = mxGetScalar(prhs[3]);
       double sigma = mxGetScalar(prhs[4]);
       double epsilon = mxGetScalar(prhs[5]);
-      double param[4]={cf, sigma, epsilon, 1.0};
+      double postfac = mxGetScalar(prhs[6]);
+      double param[4]={cf, sigma, epsilon, postfac};
       
       sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
 #ifdef OCTAVE
