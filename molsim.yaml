@@ -1,54 +1,30 @@
+---
 layout: "package"
-permalink: "pkg-example"
-description: >-
-  Example package to demonstrate the creation process of an Octave package.
-  Keep this description brief.  Describe the major features in the first two
-  lines (160 characters).
-  Multiple lines are allowed.  Each line may have maximal 80 characters.
-  Exceptions are URLs.  Paragraphs, blank lines, and line breaks are ignored
-  and replaced by spaces.
-icon: "https://raw.githubusercontent.com/gnu-octave/pkg-example/main/doc/icon.png"
+permalink: "molsim"
+description: 
+ molsim is a wrapper for the seplib molecular dynamics library. It allows you to perform
+ molecular simulations of simple atomistic systems, confined fluids, molecular mixtures,
+ polymers using dissipative particle dynamics and more. 
+icon: "https://github.com/jesperschmidthansen/molsim/doc/logo.jpg"
 links:
 - icon: "far fa-copyright"
-  label: "GPL-3.0-or-later"
-  url: "https://github.com/gnu-octave/pkg-example/blob/main/COPYING"
-- icon: "fas fa-rss"
-  label: "news"
-  url: "https://github.com/gnu-octave/pkg-example/releases/"
+  label: GPL-3.0-or-later"
+  url: "https://github.com/jesperschmidthansen/molsim/COPYING"
 - icon: "fas fa-code-branch"
   label: "repository"
-  url: "https://github.com/gnu-octave/pkg-example/"
-- icon: "fas fa-book"
-  label: "package documentation"
-  url: "https://github.com/gnu-octave/pkg-example/blob/main/README.md"
+  url: "https://github.com/jesperschmidthansen/molsim/"
 - icon: "fas fa-bug"
-  label: "report a problem"
-  url: "https://github.com/gnu-octave/pkg-example/issues"
+  label: "report problem or bugs"
+  url: "https://github.com/jesperschmidthansen/molsim/issues/"
 maintainers:
-- name: "Kai T. Ohlhus"
-  contact: "k.ohlhus@gmail.com"
-- name: "Another Contactless Developer"
-  contact:
+- name: "Jesper Schmidt Hansen"
+  contact: "jesperschmidthansen@gmail.com"
 versions:
-- id: "1.1.0"
-  date: "2021-04-06"
-  sha256: "bff441755f0d68596f2efd027fe637b5b6c52b722ffd6255bdb8a5f34ab4ef2a"
-  url: "https://github.com/gnu-octave/pkg-example/archive/1.1.0.tar.gz"
+- id: "0.1.0"
+  date: "2022-01-09"
+  sha256:  
+  url: "https://github.com/gnu-octave/packages/molsim-0.1.0.tar.gz"
   depends:
-  - "octave (>= 4.0.0)"
-  - "pkg"
-- id: "1.0.0"
-  date: "2020-09-02"
-  sha256: "6b7e4b6bef5a681cb8026af55c401cee139b088480f0da60143e02ec8880cb51"
-  url: "https://github.com/gnu-octave/pkg-example/archive/1.0.0.tar.gz"
-  depends:
-  - "octave (>= 4.0.0)"
-  - "pkg"
-- id: "dev"
-  date:
-  sha256:
-  url: "https://github.com/gnu-octave/pkg-example/archive/main.zip"
-  depends:
-  - "octave (>= 5.2.0)"
+  - "octave (>= 6.0.0)"
   - "pkg"
 ---
