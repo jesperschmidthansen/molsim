@@ -14,8 +14,8 @@ OBJECTS     =  sepmisc.o seputil.o separray.o sepinit.o sepprfrc.o sepintgr.o \
 
 # Compiling molsim
 molsim.mex: molsim.c libsep.a _sep_lattice.o
-	mkoctfile -Ofast -W -pedantic -c -v -Iinclude task.c
-	mkoctfile -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude molsim.c
+	mkoctfile --mex -Ofast -W -pedantic -c -v -Iinclude task.c
+	mkoctfile --mex -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude molsim.c
 	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o -o molsim
 	mv molsim.mex ../inst/
 
