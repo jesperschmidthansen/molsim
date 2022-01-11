@@ -147,9 +147,6 @@ void sep_lattice( int argc, char **argv ){
   nxyz[0] = nxyz[1] = nxyz[2] = DEFAULT_NXYZ;
   lbox[0] = lbox[1] = lbox[2] = DEFAULT_LENGTH;
 
-  for ( int n=1; n<argc; n++ )
-    printf("%s\n", argv[n]);
-      
   // Get input values
   if ( argc > 1 ){
 
@@ -261,7 +258,7 @@ void sep_lattice( int argc, char **argv ){
   if ( wflag || Wflag ){
   
     double density = nxyz[0]*nxyz[1]*nxyz[2]/(lbox[0]*lbox[1]*lbox[2]);
-    if ( density <= fdens ){
+    if ( density < fdens ){
       fprintf(stderr, "Error: fluid density must be smaller than wall densities");
       exit(EXIT_FAILURE);
     }
@@ -343,7 +340,7 @@ void sep_lattice( int argc, char **argv ){
   // Print conf.
   for ( unsigned long int n=0; n<npart; n++ ){
     
-    if ( wflag || Wflag ){
+    if ( (wflag || Wflag)  && ptype[n] != 'A' ){
       fprintf(fout, "%c %f %f %f %f %f %f %f %f\n", ptype[n],
 	      r[n][0],r[n][1],r[n][2], v[n][0], v[n][1], v[n][2],
 	      pmass[n], 0.0);

@@ -23,7 +23,6 @@ molsim.mex: molsim.c libsep.a _sep_lattice.o
 libsep.a: $(OBJECTS)
 	$(AR) r libsep.a $(OBJECTS) 
 	$(RANLIB) libsep.a
-	cp libsep.a *.o lib/
 
 %.o:source/%.c 
 	$(CC) $(COMPLEX) $(OMP) -c $(CFLAGS) -W -Wall -Iinclude/ $<
@@ -36,7 +35,6 @@ _sep_lattice.o: tools/_sep_lattice.c
 # Cleaning up
 clean: 
 	rm -f libsep.a *.o
-	rm -f lib/*.o lib/*.a
 	rm -f source/*~
 	rm -f include/*~
 	rm -f *~
