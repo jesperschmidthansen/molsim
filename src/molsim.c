@@ -268,9 +268,21 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     // Coulomb forces
     else if ( strcmp(specifier, "coulomb")==0 ) {
-      double cf = mxGetScalar(prhs[2]);
 
-      sep_coulomb_sf(atoms, cf, &sys, &ret, exclusionflag);
+      char *algorithm =  mxArrayToString(prhs[2]);
+      if ( strcmp(algorithm, "sf") == 0 ){
+	double cf = mxGetScalar(prhs[3]);
+	sep_coulomb_sf(atoms, cf, &sys, &ret, exclusionflag);
+      }
+      else if ( strcmp(algorithm, "wolf") == 0 ) {
+	double cf = mxGetScalar(prhs[3]);
+	double alpha = mxGetScalar(prhs[4]);
+
+	sep_coulomb_wolf(atoms, alpha, cf, &sys, &ret, exclusionflag);
+      }
+#ifdef OCTAVE
+      free(algorithm);
+#endif
     }
     // DPD (only standard linear force)
     else if ( strcmp(specifier, "dpd")==0 ) {
