@@ -14,6 +14,6 @@ Allows simulations of
   * Run-time Sampling 
   * Simple setup
 
-See and run 'ms_test1.m' for an example and 'molsim.pdf'
-reference quick sheet (installed in package directory under doc/).
+See 'molsim.pdf' reference quick sheet
+(installed in package directory under doc/).
 
