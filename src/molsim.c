@@ -770,7 +770,7 @@ void mexFunction (int nlhs, mxArray* plhs[],
     break;
 
   case HELLO: 
-    mexPrintf("Hello (Shaking hands) \n");
+    mexPrintf("Hello :) \n");
 
     break;
 
