@@ -898,10 +898,7 @@ void sep_berendsen_mol(sepatom *ptr, sepmol *mol, double Pd,
 		       double beta, sepret *ret, sepsys *sys){
 
 
-  sepsys tmp;
-  memcpy(&tmp, sys, sizeof(sepsys));
-  sep_mol_cm(ptr, mol, &tmp);
-
+  sep_mol_cm(ptr, mol, sys);
   double *dr0 = sep_vector(sys->npart);
   for ( int n=0; n<sys->npart; n++ ){
     int i = ptr[n].molindex;
@@ -909,7 +906,7 @@ void sep_berendsen_mol(sepatom *ptr, sepmol *mol, double Pd,
     
   }
   
-  sep_mol_pressure_tensor(ptr,  mol, ret, &tmp);
+  sep_mol_pressure_tensor(ptr,  mol, ret, sys);
 
   double xi = 1 - beta*sys->dt*(Pd - ret->p_mol);
   sys->length[2] *= xi;

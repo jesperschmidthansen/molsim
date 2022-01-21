@@ -178,6 +178,7 @@ void sep_relax_temp(seppart *ptr, char type, double Td, double tau, sepsys *sys)
 /**
  * Berendsen barostat using atomic pressure; particle positions and box simply 
  * scaled in relaxational fashion and in accordance to desired pressure
+ * IMPORTANT NOTE: Should not be used together with sep_compress_box() 
  * @param ptr Pointer to seplib particle structure
  * @param Pd Desired pressure
  * @param beta Strength of relaxation mechanism
@@ -190,6 +191,7 @@ void sep_berendsen(sepatom *ptr, double Pd, double beta, sepret *ret, sepsys *sy
  * Berendsen barostat using molecular pressure; molecule center of mass  
  * positions and box simply scaled in relaxational fashion 
  * and in accordance to desired pressure
+ * IMPORTANT NOTE: Should not be used together with sep_compress_box() 
  * @param ptr Pointer to seplib particle structure
  * @param mol Pointer to seplib molecule structure
  * @param Pd Desired pressure
