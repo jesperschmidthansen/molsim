@@ -41,5 +41,5 @@ clean:
 	rm -f *~
 	rm -f $(TOOLS)
 	rm -f ../inst/molsim.mex
-
+	rm -f ../inst/*.m
 
