@@ -7,7 +7,7 @@
 #define MAXNUMBTASK 12
 
 
-// Hard-coded hash values for switch - *I* cannot optimize further
+// Hard-coded hash values for switch - *I* cannot "optimize" further
 // Hash value is simply the string (lower case) character sum
 enum {
   RESET=547, CALCFORCE=930, INTEGRATE=963,
@@ -23,7 +23,7 @@ double SPRING_X0;
 
 // Local functions
 double spring_x0(double r2, char opt);
-void checkinput(int nrhsarg, int numb);
+void inputerror(void);
 unsigned hashfun(const char *key);
 
 // Extern
@@ -69,26 +69,32 @@ void mexFunction (int nlhs, mxArray* plhs[],
   switch ( hashfun(action) ){
 
   case SET:  // ACTION: set
+
+    if ( nrhs < 2 ) inputerror();
     
     specifier = mxArrayToString(prhs[1]);
 
     if ( strcmp(specifier, "timestep")==0 ){
-      checkinput(nrhs-2, 1);
-
+      if ( nrhs != 3 ) inputerror();   
       dt = sys.dt = mxGetScalar(prhs[2]);
     }
-    else if ( strcmp(specifier, "cutoff")==0 )
+    else if ( strcmp(specifier, "cutoff")==0 ){
+      if ( nrhs != 3 ) inputerror();
       maxcutoff = mxGetScalar(prhs[2]);
+    }
     else if ( strcmp(specifier, "temperature")==0 ){
+      if ( nrhs != 3 ) inputerror();
       temperature = mxGetScalar(prhs[2]);
       sep_set_vel_seed(atoms, temperature, 42, sys);
       tempflag = true;
     }
     else if ( strcmp(specifier, "omp")==0 ){
+      if ( nrhs != 3 ) inputerror();
       int nthreads = (int)mxGetScalar(prhs[2]);
       sep_set_omp(nthreads, &sys);
     }
     else if ( strcmp(specifier, "exclusion")==0 ){
+      if ( nrhs != 3 ) inputerror();
       char *ex = mxArrayToString(prhs[2]);
       if ( strcmp(ex, "bonded" )==0 )
 	exclusionflag = SEP_EXCL_BONDED;
@@ -103,7 +109,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
 #endif
     }
     else if (strcmp(specifier, "lattice")==0 ){
-      	
+      if ( nrhs != 4 ) inputerror();
+
       char str1[256]; 
       double *nxyz = mxGetPr(prhs[2]); 
       sprintf(str1, "-n=%d,%d,%d", (int)nxyz[0], (int)nxyz[1], (int)nxyz[2]);
@@ -118,12 +125,13 @@ void mexFunction (int nlhs, mxArray* plhs[],
       argv[0] = NULL; argv[1] = str1; argv[2]=str2; argv[3]=str3; 
 
       sep_lattice(3, argv);
-      
     }
     else if (strcmp(specifier, "virtualsites")==0 ){
+      if ( nrhs != 2 ) inputerror();
       sep_set_x0(atoms, natoms);
     }
     else if (strcmp(specifier, "types")==0 ) {
+      if ( nrhs != 3 ) inputerror();
       char *types = mxArrayToString(prhs[2]);      
       for ( int n=0; n<natoms; n++ ) atoms[n].type =  types[n];
 #ifdef OCTAVE
@@ -131,21 +139,26 @@ void mexFunction (int nlhs, mxArray* plhs[],
 #endif
     }
     else if (strcmp(specifier, "force")==0 ) {
+      if ( nrhs != 3 ) inputerror();
       double *force = mxGetPr(prhs[2]);      
       for ( int k=0; k<3; k++ )
 	for ( int n=0; n<natoms; n++ )
 	  atoms[n].f[k] += force[k*natoms + n];
     }
     else if (strcmp(specifier, "compressionfactor")==0 ) {
+      if ( nrhs != 3 ) inputerror();
       compressionfactor = mxGetScalar(prhs[2]);      
     }
     else if (strcmp(specifier, "temperaturerelax")==0 ) {
+      if ( nrhs != 3 ) inputerror();
       taufactor = mxGetScalar(prhs[2]);      
     }
     else if (strcmp(specifier, "skin")==0 ) {
+      if ( nrhs != 3 ) inputerror();
       sys.skin = mxGetScalar(prhs[2]);
     }
     else if (strcmp(specifier, "charges")==0 ) {
+      if ( nrhs != 3 ) inputerror();
       double *charge = mxGetPr(prhs[2]);      
       for ( int n=0; n<natoms; n++ ) atoms[n].z =  charge[n];
     }
@@ -161,6 +174,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     specifier = mxArrayToString(prhs[1]);
     
     if ( strcmp(specifier, "xyz")==0 ){
+
+      if ( nrhs != 3 ) inputerror();
       
       if ( initflag ){
 	mexPrintf("From 'load': One instant of a system already exists");
@@ -186,6 +201,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     else if ( strcmp(specifier, "top")==0 ){
 
+      if ( nrhs != 3 ) inputerror();
+      
       if ( !initflag ){
 	mexErrMsgTxt("From 'load': You must call specifier 'xyz' before 'top'");
 	return;
@@ -207,6 +224,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
     break; 
    
   case RESET: // ACTION: reset
+
+    if ( nrhs != 1 ) inputerror();
+
     sep_reset_retval(&ret);
     sep_reset_force(atoms, &sys);
 
@@ -217,10 +237,12 @@ void mexFunction (int nlhs, mxArray* plhs[],
 
   case CALCFORCE: // ACTION: force
 
+    if ( nrhs < 2 ) inputerror();
     specifier = mxArrayToString(prhs[1]);
     
     // van der Waal
     if ( strcmp("lj", specifier)==0 ){
+      if ( nrhs != 7 ) inputerror();
       char *types =  mxArrayToString(prhs[2]);
       double cf = mxGetScalar(prhs[3]);
       double sigma = mxGetScalar(prhs[4]);
@@ -235,6 +257,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     // Harmonic bond force 
     else if ( strcmp(specifier, "bond")==0 ){
+      if ( nrhs != 5 ) inputerror();
+
       int type =  (int)mxGetScalar(prhs[2]);
       double length =  mxGetScalar(prhs[3]);
       double constant =  mxGetScalar(prhs[4]);
@@ -243,6 +267,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     // Angle force 
     else if ( strcmp(specifier, "angle")==0 ) {
+      if ( nrhs != 5 ) inputerror();
+      
       int type =  (int)mxGetScalar(prhs[2]);
       double angle =  mxGetScalar(prhs[3]);
       double constant =  mxGetScalar(prhs[4]);
@@ -251,6 +277,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     // Torsion force
     else if ( strcmp(specifier, "torsion")==0 ) {
+      if ( nrhs != 4 ) inputerror();
+ 
       int type =  (int)mxGetScalar(prhs[2]);
       double *param =  mxGetPr(prhs[3]);
       
@@ -258,6 +286,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     //Virtual lattice - for walls
     else if ( strcmp(specifier, "lattice")==0 ) {
+      if ( nrhs != 4 ) inputerror();
+
       char *type =  mxArrayToString(prhs[2]);
       SPRING_X0 = mxGetScalar(prhs[3]);
       
@@ -268,7 +298,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     // Coulomb forces
     else if ( strcmp(specifier, "coulomb")==0 ) {
-
+      if ( nrhs < 4 && nrhs > 5 ) inputerror();
+ 
       char *algorithm =  mxArrayToString(prhs[2]);
       if ( strcmp(algorithm, "sf") == 0 ){
 	double cf = mxGetScalar(prhs[3]);
@@ -286,6 +317,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
     }
     // DPD (only standard linear force)
     else if ( strcmp(specifier, "dpd")==0 ) {
+
+      if ( nrhs != 6 ) inputerror();
+      
       char *types =  mxArrayToString(prhs[2]);
       double cf = mxGetScalar(prhs[3]);
       double a = mxGetScalar(prhs[4]);
@@ -309,9 +343,12 @@ void mexFunction (int nlhs, mxArray* plhs[],
     
     specifier = mxArrayToString(prhs[1]);
     
-    if ( strcmp(specifier, "leapfrog") == 0 )
+    if ( strcmp(specifier, "leapfrog") == 0 ){
+      if ( nrhs != 2 ) inputerror();
       sep_leapfrog(atoms, &sys, &ret);
+    }
     else if ( strcmp(specifier, "dpd") == 0 ){
+      if ( nrhs != 3 ) inputerror();
       double lambda = mxGetScalar(prhs[2]);
       sep_verlet_dpd(atoms, lambda, iterationNumber, &sys, &ret);
     }
@@ -324,8 +361,10 @@ void mexFunction (int nlhs, mxArray* plhs[],
 #endif
     break;
 
-  case THERMOSTATE: // ACTION: thermostat - relaxation technique
+  case THERMOSTATE: // ACTION: thermostats
 
+    if ( nrhs != 5 ) inputerror();
+    
     specifier = mxArrayToString(prhs[1]);
     types =  mxArrayToString(prhs[2]);
     Temp0 = mxGetScalar(prhs[3]);
@@ -343,6 +382,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
     break;
     
   case SAVE: // ACTION: save
+
+    if ( nrhs != 3 ) inputerror();
+    
     types =  mxArrayToString(prhs[1]);
     file =  mxArrayToString(prhs[2]);
     
@@ -363,7 +405,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
     break;
     
   case GET: // ACTION: get
- 
+
+    if ( nrhs != 2 ) inputerror();
+
     specifier =  mxArrayToString(prhs[1]);
     
     // Positions
@@ -546,25 +590,30 @@ void mexFunction (int nlhs, mxArray* plhs[],
     specifier =  mxArrayToString(prhs[1]);
 
     if ( strcmp(specifier, "do")==0 && initsampler ){
+      if ( nrhs != 2 ) inputerror();
       sep_sample(atoms, &sampler, &ret, sys, iterationNumber);
     }
     else if ( strcmp(specifier, "vacf")==0 ){
+      if ( nrhs != 4 ) inputerror();
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "vacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "sacf")==0 ){
+      if ( nrhs != 4 ) inputerror();
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "sacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "hydrocorrelations")==0 ){
+      if ( nrhs != 5 ) inputerror();
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       int nk = (int)mxGetScalar(prhs[4]);
       sep_add_sampler(&sampler, "gh", sys, lvec, time, nk, 0, 1);
     }
     else if ( strcmp(specifier, "profiles")==0 ){
+      if ( nrhs != 5 ) inputerror();
       char *type =  mxArrayToString(prhs[2]);
       int lvec = (int)mxGetScalar(prhs[3]);
       int interval = (int)mxGetScalar(prhs[4]);
@@ -574,16 +623,19 @@ void mexFunction (int nlhs, mxArray* plhs[],
 #endif
     }
     else if ( strcmp(specifier, "msacf")==0 ){
+      if ( nrhs != 4 ) inputerror();
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "msacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "mvacf")==0 ){
+      if ( nrhs != 4 ) inputerror();
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "mvacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "radial")==0 ){
+      if ( nrhs != 5 ) inputerror();
       int lvec = (int)mxGetScalar(prhs[2]);
       int sampleinterval = (int)mxGetScalar(prhs[3]);
       char *types =  mxArrayToString(prhs[4]);
@@ -593,6 +645,7 @@ void mexFunction (int nlhs, mxArray* plhs[],
 #endif
     }
     else if ( strcmp(specifier, "msd")==0 ){
+      if ( nrhs != 6 ) inputerror();
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       int nwave = (int)mxGetScalar(prhs[4]);
@@ -605,7 +658,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
     else if ( strcmp(specifier, "mhydrocorrelations")==0 ){
       if ( !initmol )
 	mexErrMsgTxt("Molecules are not set...\n");
-      
+
+      if ( nrhs != 5 ) inputerror();
+    
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       int nk = (int)mxGetScalar(prhs[4]);
@@ -630,6 +685,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
     specifier =  mxArrayToString(prhs[1]);
     
     if ( strcmp("do", specifier)==0 ) {
+
+      if ( nrhs != 3 ) inputerror();
+      
       int numtasks = (int)mxGetScalar(prhs[2]);
       if ( numtasks==2 )
 	dotask2(atoms, tasks, ntasks, &sys, exclusionflag);
@@ -639,10 +697,14 @@ void mexFunction (int nlhs, mxArray* plhs[],
 	dotask4(atoms, tasks, ntasks, &sys, exclusionflag);
     }
     else if ( strcmp("print", specifier)==0 ){
+      if ( nrhs != 3 ) inputerror();
       int tasknr = (int)mxGetScalar(prhs[2]);
       printtask(tasks, tasknr-1);
     }
     else if ( strcmp("lj", specifier)==0 ){
+
+      if ( nrhs != 7 ) inputerror();
+    
       char *types =  mxArrayToString(prhs[2]);
       double cf = mxGetScalar(prhs[3]);
       double sigma = mxGetScalar(prhs[4]);
@@ -659,6 +721,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
 #endif
     }
     else if ( strcmp("bond", specifier)==0 ){
+
+      if ( nrhs != 6 ) inputerror();
+    
       int type =  (int) mxGetScalar(prhs[2]);
       double bondlength = mxGetScalar(prhs[3]);
       double springconst = mxGetScalar(prhs[4]);
@@ -671,6 +736,9 @@ void mexFunction (int nlhs, mxArray* plhs[],
 	mexErrMsgTxt("Maximum no. of tasks exceeded \n");
     }
     else if ( strcmp("angle", specifier)==0 ){
+
+      if ( nrhs != 6 ) inputerror();
+    
       int type =  (int) mxGetScalar(prhs[2]);
       double angle = mxGetScalar(prhs[3]);
       double springconst = mxGetScalar(prhs[4]);
@@ -683,6 +751,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
 	mexErrMsgTxt("Maximum no. of tasks exceeded \n");
     }
     else if ( strcmp("torsion", specifier)==0 ){
+      if ( nrhs != 5 ) inputerror();
+    
       int type =  (int) mxGetScalar(prhs[2]);
       const double *param =  mxGetPr(prhs[3]);
       int block = (int)mxGetScalar(prhs[4]) - 1;
@@ -700,6 +770,8 @@ void mexFunction (int nlhs, mxArray* plhs[],
     break;
     
   case COMPRESS:
+
+    if ( nrhs != 2 ) inputerror();
     
     targetdens = mxGetScalar(prhs[1]);
     sep_compress_box(atoms, targetdens, compressionfactor, &sys);  
@@ -740,16 +812,24 @@ void mexFunction (int nlhs, mxArray* plhs[],
     break;
 
   case ADD:  // ACTION: Add
- 
+
+    if ( nrhs < 2 ) inputerror();
+    
     specifier =  mxArrayToString(prhs[1]);
 
     if ( strcmp(specifier, "force")==0 ){
+
+      if ( nrhs != 4 ) inputerror();
+    
       double *force = mxGetPr(prhs[2]);
       int dir = (int)mxGetScalar(prhs[3]);
 
       for ( int n=0; n<natoms; n++ )  atoms[n].f[dir] += force[n];
     }
     else if ( strcmp(specifier, "tolattice")==0 ) {
+
+      if ( nrhs != 4 ) inputerror();
+      
       double *dx = mxGetPr(prhs[2]);
       int dir = (int)mxGetScalar(prhs[3]);
 
@@ -770,7 +850,7 @@ void mexFunction (int nlhs, mxArray* plhs[],
     break;
 
   case HELLO: 
-    mexPrintf("Hello :) \n");
+    mexPrintf("Hello. \n");
 
     break;
 
@@ -818,10 +898,9 @@ double spring_x0(double r2, char opt){
 }
 
 
-void checkinput(int nrhsarg, int numb){
+void inputerror(void){
 
-  if ( numb != nrhsarg )
-    mexErrMsgTxt("An input went wrong - exiting \n");    
+  mexErrMsgTxt("An input went wrong - exiting. Check carefully \n");    
       
 }
 

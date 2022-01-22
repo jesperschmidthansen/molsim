@@ -1,4 +1,4 @@
-# Makefile.in for sep-library
+# Makefile.in for molsim
 
 # Macros
 
@@ -18,7 +18,6 @@ molsim.mex: molsim.c libsep.a _sep_lattice.o
 	mkoctfile --mex -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude molsim.c
 	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o -o molsim
 	mv molsim.mex ../inst/
-	cp ../tests/runlj.m ../inst/
 
 # Building library
 libsep.a: $(OBJECTS)
@@ -41,5 +40,5 @@ clean:
 	rm -f *~
 	rm -f $(TOOLS)
 	rm -f ../inst/molsim.mex
-
+	rm -f ../inst/*.m
 

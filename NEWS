@@ -1,19 +1,16 @@
 Initial release for molsim - molecular simulations in GNU Octave
 
 With this release:
-
-Wrapper for large part of the seplib functionality.
-Allows simulations of
+Wrapper for large part of the seplib functionality. Allows simulations of
 
   * Standard Lennard-Jones systems
   * Molecular systems (bonds, angle, dihedrals)
-  * Charged systems using the shifted force method 
+  * Charged systems using the shifted force and Wolf methods 
   * Confined systems (eg slit-pores)
   * Thermostats
   * DPD simulations
-  * Run-time Sampling 
+  * Run-time sampling 
   * Simple setup
 
-See 'molsim.pdf' reference quick sheet
-(installed in package directory under doc/).
+See 'molsim.pdf' reference quick sheet (installed in package directory under doc/).
 
