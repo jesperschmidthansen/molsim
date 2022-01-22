@@ -20,29 +20,28 @@ function molsim_runbutane()
   molsim('set','timestep', dt);
   molsim('set', 'temperature', temp0);
   molsim('set', 'exclusion', 'molecule');
-
+  
   molsim('sample', 'mvacf', 100, 5.0);
   molsim('sample', 'radial', 100, 100, 'C');
-
+  
   for n=1:1000
 
     molsim('reset')
 
-    molsim('calcforce', 'lj', 'CC', 2.5, 1.0, 1.0);
+    molsim('calcforce', 'lj', 'CC', 2.5, 1.0, 1.0, 1.0);
     molsim('calcforce', 'bond', 0, bondlength, bondconstant);
     molsim('calcforce', 'angle', 0, bondangle, angleconstant);
     molsim('calcforce', 'torsion', 0, torsionparam);
 
     molsim('integrate', 'leapfrog')
-
-    molsim('thermostate', 'C', temp0, tau);
+    molsim('thermostate', 'relax', 'C', temp0, tau);
 
     molsim('sample', 'do');
-  
+
     if rem(n,100) == 0
       molsim('print');
     end
-  
+
   end
 
   molsim('clear');

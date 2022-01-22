@@ -19,6 +19,8 @@ molsim.mex: molsim.c libsep.a _sep_lattice.o
 	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o -o molsim
 	mv molsim.mex ../inst/
 	cp ../tests/*.m ../inst/
+	cp ../tests/*.xyz ../inst/
+	cp ../tests/*.top ../inst/
 
 # Building library
 libsep.a: $(OBJECTS)

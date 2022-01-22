@@ -20,7 +20,7 @@ molsim.mex: molsim.c libsep.a _sep_lattice.o
 	mv molsim.mex ../inst/
 	cp ../tests/*.m ../inst/
 	cp ../tests/*.xyz ../inst/
-	cp ../tests/.top ../inst/
+	cp ../tests/*.top ../inst/
 
 # Building library
 libsep.a: $(OBJECTS)
