@@ -100,11 +100,12 @@ void writedihedralsect(molecule *mol, unsigned molt, unsigned moli, const char *
 
 void sep_sfg(int argc, char **argv){
 
-  if ( (argc-1)%3 != 0 || argc < 4 )
-    merror("Usage: sfg <xyz file> <top file> <ntypes> ... ", __func__, __LINE__);
+  if ( (argc-3)%3 != 0 || argc < 6 )
+    merror("Usage: sep_sfg <xyz file> <top file> <ntypes> ... <dens> <seed>",
+	   __func__, __LINE__);
 
   // Number of different molecule type
-  int ntypes = (argc-1)/3;
+  int ntypes = (argc-3)/3;
 
   // Getting the number of molecules of each type and the total
   // number of molecules
@@ -128,24 +129,16 @@ void sep_sfg(int argc, char **argv){
     readtop_dihedrals(mols, argv[n*3+2], n);
   }
   
-  float dens;
-  printf("\nINPUT -> Enter crystal number density: ");
-  fflush(stdout);
-  scanf("%f", &dens);
-
-  int seed;
-  printf("\nINPUT -> Enter crystal seed: ");
-  fflush(stdout);
-  scanf("%d", &seed);
-
+  float dens = atof(argv[argc-2]);
+  int seed = atoi(argv[argc-1]);
+  printf("%d %d %f\n", ntypes, seed, dens);
   
   // Set the lattice sites 
   lattice lat = setcubic(nmol_tot, dens);
 
   // Set the molecules
   unsigned *rlist = setmolpos(ntypes, nmol_tot, nmol_ptype, seed);
-  //printf("%p\n", (void *)rlist);
-  
+    
   // Write the headers in each (temporary) file 
   printf("\nWriting output files 'start.xyz' and 'start.top'..."); 
   fflush(stdout);
@@ -365,7 +358,7 @@ void freemem(lattice *lptr, molecule *mptr, unsigned nmols,
     free(mptr[n].types); 
     free(mptr[n].rel_cm);
 
-    free(mptr->mass); free(mptr->z);
+    free(mptr[n].mass); free(mptr[n].z);
    
     free(mptr[n].bonds);
     free(mptr[n].angles);

@@ -68,6 +68,7 @@ unsigned hashfun(const char *key);
 
 // Extern
 void sep_lattice(int, char **);
+void sep_sfg(int, char **);
 
 
 #endif

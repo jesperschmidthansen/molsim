@@ -2,6 +2,7 @@
 %%
 %% molsim_runbutane: Example of butane simulation
 %% 
+
 function molsim_runbutane()
 
   temp0 = 4.0;

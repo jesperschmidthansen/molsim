@@ -20,7 +20,7 @@ maintainers:
 - name: "Jesper Schmidt Hansen"
   contact: "jesperschmidthansen@gmail.com"
 versions:
-- id: "0.1.0"
+- id: "1.0.0"
   date: "2022-01-09"
   sha256:  
   url: "https://github.com/gnu-octave/packages/molsim-0.1.0.tar.gz"

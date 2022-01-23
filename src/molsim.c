@@ -172,7 +172,7 @@ void action_set(int nrhs, const mxArray* prhs[]){
     char* argv[4]; 
     argv[0] = NULL; argv[1] = str1; argv[2]=str2; argv[3]=str3; 
     
-    sep_lattice(3, argv);
+    sep_lattice(4, argv); 
   }
   else if (strcmp(specifier, "virtualsites")==0 ){
     if ( nrhs != 2 ) inputerror();
@@ -205,10 +205,36 @@ void action_set(int nrhs, const mxArray* prhs[]){
     if ( nrhs != 3 ) inputerror();
     sys.skin = mxGetScalar(prhs[2]);
   }
-  else if (strcmp(specifier, "charges")==0 ) {
+  else if ( strcmp(specifier, "charges")==0 ) {
     if ( nrhs != 3 ) inputerror();
     double *charge = mxGetPr(prhs[2]);      
     for ( int n=0; n<natoms; n++ ) atoms[n].z =  charge[n];
+  }
+  else if ( strcmp(specifier, "molconfig")==0 ) {
+
+    int ntypes = (nrhs-2)/3;
+    if ( ntypes != 1 ) inputerror();
+    
+    if ( ntypes == 1 ){
+    
+      char *xyzfile1 = mxArrayToString(prhs[2]);      
+      char *topfile1 = mxArrayToString(prhs[3]);
+      char nmol1[32]; sprintf(nmol1, "%d",(int)mxGetScalar(prhs[4]));
+      char dens[32]; sprintf(dens, "%.6f", mxGetScalar(prhs[5]));
+      char seed[32]; sprintf(seed, "%d", (int)mxGetScalar(prhs[6]));
+      
+      char* argv[6]; 
+      argv[0] = NULL; argv[1] = xyzfile1; argv[2]=topfile1;
+      argv[3] = nmol1; argv[4] = dens; argv[5] = seed; 
+      
+      sep_sfg(6, argv);
+#ifdef OCTAVE
+      free(xyzfile1); free(topfile1); 
+#endif
+    }
+    else {
+      mexErrMsgTxt("Molecular mixtures not supported just yet\n");
+    }
   }
   else
     mexErrMsgTxt("Action 'set' -> not valid specifier\n");

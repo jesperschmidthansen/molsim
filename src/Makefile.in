@@ -13,10 +13,10 @@ OBJECTS     =  sepmisc.o seputil.o separray.o sepinit.o sepprfrc.o sepintgr.o \
 
 
 # Compiling molsim
-molsim.mex: molsim.c libsep.a _sep_lattice.o
+molsim.mex: molsim.c libsep.a _sep_lattice.o _sep_sfg.o
 	mkoctfile --mex -Ofast -W -pedantic -c -v -Iinclude task.c
 	mkoctfile --mex -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude molsim.c
-	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o -o molsim
+	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o _sep_sfg.o -o molsim
 	mv molsim.mex ../inst/
 	cp ../tests/*.m ../inst/
 	cp ../tests/*.xyz ../inst/
@@ -34,6 +34,9 @@ libsep.a: $(OBJECTS)
 # Compiling tools
 _sep_lattice.o: tools/_sep_lattice.c
 	$(CC) $(CFLAGS) $(OMP) -c tools/_sep_lattice.c
+
+_sep_sfg.o: tools/_sep_sfg.c
+	$(CC) $(CFLAGS) $(OMP) -c tools/_sep_sfg.c
 
 # Cleaning up
 clean: 

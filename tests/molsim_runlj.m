@@ -1,7 +1,8 @@
 
 %%
 %% molsim_runlj: Example of simple Lennard-Jones simulation
-%% 
+%%
+
 function molsim_runlj()
 
   cutoff = 2.5; epsilon = 1.0; sigma = 1.0; aw=1.0;
