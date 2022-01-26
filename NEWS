@@ -1,7 +1,11 @@
+
+molsim-0.9.0
+------------
+
 Initial release for molsim - molecular simulations in GNU Octave
 
-With this release:
-Wrapper for large part of the seplib functionality. Allows simulations of
+With this release: Wrapper for large part of the seplib functionality.
+Allows simulations of
 
   * Standard Lennard-Jones systems
   * Molecular systems (bonds, angle, dihedrals)
