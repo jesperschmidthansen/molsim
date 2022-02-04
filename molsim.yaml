@@ -23,7 +23,7 @@ versions:
 - id: "1.0.0"
   date: "2022-01-09"
   sha256:  
-  url: "https://github.com/gnu-octave/packages/molsim-0.1.0.tar.gz"
+  url: "https://github.com/gnu-octave/packages/molsim-0.9.0.tar.gz"
   depends:
   - "octave (>= 6.0.0)"
   - "pkg"
