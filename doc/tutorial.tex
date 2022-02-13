@@ -1,0 +1,144 @@
+\documentclass[11pt]{article}
+
+\title{\textsf{molsim} tutorial}
+\author{J.S. Hansen}
+\date{Februaray 2022, v. 0.9}
+  
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\textsf{molsim} is a GNU Octave/Matlab package for molecular dynamics simulation
+library. \textsf{molsim} supports simulations of
+\begin{itemize}
+\item Standard Lennard-Jones systems (solid, liquids, gasses, etc)
+\item Molecular systems with bond, angle, and torsion potentials 
+\item Confined flow systems, eg., Couette and Poiseuille flows
+\item Charged systems using shifted force and Wolf methods
+\item Dissipative particle dynamics systems
+\item and more
+\end{itemize}
+The package also supports a series of run-time sampling functionalities.
+
+\bigskip
+\noindent \textsf{molsim} is basically a wrapper for the \textsf{seplib}
+library, which is a light-weight flexible molecular dynamics simulation library
+written in ISO-C99. The library is CPU-based and offers shared memory
+parallisation; this parallisaton is supported by the \textsf{molsim}
+package. The algorithms used in \textsf{seplib} is based on the books by Allen
+\& Tildesley, Rapaport, Frenkel \& Smith, and R. Sadus, see
+Ref. \cite{seplib:books}.
+
+\bigskip
+\noindent In this text
+\begin{verbatim}
+>> 
+\end{verbatim}
+indicates GNU Octave or Matlab command prompt. This 
+\begin{verbatim}
+$ 
+\end{verbatim}
+indicates the shell prompt.
+
+\section{Installation}
+\subsection{GNU Octave}
+GNU Octave's package manager offers a very easy installation. From
+
+\begin{verbatim}
+https://github.com/jesperschmidthansen/molsim/
+\end{verbatim}
+
+\noindent download and save the current release
+\verb!molsim-<version>.tar.gz! in a directory of your choice. Start GNU
+Octave and if needed change directory to the directory where the file is saved.
+\begin{verbatim}
+>> pkg install molsim-<version>.tar.gz 
+\end{verbatim}
+Check contact by
+\begin{verbatim}
+>> molsim('hello')
+Hello 
+\end{verbatim}
+In case this fails, check the path where \textsf{molsim} is install by
+\begin{verbatim}
+>> pkg list molsim
+\end{verbatim}
+If the path is not in your GNU Octave search path add this using the
+\verb!addpath! command.
+
+\subsection{Matlab}
+From
+\begin{verbatim}
+https://github.com/jesperschmidthansen/seplib/
+\end{verbatim}
+\noindent download and save the current release \verb!seplib-<version>.tar.gz!
+in a directory of your choice. Unpack, configure and build the library
+\begin{verbatim}
+$ tar zxvf seplib-<version>.tar.gz
+$ cd seplib
+$ ./configure
+$ make
+$ cd octave
+\end{verbatim}
+To build the \textsf{mex}-file enter Matlab
+\begin{verbatim}
+$ matlab -nodesktop
+\end{verbatim}
+Then build the 
+\begin{verbatim}
+>> buildmex
+\end{verbatim}
+Depending on the system this will build a \textsf{molsim.mex<archtype>}
+file. You can copy this file to a directory in your Matlab searce path.
+
+\section{First quick example: The Lennard-Jones liquid}
+Listing 1 shows the simplest script simulating a standard Lennard-Jones system.
+
+\noindent \textbf{Listing 1}
+\begin{verbatim}
+1: cutoff = 2.5; epsilon = 1.0; sigma = 1.0; aw=1.0;
+
+2: molsim('set', 'lattice', [10 10 10], [12 12 12]);
+3: molsim('load', 'xyz', 'start.xyz');
+
+4: for n=1:10000
+
+5:   molsim('reset');
+6:   molsim('calcforce', 'lj', 'AA', cutoff, sigma, epsilon, aw);
+7:   molsim('integrate', 'leapfrog');
+ 
+8: end
+
+9: molsim('clear');
+\end{verbatim}
+
+\noindent Line 1: Specification of the Lennard-Jones interaction potential.
+
+\noindent Line 2: Writes initial particle positions and velocities to default file
+\textsf{start.xyz}. System dimension is set to $10 \times 10 \times 10$, and box
+lengths to $12 \times 12 \times 12$. 
+
+\noindent Line 3: The initial configuration is loaded
+
+\noindent Line 4 \& 8: Molecular dynamics main loop. 10$^4$ iterations are performed
+
+\noindent Line 5: Everything reset
+
+\noindent Line 6: Calculate force between particles of type A using the interaction
+parameter specifications
+
+\noindent Line 7: Integrate forward in time
+
+\noindent Line 9: Free all memory allocated.
+
+\subsection{Extending the example}
+
+\section{The force field and more examples}
+\section{Confined systems}
+\section{Sampling}
+\section{The two parallisation paradigms}
+
+
+\end{document}
