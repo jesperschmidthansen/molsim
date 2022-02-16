@@ -41,7 +41,7 @@ enum {
   GET=320, PRINT=557, SAVE=431,
   TASK=435, COMPRESS=876, CLEAR=519,
   SET=332, HELLO=532, LOAD=416,
-  HASHVALUE=961
+  HASHVALUE=961, BAROSTATE=965
 };
 
 // Wrapper functions for actions
@@ -50,6 +50,7 @@ void action_set(int nrhs, const mxArray **prhs);
 void action_load(int nrhs, const mxArray **prhs);
 void action_calcforce(int nrhs, const mxArray **prhs);
 void action_thermostate(int nrhs, const mxArray **prhs);
+void action_barostate(int nrhs, const mxArray **prhs);
 void action_integrate(int nrhs, const mxArray **prhs);
 void action_save(int nrhs, const mxArray **prhs);
 void action_print(void);

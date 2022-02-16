@@ -5,10 +5,6 @@
 
 function molsim_runbutane()
 
-  if ( !exist("./butane.xyz") || !exist("./butane.top") ) 
-    error("First copy butane.xyz and butane.top from the package inst/ directory to local directory");
-  endif
-    
   temp0 = 4.0;
   tau = 0.01;
   dt  = 0.002;
@@ -21,7 +17,7 @@ function molsim_runbutane()
 
   molsim('load', 'xyz', 'butane.xyz');
   molsim('load', 'top', 'butane.top');
-  
+
   molsim('set','timestep', dt);
   molsim('set', 'temperature', temp0);
   molsim('set', 'exclusion', 'molecule');

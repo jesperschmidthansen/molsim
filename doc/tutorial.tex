@@ -94,51 +94,77 @@ Depending on the system this will build a \textsf{molsim.mex<archtype>}
 file. You can copy this file to a directory in your Matlab searce path.
 
 \section{First quick example: The Lennard-Jones liquid}
-Listing 1 shows the simplest script simulating a standard Lennard-Jones system.
+Listing 1 shows the simplest script simulating a standard Lennard-Jones (LJ)
+system in the micro-canonical ensemble where number of particles, volume, and
+total energy is conserved.
+
+\bigskip
 
 \noindent \textbf{Listing 1}
 \begin{verbatim}
-1: cutoff = 2.5; epsilon = 1.0; sigma = 1.0; aw=1.0;
+% Specify the LJ paramters
+cutoff = 2.5; epsilon = 1.0; sigma = 1.0; aw=1.0;
 
-2: molsim('set', 'lattice', [10 10 10], [12 12 12]);
-3: molsim('load', 'xyz', 'start.xyz');
+% Set init. position and velocities 10x10x10 particles in box
+% with lengths 12x12x12. Configuration stored in start.xyz
+molsim('set', 'lattice', [10 10 10], [12 12 12]);
 
-4: for n=1:10000
+% Load the configuration file
+molsim('load', 'xyz', 'start.xyz');
 
-5:   molsim('reset');
-6:   molsim('calcforce', 'lj', 'AA', cutoff, sigma, epsilon, aw);
-7:   molsim('integrate', 'leapfrog');
+% Main loop
+for n=1:10000
+
+  % Reset everything
+  molsim('reset');
+
+  % Calculate force between particles of type A (default type)
+  molsim('calcforce', 'lj', 'AA', cutoff, sigma, epsilon, aw);
+
+  % Integrate forward in time
+  molsim('integrate', 'leapfrog');
  
-8: end
+end
 
-9: molsim('clear');
+% Free memory allocated
+molsim('clear');
 \end{verbatim}
+Listing 1 is not very useful as no information is printed or saved. Inside the
+main loop you can add the command
+\begin{verbatim}
+if rem(n,100)==0
+  molsim('print');
+end
+\end{verbatim}
+to print current iteration number, potential energy per particle, kinetic energy
+per particle, total energy per particle, kinetic temperature, and total momentum
+to screen every 100 time step.
 
-\noindent Line 1: Specification of the Lennard-Jones interaction potential.
+More information can be retrieved from the simulation, e.g., get the system
+energies and pressure 
+\begin{verbatim}
+[ekin, epot] = molsim('get', 'energies');
+press = molsim('get', 'pressure');
+\end{verbatim}
+and particle positions and velocities
+\begin{verbatim}
+x = molsim('get', 'positions');
+v = molsim('get', 'velocities');
+\end{verbatim}
+In general, the \verb!molsim! interface is on the form
+\begin{verbatim}
+molsim(ACTION, SPECIFIER, ARGUMENTS)
+\end{verbatim}
+where the action can be \verb!get!, \verb!integrate!, and so on, the specifier
+is a specification for the action, and arguments are the arguments for the
+specifier. 
 
-\noindent Line 2: Writes initial particle positions and velocities to default file
-\textsf{start.xyz}. System dimension is set to $10 \times 10 \times 10$, and box
-lengths to $12 \times 12 \times 12$. 
+\subsection{NVT and NPT simulations}
+Often you will not have  
 
-\noindent Line 3: The initial configuration is loaded
-
-\noindent Line 4 \& 8: Molecular dynamics main loop. 10$^4$ iterations are performed
-
-\noindent Line 5: Everything reset
-
-\noindent Line 6: Calculate force between particles of type A using the interaction
-parameter specifications
-
-\noindent Line 7: Integrate forward in time
-
-\noindent Line 9: Free all memory allocated.
-
-\subsection{Extending the example}
-
-\section{The force field and more examples}
-\section{Confined systems}
+\section{The force field}
+\section{Molecular systems}
 \section{Sampling}
 \section{The two parallisation paradigms}
-
 
 \end{document}

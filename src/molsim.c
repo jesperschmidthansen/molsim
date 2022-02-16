@@ -26,6 +26,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
   case INTEGRATE: action_integrate(nrhs, prhs); break;
 
   case THERMOSTATE: action_thermostate(nrhs, prhs); break;
+
+  case BAROSTATE: action_thermostate(nrhs, prhs); break;
     
   case SAVE: action_save(nrhs, prhs); break;
 
@@ -450,6 +452,18 @@ void action_thermostate(int nrhs, const mxArray **prhs){
     free(types); free(specifier);
 #endif
 
+}
+
+
+void action_barostate(int nrhs, const mxArray **prhs){
+  
+    if ( nrhs != 3 ) inputerror();
+    
+    double Pd= mxGetScalar(prhs[1]);
+    double beta =  mxGetScalar(prhs[2]);
+
+    sep_berendsen(atoms, Pd, beta, &ret, &sys);
+    
 }
 
 
