@@ -457,10 +457,12 @@ void action_thermostate(int nrhs, const mxArray **prhs){
 
 void action_barostate(int nrhs, const mxArray **prhs){
   
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 4 ) inputerror();
+
+    // Only relax is supported and ignored right now
     
-    double Pd= mxGetScalar(prhs[1]);
-    double beta =  mxGetScalar(prhs[2]);
+    double Pd = mxGetScalar(prhs[2]);
+    double beta =  mxGetScalar(prhs[3]);
 
     sep_berendsen(atoms, Pd, beta, &ret, &sys);
     

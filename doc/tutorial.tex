@@ -160,7 +160,12 @@ is a specification for the action, and arguments are the arguments for the
 specifier. 
 
 \subsection{NVT and NPT simulations}
-Often you will not have  
+Often you will not have
+
+\begin{verbatim}
+molsim('thermostate', 'relax', 1.0, 0.01);
+molsim('barostate', 1.0, 0.01);
+\end{verbatim}
 
 \section{The force field}
 \section{Molecular systems}
