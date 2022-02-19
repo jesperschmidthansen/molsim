@@ -27,7 +27,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   case THERMOSTATE: action_thermostate(nrhs, prhs); break;
 
-  case BAROSTATE: action_thermostate(nrhs, prhs); break;
+  case BAROSTATE: action_barostate(nrhs, prhs); break;
     
   case SAVE: action_save(nrhs, prhs); break;
 
@@ -53,13 +53,13 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     mexPrintf("Action %s given -> ", action);
     mexErrMsgTxt("Not a valid action\n");
   
-#ifdef OCTAVE
-    free(action);
-#endif
-    
     break;
   }
-  
+
+#ifdef OCTAVE
+  free(action);
+#endif
+    
 }
 
 
@@ -86,8 +86,9 @@ double spring_x0(double r2, char opt){
 }
 
 
-void inputerror(void){
+void inputerror(const char* funstr){
 
+  mexPrintf("From %s: ", funstr);
   mexErrMsgTxt("An input went wrong - exiting. Check carefully \n");    
       
 }
@@ -106,7 +107,7 @@ unsigned hashfun(const char *key){
 
 void action_reset(int nrhs){
 
-  if ( nrhs != 1 ) inputerror();
+  if ( nrhs != 1 ) inputerror(__func__);
   
   sep_reset_retval(&ret);
   sep_reset_force(atoms, &sys);
@@ -120,31 +121,31 @@ void action_set(int nrhs, const mxArray* prhs[]){
 
   char *specifier;
   
-  if ( nrhs < 2 ) inputerror();
+  if ( nrhs < 2 ) inputerror(__func__);
   
   specifier = mxArrayToString(prhs[1]);
 
   if ( strcmp(specifier, "timestep")==0 ){
-    if ( nrhs != 3 ) inputerror();   
+    if ( nrhs != 3 ) inputerror(__func__);   
     dt = sys.dt = mxGetScalar(prhs[2]);
   }
   else if ( strcmp(specifier, "cutoff")==0 ){
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     maxcutoff = mxGetScalar(prhs[2]);
   }
   else if ( strcmp(specifier, "temperature")==0 ){
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     temperature = mxGetScalar(prhs[2]);
     sep_set_vel_seed(atoms, temperature, 42, sys);
     tempflag = true;
   }
   else if ( strcmp(specifier, "omp")==0 ){
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     int nthreads = (int)mxGetScalar(prhs[2]);
     sep_set_omp(nthreads, &sys);
   }
   else if ( strcmp(specifier, "exclusion")==0 ){
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     char *ex = mxArrayToString(prhs[2]);
     if ( strcmp(ex, "bonded" )==0 )
       exclusionflag = SEP_EXCL_BONDED;
@@ -159,7 +160,7 @@ void action_set(int nrhs, const mxArray* prhs[]){
 #endif
   }
   else if (strcmp(specifier, "lattice")==0 ){
-    if ( nrhs != 4 ) inputerror();
+    if ( nrhs != 4 ) inputerror(__func__);
     
     char str1[256]; 
     double *nxyz = mxGetPr(prhs[2]); 
@@ -177,11 +178,11 @@ void action_set(int nrhs, const mxArray* prhs[]){
     sep_lattice(4, argv); 
   }
   else if (strcmp(specifier, "virtualsites")==0 ){
-    if ( nrhs != 2 ) inputerror();
+    if ( nrhs != 2 ) inputerror(__func__);
     sep_set_x0(atoms, natoms);
   }
   else if (strcmp(specifier, "types")==0 ) {
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     char *types = mxArrayToString(prhs[2]);      
     for ( int n=0; n<natoms; n++ ) atoms[n].type =  types[n];
 #ifdef OCTAVE
@@ -189,33 +190,33 @@ void action_set(int nrhs, const mxArray* prhs[]){
 #endif
   }
   else if (strcmp(specifier, "force")==0 ) {
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     double *force = mxGetPr(prhs[2]);      
     for ( int k=0; k<3; k++ )
       for ( int n=0; n<natoms; n++ )
 	atoms[n].f[k] += force[k*natoms + n];
   }
   else if (strcmp(specifier, "compressionfactor")==0 ) {
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     compressionfactor = mxGetScalar(prhs[2]);      
   }
   else if (strcmp(specifier, "temperaturerelax")==0 ) {
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     taufactor = mxGetScalar(prhs[2]);      
   }
   else if (strcmp(specifier, "skin")==0 ) {
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     sys.skin = mxGetScalar(prhs[2]);
   }
   else if ( strcmp(specifier, "charges")==0 ) {
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     double *charge = mxGetPr(prhs[2]);      
     for ( int n=0; n<natoms; n++ ) atoms[n].z =  charge[n];
   }
   else if ( strcmp(specifier, "molconfig")==0 ) {
 
     int ntypes = (nrhs-2)/3;
-    if ( ntypes != 1 ) inputerror();
+    if ( ntypes != 1 ) inputerror(__func__);
     
     if ( ntypes == 1 ){
     
@@ -252,7 +253,7 @@ void action_load(int nrhs, const mxArray **prhs){
     
   if ( strcmp(specifier, "xyz")==0 ){
     
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     
     if ( initflag ){
       mexPrintf("From 'load': One instant of a system already exists");
@@ -278,7 +279,7 @@ void action_load(int nrhs, const mxArray **prhs){
   }
   else if ( strcmp(specifier, "top")==0 ){
     
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     
     if ( !initflag ){
       mexErrMsgTxt("From 'load': You must call specifier 'xyz' before 'top'");
@@ -303,13 +304,13 @@ void action_load(int nrhs, const mxArray **prhs){
 
 void action_calcforce(int nrhs, const mxArray **prhs){
 
-    if ( nrhs < 2 ) inputerror();
+    if ( nrhs < 2 ) inputerror(__func__);
 
     char *specifier = mxArrayToString(prhs[1]);
     
     // van der Waal
     if ( strcmp("lj", specifier)==0 ){
-      if ( nrhs != 7 ) inputerror();
+      if ( nrhs != 7 ) inputerror(__func__);
       char *types =  mxArrayToString(prhs[2]);
       double cf = mxGetScalar(prhs[3]);
       double sigma = mxGetScalar(prhs[4]);
@@ -324,7 +325,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
     }
     // Harmonic bond force 
     else if ( strcmp(specifier, "bond")==0 ){
-      if ( nrhs != 5 ) inputerror();
+      if ( nrhs != 5 ) inputerror(__func__);
 
       int type =  (int)mxGetScalar(prhs[2]);
       double length =  mxGetScalar(prhs[3]);
@@ -334,7 +335,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
     }
     // Angle force 
     else if ( strcmp(specifier, "angle")==0 ) {
-      if ( nrhs != 5 ) inputerror();
+      if ( nrhs != 5 ) inputerror(__func__);
       
       int type =  (int)mxGetScalar(prhs[2]);
       double angle =  mxGetScalar(prhs[3]);
@@ -344,7 +345,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
     }
     // Torsion force
     else if ( strcmp(specifier, "torsion")==0 ) {
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
  
       int type =  (int)mxGetScalar(prhs[2]);
       double *param =  mxGetPr(prhs[3]);
@@ -353,7 +354,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
     }
     //Virtual lattice - for walls
     else if ( strcmp(specifier, "lattice")==0 ) {
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
 
       char *type =  mxArrayToString(prhs[2]);
       SPRING_X0 = mxGetScalar(prhs[3]);
@@ -365,7 +366,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
     }
     // Coulomb forces
     else if ( strcmp(specifier, "coulomb")==0 ) {
-      if ( nrhs < 4 && nrhs > 5 ) inputerror();
+      if ( nrhs < 4 && nrhs > 5 ) inputerror(__func__);
  
       char *algorithm =  mxArrayToString(prhs[2]);
       if ( strcmp(algorithm, "sf") == 0 ){
@@ -385,7 +386,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
     // DPD (only standard linear force)
     else if ( strcmp(specifier, "dpd")==0 ) {
 
-      if ( nrhs != 6 ) inputerror();
+      if ( nrhs != 6 ) inputerror(__func__);
       
       char *types =  mxArrayToString(prhs[2]);
       double cf = mxGetScalar(prhs[3]);
@@ -414,11 +415,11 @@ void action_integrate(int nrhs, const mxArray **prhs){
     char *specifier = mxArrayToString(prhs[1]);
     
     if ( strcmp(specifier, "leapfrog") == 0 ){
-      if ( nrhs != 2 ) inputerror();
+      if ( nrhs != 2 ) inputerror(__func__);
       sep_leapfrog(atoms, &sys, &ret);
     }
     else if ( strcmp(specifier, "dpd") == 0 ){
-      if ( nrhs != 3 ) inputerror();
+      if ( nrhs != 3 ) inputerror(__func__);
       double lambda = mxGetScalar(prhs[2]);
       sep_verlet_dpd(atoms, lambda, iterationNumber, &sys, &ret);
     }
@@ -434,7 +435,7 @@ void action_integrate(int nrhs, const mxArray **prhs){
 
 void action_thermostate(int nrhs, const mxArray **prhs){
   
-    if ( nrhs != 5 ) inputerror();
+    if ( nrhs != 5 ) inputerror(__func__);
     
     char *specifier = mxArrayToString(prhs[1]);
     char *types =  mxArrayToString(prhs[2]);
@@ -457,7 +458,7 @@ void action_thermostate(int nrhs, const mxArray **prhs){
 
 void action_barostate(int nrhs, const mxArray **prhs){
   
-    if ( nrhs != 4 ) inputerror();
+    if ( nrhs != 4 ) inputerror(__func__);
 
     // Only relax is supported and ignored right now
     
@@ -465,13 +466,12 @@ void action_barostate(int nrhs, const mxArray **prhs){
     double beta =  mxGetScalar(prhs[3]);
 
     sep_berendsen(atoms, Pd, beta, &ret, &sys);
-    
 }
 
 
 void action_save(int nrhs, const mxArray **prhs){
 
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
     
     char *types =  mxArrayToString(prhs[1]);
     char *file =  mxArrayToString(prhs[2]);
@@ -496,7 +496,7 @@ void action_print(void){
 
 void action_get(mxArray **plhs, int nrhs, const mxArray **prhs){
 
-  if ( nrhs != 2 ) inputerror();
+  if ( nrhs != 2 ) inputerror(__func__);
 
   char *specifier =  mxArrayToString(prhs[1]);
     
@@ -682,30 +682,30 @@ void action_sample(int nrhs, const mxArray **prhs){
     char *specifier =  mxArrayToString(prhs[1]);
 
     if ( strcmp(specifier, "do")==0 && initsampler ){
-      if ( nrhs != 2 ) inputerror();
+      if ( nrhs != 2 ) inputerror(__func__);
       sep_sample(atoms, &sampler, &ret, sys, iterationNumber);
     }
     else if ( strcmp(specifier, "vacf")==0 ){
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "vacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "sacf")==0 ){
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "sacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "hydrocorrelations")==0 ){
-      if ( nrhs != 5 ) inputerror();
+      if ( nrhs != 5 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       int nk = (int)mxGetScalar(prhs[4]);
       sep_add_sampler(&sampler, "gh", sys, lvec, time, nk, 0, 1);
     }
     else if ( strcmp(specifier, "profiles")==0 ){
-      if ( nrhs != 5 ) inputerror();
+      if ( nrhs != 5 ) inputerror(__func__);
       char *type =  mxArrayToString(prhs[2]);
       int lvec = (int)mxGetScalar(prhs[3]);
       int interval = (int)mxGetScalar(prhs[4]);
@@ -715,19 +715,19 @@ void action_sample(int nrhs, const mxArray **prhs){
 #endif
     }
     else if ( strcmp(specifier, "msacf")==0 ){
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "msacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "mvacf")==0 ){
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "mvacf", sys, lvec, time);
     }
     else if ( strcmp(specifier, "radial")==0 ){
-      if ( nrhs != 5 ) inputerror();
+      if ( nrhs != 5 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
       int sampleinterval = (int)mxGetScalar(prhs[3]);
       char *types =  mxArrayToString(prhs[4]);
@@ -737,7 +737,7 @@ void action_sample(int nrhs, const mxArray **prhs){
 #endif
     }
     else if ( strcmp(specifier, "msd")==0 ){
-      if ( nrhs != 6 ) inputerror();
+      if ( nrhs != 6 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
       int nwave = (int)mxGetScalar(prhs[4]);
@@ -751,7 +751,7 @@ void action_sample(int nrhs, const mxArray **prhs){
       if ( !initmol )
 	mexErrMsgTxt("Molecules are not set...\n");
 
-      if ( nrhs != 5 ) inputerror();
+      if ( nrhs != 5 ) inputerror(__func__);
     
       int lvec = (int)mxGetScalar(prhs[2]);
       double time = mxGetScalar(prhs[3]);
@@ -780,7 +780,7 @@ void action_task(int nrhs, const mxArray **prhs){
   
   if ( strcmp("do", specifier)==0 ) {
     
-    if ( nrhs != 3 ) inputerror();
+    if ( nrhs != 3 ) inputerror(__func__);
       
       int numtasks = (int)mxGetScalar(prhs[2]);
       if ( numtasks==2 )
@@ -791,13 +791,13 @@ void action_task(int nrhs, const mxArray **prhs){
 	dotask4(atoms, tasks, ntasks, &sys, exclusionflag);
     }
     else if ( strcmp("print", specifier)==0 ){
-      if ( nrhs != 3 ) inputerror();
+      if ( nrhs != 3 ) inputerror(__func__);
       int tasknr = (int)mxGetScalar(prhs[2]);
       printtask(tasks, tasknr-1);
     }
     else if ( strcmp("lj", specifier)==0 ){
 
-      if ( nrhs != 7 ) inputerror();
+      if ( nrhs != 7 ) inputerror(__func__);
     
       char *types =  mxArrayToString(prhs[2]);
       double cf = mxGetScalar(prhs[3]);
@@ -816,7 +816,7 @@ void action_task(int nrhs, const mxArray **prhs){
     }
     else if ( strcmp("bond", specifier)==0 ){
 
-      if ( nrhs != 6 ) inputerror();
+      if ( nrhs != 6 ) inputerror(__func__);
     
       int type =  (int) mxGetScalar(prhs[2]);
       double bondlength = mxGetScalar(prhs[3]);
@@ -831,7 +831,7 @@ void action_task(int nrhs, const mxArray **prhs){
     }
     else if ( strcmp("angle", specifier)==0 ){
 
-      if ( nrhs != 6 ) inputerror();
+      if ( nrhs != 6 ) inputerror(__func__);
     
       int type =  (int) mxGetScalar(prhs[2]);
       double angle = mxGetScalar(prhs[3]);
@@ -845,7 +845,7 @@ void action_task(int nrhs, const mxArray **prhs){
 	mexErrMsgTxt("Maximum no. of tasks exceeded \n");
     }
     else if ( strcmp("torsion", specifier)==0 ){
-      if ( nrhs != 5 ) inputerror();
+      if ( nrhs != 5 ) inputerror(__func__);
     
       int type =  (int) mxGetScalar(prhs[2]);
       const double *param =  mxGetPr(prhs[3]);
@@ -866,7 +866,7 @@ void action_task(int nrhs, const mxArray **prhs){
 
 void action_compress(int nrhs, const mxArray **prhs){
 
-  if ( nrhs != 2 ) inputerror();
+  if ( nrhs != 2 ) inputerror(__func__);
   
   double targetdens = mxGetScalar(prhs[1]);
   sep_compress_box(atoms, targetdens, compressionfactor, &sys);  
@@ -909,13 +909,13 @@ void action_clear(int nrhs, const mxArray **prhs){
 void action_add(int nrhs, const mxArray **prhs){
 
   
-    if ( nrhs < 2 ) inputerror();
+    if ( nrhs < 2 ) inputerror(__func__);
     
     char *specifier =  mxArrayToString(prhs[1]);
 
     if ( strcmp(specifier, "force")==0 ){
 
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
     
       double *force = mxGetPr(prhs[2]);
       int dir = (int)mxGetScalar(prhs[3]);
@@ -924,7 +924,7 @@ void action_add(int nrhs, const mxArray **prhs){
     }
     else if ( strcmp(specifier, "tolattice")==0 ) {
 
-      if ( nrhs != 4 ) inputerror();
+      if ( nrhs != 4 ) inputerror(__func__);
       
       double *dx = mxGetPr(prhs[2]);
       int dir = (int)mxGetScalar(prhs[3]);

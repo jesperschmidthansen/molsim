@@ -18,3 +18,11 @@ Allows simulations of
 
 See 'molsim.pdf' reference quick sheet (installed in package directory under doc/).
 
+molsim-0.9.1
+------------
+
+* Important memory leak fix.
+* Added molecular configurations 
+
+
+

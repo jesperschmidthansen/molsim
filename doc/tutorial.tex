@@ -160,14 +160,35 @@ is a specification for the action, and arguments are the arguments for the
 specifier. 
 
 \subsection{NVT and NPT simulations}
-Often you will not have
-
+Often you will not perform simulations in the microcanonical ensemble, but under
+a desired temperature or/pressure. One way to achieve this with \verb!molsim! is
+to use simple relaxation algorithms. To simulate at temperature, say 2.2, you
+call the action 'thermostate' after the integration step
 \begin{verbatim}
-molsim('thermostate', 'relax', 1.0, 0.01);
-molsim('barostate', 1.0, 0.01);
+molsim('thermostate', 'relax', 2.2, 0.01);
 \end{verbatim}
+The last argument is the relaxation parameter; the higher value the faster
+relaxatio. Notice that too large values makes the system unrealistically
+stiff. The best value is optimed via trail-and-error.
+
+To simulate at pressure, say 0.9, you call the action 'barostate' after the
+integration step,
+\begin{verbatim}
+molsim('barostate', 'relax', 0.9, 0.01);
+\end{verbatim}
+The choice of relaxation parameter is again a matter of the system. You can use
+the two relaxation actions in the same simulation mimicking an NPT system. The
+barostate works by changing the system box length in the $z$-direction only;
+this is practical when doing hydrodynamic sampling, see later. 
 
 \section{The force field}
+\begin{eqnarray}
+  U &=& U_\mathrm{LJ} + U_{\mathrm{Coloumb}} + U_\mathrm{bonds} + U_\mathrm{angles} +
+        U_\mathrm{diheadrals} + U_\mathrm{lattice} \\
+    &=& \frac{1}{2}\sum_{\mathrm{bonds}} k_n(r_{ij} - l_b) +
+        \frac{1}{2}\sum_{\mathrm{angles}} k_m (\cos(\theta) - \cos(\theta_m))^2
+\end{eqnarray}
+
 \section{Molecular systems}
 \section{Sampling}
 \section{The two parallisation paradigms}

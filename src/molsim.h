@@ -64,7 +64,7 @@ void action_hash(int nrhs, const mxArray **prhs);
 
 // Local helper functions
 double spring_x0(double r2, char opt);
-void inputerror(void);
+void inputerror(const char* funstr);
 unsigned hashfun(const char *key);
 
 // Extern
