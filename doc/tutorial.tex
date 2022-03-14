@@ -1,5 +1,10 @@
 \documentclass[11pt]{article}
 
+ 
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{pstricks}
+
 \title{\textsf{molsim} tutorial}
 \author{J.S. Hansen}
 \date{Februaray 2022, v. 0.9}
@@ -192,31 +197,31 @@ barostate works by changing the system box length in the $z$-direction only
 (an-isotropic scaling); this is practical when doing sampling as two directions
 are fixed.
 
-\section{The force field}
+\section{The \textsf{molsim} force field}
 \textsf{molsim} supports simulations of confined, charged, and molecular
 systems. In general, the interaction \textsf{molsim} force field is defined from
 the potential functional form
 \begin{equation}
   U(\mathbf{r}_i, r_{ij}, \ldots)
-  =  U_\mathrm{Lattice} + U_\mathrm{LJ} + U_{\mathrm{Coloumb}} +
-  U_\mathrm{Bonds} + U_\mathrm{Angles} + 
-  U_\mathrm{Diheadrals}
+  =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coloumb}} +
+  U_\mathrm{bonds} + U_\mathrm{angles} + 
+  U_\mathrm{dihedrals}
 \end{equation}
 The first term allows for a simulation of a fictitious fixed crystal
 arrangement, where the particles/atoms are tethered around a pre-set lattice
 site. The potential function is a harmonic spring type
 \begin{equation}
-  U_\mathrm{Lattice} =
+  U_\mathrm{lattice} =
   \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2
 \end{equation}
 where $k_0$ is the spring constant, $\mathbf{r}_i$ is the position of
 particle/atom $i$, and $\mathbf{r}_0$ is the lattice site. The default
 lattice site positions are the initial particle positions.
 
-The van der Waals pair interaction is given via the standard Lennard-Jones
-potential 
+The short ranged van der Waals pair interaction is given via the standard
+Lennard-Jones potential
 \begin{equation}
-  U_\mathrm{LJ} =  \sum_{i,j \, \mathrm{pairs}}
+  U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}}
   4\epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w
     \left(\frac{\sigma}{r_{ij}}\right)^{6}\right] \, .
 \end{equation}
@@ -224,27 +229,66 @@ Here $r_{ij}$ is the particle distance, $\epsilon$ and $\sigma$ define the
 characteristic energy and length scales. The parameter $a_w$ determines the
 weight of the attractive second term in the potential function.
 
-
+The Coulomb potential is 
 \begin{equation}
-  U_{\mathrm{Coloumb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}
+  U_{\mathrm{coloumb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}} \, .
 \end{equation}
-%  &\mbox{}& 
-%            \frac{1}{2} k_{s}(r_{ij} - l_0)^2  +
-%            \frac{1}{2} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 
-%            + \sum_{n=0}^5 c_n \cos^2(\phi)
-%            \nonumber \\ 
-%\end{eqnarray}
+This long ranged interaction is evaluated using approximative shifted-force or
+Wolf methods; this can be specified. These two implementations do not apply to
+confined systems.
 
-%\begin{description}
-%\item[Lattice]{}
-%\item[LJ]{}
-%\item[Coulomb]{}
-%\item[Bonds]{}
-%\item[Lattice]{}
-%\end{description}
+Particle bonds are model via the harmonic spring potential
+\begin{equation}
+  U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2
+\end{equation}
+$k_s$ is the spring constant and $l_0$ is the zero force bond length. Note,
+currently \textsf{molsim} does not support rigid bonds.
 
+The angle potential is the cosine squared potential
+\begin{equation}
+  U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 \, ,
+\end{equation}
+where $k_\theta$ is the force amplitude, and the zero-force angle
+$\theta_0$. See Fig. \ref{fig:diheadral} for the angle definition.
 
-\section{Molecular systems}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.7]{diheadral.pdf}
+  \caption{
+    \label{fig:dihedral}
+    sds
+  }
+  \end{center}
+\end{figure}
+
+Finally, the dihedral angle potential is the Ryckaert-Belleman potential 
+\begin{equation}
+  U_\mathrm{dihedral}=\sum_{\mathrm{dihedrals}} \sum_{n=0}^5 c_n
+  \cos^n(\pi-\phi)
+   \, . 
+\end{equation}
+Here $c_n$ are the six Ryckaert-Belleman coefficients, and $\phi$ is the
+dihedral angle, see Fig. \ref{fig:dihedral}. Two illustrative 
+examples are when $c_n = 0$ except for $n=1$:
+\begin{enumerate}
+\item If $c_1 > 0$ then the minimum energy dihedral angle is $\phi = 0$; this is
+  illustrated in the right-hand figure in Fig. \ref{fig:dihedral} with dihedral
+  defined by the 1-2-3-5 bonds. Useful for closed molecular ring structures.
+\item If $c_1 < 0$ then the minimum dihedral angle is $\phi = \pi$; this is
+  illustrated in the right-hand figure in Fig. \ref{fig:dihedral} with
+  dihedral defined by the 1-2-3-4 bonds. Useful for branched molecular
+  structures. 
+\end{enumerate}
+Below a more complex example is given.
+
+Importantly, you can have different types of particles with different charges,
+different bonds, angles, and dihedrals, all determined from the interaction
+parameters. It is thus possible to simulate mixtures, highly complex molecules,
+etc. 
+
+\section{Molecular systems: Toluene and water}
+
+\section{Dissipative particle dynamics (DPD)}
 \section{Sampling}
 \section{The two parallisation paradigms}
 
