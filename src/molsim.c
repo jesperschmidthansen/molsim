@@ -316,7 +316,8 @@ void action_calcforce(int nrhs, const mxArray **prhs){
       double sigma = mxGetScalar(prhs[4]);
       double epsilon = mxGetScalar(prhs[5]);
       double postfac = mxGetScalar(prhs[6]);
-      double param[4]={cf, sigma, epsilon, postfac};
+      
+      double param[4]={cf, epsilon, sigma, postfac};
       
       sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
 #ifdef OCTAVE
@@ -496,8 +497,8 @@ void action_print(void){
 
 void action_get(mxArray **plhs, int nrhs, const mxArray **prhs){
 
-  if ( nrhs != 2 ) inputerror(__func__);
-
+  if ( nrhs != 2 && nrhs != 3 ) inputerror(__func__);
+  
   char *specifier =  mxArrayToString(prhs[1]);
     
   // Positions

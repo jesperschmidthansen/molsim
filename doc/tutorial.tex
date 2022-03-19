@@ -284,11 +284,63 @@ Below a more complex example is given.
 Importantly, you can have different types of particles with different charges,
 different bonds, angles, and dihedrals, all determined from the interaction
 parameters. It is thus possible to simulate mixtures, highly complex molecules,
-etc. 
+etc.
 
-\section{Molecular systems: Toluene and water}
+\section{Molecular systems: Toluene}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.4]{toluene.pdf}
+  \caption{
+    \label{fig:dihedral}
+    sds
+  }
+  \end{center}
+\end{figure}
+
+\begin{verbatim}
+% Simulation parameters
+temp0 = 4.0; dens0 = 1.95;
+
+dt  = 0.001; nloops = 200000;
+
+% Intra-molecular parameters
+bondlength_0 = 0.4; bondlength_1 = 0.38; springconstant = 48910;
+
+bondangle = 2.09; angleconstant = 1173;
+
+torsionparam_0 = [0.0, 133.0, 0.0 0.0 0.0]; 
+torsionparam_1 = [0.0, -133.0, 0.0 0.0 0.0];
+
+% Load positions, set temp, remove intra-molecular pair-interaction etc
+molsim('load', 'xyz', 'start_toluene.xyz');
+molsim('load', 'top', 'start_toluene.top');
+
+molsim('set','timestep', dt);
+molsim('set', 'temperature', temp0);
+molsim('set', 'exclusion', 'molecule');
+
+% Main loop
+for n=1:nloops
+  molsim('reset')
+
+  molsim(’calcforce’, ’lj’, ’CC’, 2.5, 1.0, 1.0, 1.0);
+  
+  molsim(’calcforce’, ’bond’, 0, bondlength_0, springconstant);
+  molsim(’calcforce’, ’bond’, 1, bondlength_1, springconstant);
+  
+  molsim(’calcforce’, ’angle’, 0, bondangle, angleconstant);
+
+  molsim(’calcforce’, ’torsion’, 0, torsionparam_0);
+  molsim(’calcforce’, ’torsion’, 1, torsionparam_1);
+  
+  molsim('thermostate', 'nosehoover', 'C', temp0, 10.0);
+  molsim('integrate', 'leapfrog');
+end
+\end{verbatim}
 
 \section{Dissipative particle dynamics (DPD)}
+
 \section{Sampling}
 \section{The two parallisation paradigms}
 
