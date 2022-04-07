@@ -558,6 +558,13 @@ void action_get(mxArray **plhs, int nrhs, const mxArray **prhs){
     plhs[0] = mxCreateDoubleScalar(ret.p);
     
   }
+  // Pressure
+  else if ( strcmp("molpressure", specifier)==0 ){
+
+    sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
+    plhs[0] = mxCreateDoubleScalar(ret.p_mol);
+    
+  }
   // Number of particles 
   else if ( strcmp("numbpart", specifier)==0 ){
       

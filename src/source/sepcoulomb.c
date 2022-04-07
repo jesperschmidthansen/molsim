@@ -236,7 +236,8 @@ void sep_coulomb_wolf(seppart *ptr, double alpha, double cf, sepsys *sys,
 }		
 
 
-void sep_coulomb_wolf_brute(seppart *ptr, double alpha, double rcf, sepsys *sys, sepret *ret, unsigned opt) {
+void sep_coulomb_wolf_brute(seppart *ptr, double alpha, double rcf, sepsys *sys,
+			    sepret *ret, unsigned opt) {
   double rij2, f[3], fij, rij[3], ecoul;
   const double rcf2 = rcf*rcf, 
     fac = 2*alpha/sqrt(SEP_PI), alpha2=alpha*alpha, 

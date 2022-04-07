@@ -942,36 +942,35 @@ void sep_berendsen_mol(sepatom *ptr, sepmol *mol, double Pd,
 
 void sep_compress_box(sepatom *ptr, double rhoD, double xi, sepsys *sys){
 
+  const double density = sys->npart/sys->volume; 
 
-  if ( sys->npart/sys->volume < rhoD ){ 
- 
-    for ( int k=0; k<3; k++){
-      sys->length[k] *= xi;
-      if  ( sys->length[k] < sys->cf*2.0 )
-	sep_warning("%s at %d: Box length too small compared to the maximum cut-off", 
-		    __func__, __LINE__);
-    }
-
-    for ( int n=0; n<sys->npart; n++ )
-      for ( int k=0; k<3; k++ ) ptr[n].x[k] *= xi;
+  if ( fabs(density - rhoD) < 1e-5 ) return; // ACHTUNG
+  
+  if ( density > rhoD ) xi = 1.0/xi;
     
-    // Need to update the sub boxes
-    if ( sys->neighb_update != 0 ){
-
-      for ( int k=0; k<3; k++ ){
-	sys->nsubbox[k] = sep_nsubbox(sys->cf, sys->skin, sys->length[k]);
-	if ( sys->nsubbox[k] < 3 ) 
-	  sep_warning("%s at %d: Number of subboxes in x direction are less than three", 
-		      __func__, __LINE__);
-	sys->lsubbox[k] = sys->length[k]/sys->nsubbox[k];
-      }
-
-      
-    }
-    
-    sys->volume = sys->length[0]*sys->length[1]*sys->length[2];
-
+  for ( int k=0; k<3; k++){
+    sys->length[k] *= xi;
+    if  ( sys->length[k] < sys->cf*2.0 )
+      sep_warning("%s at %d: Box length too small compared to the maximum cut-off", 
+		  __func__, __LINE__);
   }
+
+  for ( int n=0; n<sys->npart; n++ )
+    for ( int k=0; k<3; k++ ) ptr[n].x[k] *= xi;
+    
+  // Need to update the sub boxes
+  if ( sys->neighb_update != 0 ){
+
+    for ( int k=0; k<3; k++ ){
+      sys->nsubbox[k] = sep_nsubbox(sys->cf, sys->skin, sys->length[k]);
+      if ( sys->nsubbox[k] < 3 ) 
+	sep_warning("%s at %d: Number of subboxes in x direction are less than three", 
+		    __func__, __LINE__);
+      sys->lsubbox[k] = sys->length[k]/sys->nsubbox[k];
+    }
+  }
+    
+  sys->volume = sys->length[0]*sys->length[1]*sys->length[2];
 
 }
 

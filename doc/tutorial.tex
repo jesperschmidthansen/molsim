@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 
- 
+\usepackage{color} 
 \usepackage{graphics}
 \usepackage{graphicx}
 \usepackage{pstricks}
@@ -46,6 +46,10 @@ symbolises the GNU Octave/Matlab command prompt. This
 $ 
 \end{verbatim}
 symbolises the shell prompt.
+
+\bigskip
+\noindent Example scripts to simulate different systems can be found under the
+package \textsf{tests} directory.
 
 \section{Installation}
 \subsection{GNU Octave}
@@ -101,6 +105,16 @@ Depending on the system this will build a \textsf{molsim.mex<archtype>}
 file. You can copy this file to a directory in your Matlab search path.
 
 \section{First quick example: The Lennard-Jones liquid}
+In general, the \verb!molsim! interface is on the form
+\begin{verbatim}
+molsim(<action>, <specifier>, <arguments>);
+\end{verbatim}
+where the action can be any particular action the user wishes to perform, for
+example, \verb!get!, \verb!calcforce!, \verb!load!, and so on. The action is
+further specified by the second argumen; say \verb!lj! specifies that action
+\verb!calcforce! should apply the pair-wise Lennard-Jones force. The specifier
+arguments are given as the final input.
+
 Listing 1 shows the simplest script simulating a standard Lennard-Jones (LJ)
 system in the micro-canonical ensemble where number of particles, volume, and
 total energy is conserved. 
@@ -139,8 +153,8 @@ molsim('clear');
 \end{verbatim}
 ---
 
-\noindent Listing 1 is not very useful as no information is printed or saved. Inside the
-main loop you can add the command
+\noindent In Listing 1 information is printed or saved. Inside the main loop you
+can add the command
 \begin{verbatim}
 if rem(n,100)==0
   molsim('print');
@@ -161,17 +175,6 @@ and particle positions and velocities
 x = molsim('get', 'positions');
 v = molsim('get', 'velocities');
 \end{verbatim}
-
-\bigskip
-
-\noindent In general, the \verb!molsim! interface is on the form
-\begin{verbatim}
-molsim(ACTION, SPECIFIER, ARGUMENTS);
-\end{verbatim}
-where the action can be \verb!get!, \verb!calcforce!, and so on, the specifier
-is a specification for the action, eg., \verb!lj! specifýing that the force is a
-pair-wise Lennard-Jones force, and arguments are the arguments for the
-specifier.
 
 \subsection{NVT and NPT simulations}
 Often you will not perform simulations in the microcanonical ensemble, but under
@@ -205,7 +208,7 @@ the potential functional form
   U(\mathbf{r}_i, r_{ij}, \ldots)
   =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coloumb}} +
   U_\mathrm{bonds} + U_\mathrm{angles} + 
-  U_\mathrm{dihedrals}
+  U_\mathrm{torsion}
 \end{equation}
 The first term allows for a simulation of a fictitious fixed crystal
 arrangement, where the particles/atoms are tethered around a pre-set lattice
@@ -242,79 +245,110 @@ Particle bonds are model via the harmonic spring potential
   U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2
 \end{equation}
 $k_s$ is the spring constant and $l_0$ is the zero force bond length. Note,
-currently \textsf{molsim} does not support rigid bonds.
+currently \textsf{molsim} does not support rigid bonds. 
 
 The angle potential is the cosine squared potential
 \begin{equation}
   U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 \, ,
 \end{equation}
 where $k_\theta$ is the force amplitude, and the zero-force angle
-$\theta_0$. See Fig. \ref{fig:diheadral} for the angle definition.
+$\theta_0$. See Fig. \ref{fig:torsion} for the angle definition.
 
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=.7]{diheadral.pdf}
   \caption{
-    \label{fig:dihedral}
-    sds
+    \label{fig:torsion}
+    Illustration of the angle and torsion angle.
   }
   \end{center}
 \end{figure}
 
-Finally, the dihedral angle potential is the Ryckaert-Belleman potential 
+Finally, the torsion angle potential is the Ryckaert-Belleman potential 
 \begin{equation}
   U_\mathrm{dihedral}=\sum_{\mathrm{dihedrals}} \sum_{n=0}^5 c_n
   \cos^n(\pi-\phi)
    \, . 
 \end{equation}
 Here $c_n$ are the six Ryckaert-Belleman coefficients, and $\phi$ is the
-dihedral angle, see Fig. \ref{fig:dihedral}. Two illustrative 
+torsion angle, see Fig. \ref{fig:torsion}. Two illustrative 
 examples are when $c_n = 0$ except for $n=1$:
 \begin{enumerate}
-\item If $c_1 > 0$ then the minimum energy dihedral angle is $\phi = 0$; this is
-  illustrated in the right-hand figure in Fig. \ref{fig:dihedral} with dihedral
-  defined by the 1-2-3-5 bonds. Useful for closed molecular ring structures.
-\item If $c_1 < 0$ then the minimum dihedral angle is $\phi = \pi$; this is
-  illustrated in the right-hand figure in Fig. \ref{fig:dihedral} with
-  dihedral defined by the 1-2-3-4 bonds. Useful for branched molecular
+\item If $c_1 > 0$ then the minimum energy torsion angle is $\phi = 0$; this is
+  illustrated in the right-hand figure in Fig. \ref{fig:torsion} with torsion
+  angle defined by the 1-2-3-5 bonds. Useful for closed molecular ring
+  structures.
+\item If $c_1 < 0$ then the minimum torsion angle is $\phi = \pi$; this is
+  illustrated in the right-hand figure in Fig. \ref{fig:torsion} with
+  torsion defined by the 1-2-3-4 bonds. Useful for branched molecular
   structures. 
 \end{enumerate}
 Below a more complex example is given.
 
 Importantly, you can have different types of particles with different charges,
-different bonds, angles, and dihedrals, all determined from the interaction
+different bonds, angles, and torsion angles, all determined from the interaction
 parameters. It is thus possible to simulate mixtures, highly complex molecules,
 etc.
 
 \section{Molecular systems: Toluene}
-
+This example shows how to setup a simulation of model liquid toluene. The model
+of the molecule is a united atomic unit (UAU) model. This means that each carbon
+group is represented by a single Lennard-Jones particle, thus, the toluene
+molecule is composed of seven Lennard-Jones particles, six forming the phenyl
+ring structure (index 2-7) and one representing the -CH$_3$ group (index 1), see
+Fig. \ref{fig:toluene}.
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=.4]{toluene.pdf}
   \caption{
-    \label{fig:dihedral}
-    sds
+    \label{fig:toluene}
+    United atomic unit representation of toluene.
   }
   \end{center}
 \end{figure}
 
+The intra-molecular interactions are given through bond, angle, and torsion
+angle potentials; Lennard-Jones interactions between carbon groups in same
+molecule are excluded. The model is further simplifed by using only two bonds
+and one angle interaction. There are two different torsion angles, eg., 1-2-3-4
+form one type of torsion angle, $\phi=\pi$, whereas 7-2-3-4 is an example of the
+other torsion angle with $\phi=0$. We define the molecular model in two files;
+one with extension \verb!.xyz! giving UAU positions for the molecule and one with
+extension \verb!.top! defining bonds and angles in the molecule. You can find
+examples of these two files for different molecules under the \verb!resources!
+directory. To setup the entire system (i.e. the ensemble of molecules) we copy the
+single molecule \verb!.xyz! and \verb!.top! to the current directory and use the
+\verb!set! action; for example to simulate 500 molecules
+\begin{verbatim}
+>> molsim('set', 'molconfig', 'toluene.xyz', 'toluene.top', ... 
+   500, 0.05, 42)
+\end{verbatim}
+The two last arguments are the molecular number density (keep very low initially
+and compress the system afterwards), and a seed for the random number
+generator. This generates a system \verb!start.xyz! file and \verb!start.top!
+file. 
+
+We now only need the parameter values for the interaction potentials and we will
+simply take what is available in the literature and convert them into MD reduced
+units. Listing 2 shows the resulting script
+
+\bigskip
+
+\noindent \textbf{Listing 2}
 \begin{verbatim}
 % Simulation parameters
-temp0 = 4.0; dens0 = 1.95;
-
-dt  = 0.001; nloops = 200000;
+temp0 = 4.0; dens0 = 1.95; dt  = 0.001; nloops = 200000;
 
 % Intra-molecular parameters
 bondlength_0 = 0.4; bondlength_1 = 0.38; springconstant = 48910;
-
 bondangle = 2.09; angleconstant = 1173;
 
 torsionparam_0 = [0.0, 133.0, 0.0 0.0 0.0]; 
 torsionparam_1 = [0.0, -133.0, 0.0 0.0 0.0];
 
 % Load positions, set temp, remove intra-molecular pair-interaction etc
-molsim('load', 'xyz', 'start_toluene.xyz');
-molsim('load', 'top', 'start_toluene.top');
+molsim('load', 'xyz', 'start.xyz');
+molsim('load', 'top', 'start.top');
 
 molsim('set','timestep', dt);
 molsim('set', 'temperature', temp0);
@@ -336,12 +370,77 @@ for n=1:nloops
   
   molsim('thermostate', 'nosehoover', 'C', temp0, 10.0);
   molsim('integrate', 'leapfrog');
+
+  molsim('compress', dens0);
+
 end
 \end{verbatim}
 
-\section{Dissipative particle dynamics (DPD)}
+\noindent ---
+
+\noindent Note, the bond and angle types are specified through the third
+argument.  
 
 \section{Sampling}
-\section{The two parallisation paradigms}
+The user can access the system configuration through the \verb!get! action and
+from this perform data analysis via GNU Octave's or Matlab's built-in
+tools. \textsf{molsim} also offers some runtime data sampling. The different
+samplers can be initialised before the main loop using the \verb!sample! action
+\begin{verbatim}
+molsim('sample', <sample specifier>, <arguments>);
+\end{verbatim}
+For example, to sample the stress autocorrelation function with 200 sample points
+and over a sample time span window of 5.0 we write
+\begin{verbatim}
+molsim('sample', 'sacf', 200, 5.0);
+\end{verbatim}
+The actual sampling is carried out by the specifier \verb!do!, and in the main
+loop there must be the call
+\begin{verbatim}
+molsim('sample', 'do'); 
+\end{verbatim}
+Typically this call is done just after the integration call. Check the reference
+sheet for the list of available samplers. 
 
+\section{The two parallisation paradigms}
+\begin{itemize}
+\item Loop parallisation
+\item Force-block parallisation
+\end{itemize}
+
+\appendix
+
+\clearpage
+\begin{center}
+  
+  \begin{tabular}{cclclcccc}
+    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!load! && \verb!xyz! && file name && \\
+    $\mbox{}$ && \verb!top! && file name && \\
+                                   && && && \\
+    \hline
+    && && && \\
+    \verb!save! &&  && 1: type names && \\
+                &&  && 2: file name && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!set! && \verb!timestep! && time step (0.005) && \\
+    $\mbox{}$  && \verb!temperature! && temperature (1.0) && \\
+    $\mbox{}$  && \verb!cutoff! && Max. cut-off (2.5) && \\
+    $\mbox{}$  && \verb!omp! && No. of threads && \\
+    $\mbox{}$ && \verb!exclusion! && 'bonded' or 'molecule' && \\
+    $\mbox{}$ && \verb!temperaturerelax! && relaxation time (0.01) && \\
+    $\mbox{}$ && \verb!compressionfactor! && compress factor && \\
+    $\mbox{}$ && \verb!types! && particles types (vector string) && \\
+    $\mbox{}$ && \verb!skin! && buffer-skin neighblist && \\
+    $\mbox{}$ && \verb!charges! && atom charges (vector) && \\
+    $\mbox{}$ && \verb!lattice! && 1: array $N_x , N_y , N_z$ && \\
+    $\mbox{}$ && $\mbox{}$      && 2: array $L_x, L_y, L_z$ && \\
+  \end{tabular}
+
+\end{center}
 \end{document}
