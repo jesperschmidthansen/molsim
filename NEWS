@@ -8,15 +8,13 @@ With this release: Wrapper for large part of the seplib functionality.
 Allows simulations of
 
   * Standard Lennard-Jones systems
-  * Molecular systems (bonds, angle, dihedrals)
+  * Molecular systems (bonds, angle, torsion angle)
   * Charged systems using the shifted force and Wolf methods 
   * Confined systems (eg slit-pores)
   * Thermostats
   * DPD simulations
   * Run-time sampling 
   * Simple setup
-
-See 'molsim.pdf' reference quick sheet (installed in package directory under doc/).
 
 molsim-0.9.1
 ------------
@@ -28,7 +26,8 @@ molsim-0.9.2
 ------------
 
   * Barostat implementet
-  * First version of a tutorial  
+  * First version of tutorial  
   * Bug fixes
+  * More example scripts/functions
 
 

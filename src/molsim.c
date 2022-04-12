@@ -460,9 +460,7 @@ void action_thermostate(int nrhs, const mxArray **prhs){
 void action_barostate(int nrhs, const mxArray **prhs){
   
     if ( nrhs != 4 ) inputerror(__func__);
-
-    // Only relax is supported and ignored right now
-    
+        
     double Pd = mxGetScalar(prhs[2]);
     double beta =  mxGetScalar(prhs[3]);
 

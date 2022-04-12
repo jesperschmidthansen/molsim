@@ -194,11 +194,12 @@ the integration step,
 \begin{verbatim}
 molsim('barostate', 'relax', 0.9, 0.01);
 \end{verbatim}
-The choice of relaxation parameter is again a matter of the system. You can use
-the two relaxation actions in the same simulation mimicking an NPT system. The
+The choice of relaxation parameter is again a matter of the system. The
 barostate works by changing the system box length in the $z$-direction only
 (an-isotropic scaling); this is practical when doing sampling as two directions
-are fixed.
+are fixed. You can use the barostate and the thermostate relaxation actions in
+the same simulation mimicking an NPT system.
+
 
 \section{The \textsf{molsim} force field}
 \textsf{molsim} supports simulations of confined, charged, and molecular
@@ -403,10 +404,22 @@ Typically this call is done just after the integration call. Check the reference
 sheet for the list of available samplers. 
 
 \section{The two parallisation paradigms}
+\textsf{molsim} offers two types of sheared memory parallisation methods,
+namely,  
 \begin{itemize}
-\item Loop parallisation
-\item Force-block parallisation
+\item Loop parallisation n in force calculations
+\item Task-block parallisation
 \end{itemize}
+To use the first method simply use the \verb!set! action
+\begin{verbatim}
+molsim('set', 'omp', <nthreads>);
+\end{verbatim}
+where \verb!nthreads! is the number of threads you will use. The call is placed
+anywhere before the main loop. Be aware that depending on your hardware and the
+particular system the parallelisation efficiency quickly drop as function of
+number of threads. Fig. \ref{fig:bench} shows an example of a benchmark for a
+simple Lennard-Jones system.  
+
 
 \appendix
 

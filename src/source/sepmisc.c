@@ -868,16 +868,14 @@ int sep_hs_coll(int *ip, int *jp, double *tc,  seppart *ptr, sepsys *sys){
 
 
 void sep_berendsen(sepatom *ptr, double Pd, double beta, sepret *ret, sepsys *sys){
-
-
-  sep_pressure_tensor(ret, sys);
   
+  sep_pressure_tensor(ret, sys);
+
   double xi = 1 - beta*sys->dt*(Pd - ret->p);
   sys->length[2] *= xi;
 
   double scale = pow(xi, 1.0/3.0); 
-  for ( int n=0; n<sys->npart; n++ )
-    ptr[n].x[2] *= scale;
+  for ( int n=0; n<sys->npart; n++ ) ptr[n].x[2] *= scale;
   
   sys->volume = sys->length[0]*sys->length[1]*sys->length[2];
   
@@ -889,6 +887,37 @@ void sep_berendsen(sepatom *ptr, double Pd, double beta, sepret *ret, sepsys *sy
 		  __func__, __LINE__);
    
     sys->lsubbox[2] = sys->length[2]/sys->nsubbox[2];
+  }
+
+}
+	
+
+
+void sep_berendsen_iso(sepatom *ptr, double Pd, double beta, sepret *ret, sepsys *sys){
+
+
+  sep_pressure_tensor(ret, sys);
+  
+  double xi = 1 - beta*sys->dt*(Pd - ret->p);
+
+  for ( int k=0; k<3; k++ ) sys->length[k] *= xi;
+
+  double scale = pow(xi, 1.0/3.0); 
+  for ( int n=0; n<sys->npart; n++ )
+    for ( int k=0; k<3; k++ ) ptr[n].x[k] *= scale;
+  
+  sys->volume = sys->length[0]*sys->length[1]*sys->length[2];
+  
+  // Need to update the sub boxes
+  if ( sys->neighb_update != 0 ){
+    for ( int k=0; k<3; k++ ){
+      sys->nsubbox[k] = sep_nsubbox(sys->cf, 0.0, sys->length[k]);
+      if ( sys->nsubbox[k] < 3 ) 
+	sep_warning("%s at %d: Number of subboxes in x direction are less than three",
+		    __func__, __LINE__);
+   
+      sys->lsubbox[k] = sys->length[k]/sys->nsubbox[k];
+    }
   }
   
 }	
@@ -944,7 +973,7 @@ void sep_compress_box(sepatom *ptr, double rhoD, double xi, sepsys *sys){
 
   const double density = sys->npart/sys->volume; 
 
-  if ( fabs(density - rhoD) < 1e-5 ) return; // ACHTUNG
+  if ( fabs(density - rhoD) < 1e-6 ) return; // ACHTUNG
   
   if ( density > rhoD ) xi = 1.0/xi;
     
