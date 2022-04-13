@@ -459,12 +459,15 @@ void action_thermostate(int nrhs, const mxArray **prhs){
 
 void action_barostate(int nrhs, const mxArray **prhs){
   
-    if ( nrhs != 4 ) inputerror(__func__);
+    if ( nrhs != 4 && nrhs != 5 ) inputerror(__func__);
         
     double Pd = mxGetScalar(prhs[2]);
     double beta =  mxGetScalar(prhs[3]);
 
-    sep_berendsen(atoms, Pd, beta, &ret, &sys);
+    if ( nrhs == 4 )
+      sep_berendsen(atoms, Pd, beta, &ret, &sys);
+    else if ( nrhs == 5 )
+      sep_berendsen_iso(atoms, Pd, beta, &ret, &sys);
 }
 
 
