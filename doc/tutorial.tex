@@ -4,10 +4,15 @@
 \usepackage{graphics}
 \usepackage{graphicx}
 \usepackage{pstricks}
+\usepackage{listings}% http://ctan.org/pkg/listings
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
 
-\title{\textsf{molsim} tutorial}
+\title{\textsf{molsim} tutorial \\ \bigskip \tiny{for the v. 0.9 series}}
 \author{J.S. Hansen}
-\date{Februaray 2022, v. 0.9}
+\date{Februaray 2022}
   
 \begin{document}
 
@@ -15,8 +20,8 @@
 
 \section{Introduction}
 
-\textsf{molsim} is a GNU Octave/Matlab toolbox for molecular dynamics simulation
-library. \textsf{molsim} supports simulations of
+\textsf{molsim} is a GNU Octave/Matlab toolbox for molecular dynamics
+simulations. \textsf{molsim} supports simulations of
 \begin{itemize}
 \item standard Lennard-Jones systems,
 \item molecular systems with bond, angle, and torsion potentials, 
@@ -25,31 +30,33 @@ library. \textsf{molsim} supports simulations of
 \item dissipative particle dynamics systems,
 \item and more \ldots
 \end{itemize}
-The package also supports a series of run-time sampling functionalities.
 
 \bigskip
 \noindent \textsf{molsim} is basically a wrapper for the \textsf{seplib}
 library, which is a light-weight flexible molecular dynamics simulation library
-written in ISO-C99. The library is CPU-based and offers shared memory
-parallisation; this parallisaton is supported by the \textsf{molsim}
-package. The algorithms used in \textsf{seplib} is based on the books by Allen
-\& Tildesley, Rapaport, Frenkel \& Smith, and R. Sadus, see
-Ref. \cite{seplib:books}.
+written in ISO-C99. \textsf{seplib} is CPU-based and offers shared memory
+parallization; this parallizaton is supported by
+\textsf{molsim}. \textsf{seplib} is also developed and maintained by this
+author, and the underlying algorithms are based on the books by Allen and 
+Tildesley \cite{AllenTildesley}, Rapaport \cite{Rapaport}, Frenkel and Smit
+\cite{FrenkelSmit}, and R. Sadus \cite{Sadus}.
 
 \bigskip
 \noindent In this text
 \begin{verbatim}
 >> 
 \end{verbatim}
-symbolises the GNU Octave/Matlab command prompt. This 
+symbolizes the GNU Octave/Matlab command prompt. This 
 \begin{verbatim}
 $ 
 \end{verbatim}
-symbolises the shell prompt.
+symbolizes the shell prompt.
 
 \bigskip
-\noindent Example scripts to simulate different systems can be found under the
-package \textsf{tests} directory.
+\noindent Example scripts and functions to simulate different systems can be
+found under the package \textsf{tests} directory. It is highly recommended that
+the user's project starts from one of these \textsf{.m}-files, and the user
+then makes the necessary changes.  
 
 \section{Installation}
 \subsection{GNU Octave}
@@ -97,27 +104,64 @@ To build the \textsf{mex}-file enter Matlab
 \begin{verbatim}
 $ matlab -nodesktop
 \end{verbatim}
-Then build the 
+and run the script \verb!buildmex!
 \begin{verbatim}
 >> buildmex
 \end{verbatim}
 Depending on the system this will build a \textsf{molsim.mex<archtype>}
 file. You can copy this file to a directory in your Matlab search path.
 
-\section{First quick example: The Lennard-Jones liquid}
-In general, the \verb!molsim! interface is on the form
+\bigskip
+
+\noindent Note: Matlab compatibility is not guarantied. \textsf{molsim} will
+only be tested against very limited Matlab versions.
+
+\section{The basic interface strategy}
+This tutorial is not meant to introduce molecular dynamics; such introduction
+can be found in the books listed in the reference list. In brief, the basic idea
+is to solve the classical equation of motion of an ensemble of interacting
+particles. In the simplest form this means solving (numerically) Newton's second
+law
+\begin{equation}
+  \frac{\mathrm{d}\mathbf{r}_i}{\mathrm{d} t} = \mathbf{v}_i \ , \ \
+  \frac{\mathrm{d}\mathbf{p}_i}{\mathrm{d} t} = \mathbf{f}_i
+\end{equation}
+where $\mathbf{r}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the particle position,
+momentum and force acting on the particle, respectively. In a standard
+simulation we solve this set of (non-linear) differential equations by (i)
+evaluating the forces, and (ii) from this integrate forward in time. The
+following pseudo code lists the basic idea
+
+\bigskip
+
+\noindent \textbf{Listing 0}
+\begin{lstlisting}
+Set simulation parameters
+Set initial configuration $\mathbf{r}, \mathbf{p}$
+
+do (as many times we want)
+   $\mathbf{f}$ $\leftarrow$ calcforce($\mathbf{r}$)
+   $\mathbf{r},\mathbf{p}$ $\leftarrow$ integrate($\mathbf{f}$,$\mathbf{p}$)
+done
+\end{lstlisting}
+---
+
+\noindent The \textsf{molsim} interface seeks to emulate this basic idea, and at
+the same time give the user coding flexibility and accessibility to the
+simulation quantities. In general, the \verb!molsim! interface is on the form
 \begin{verbatim}
 molsim(<action>, <specifier>, <arguments>);
 \end{verbatim}
-where the action can be any particular action the user wishes to perform, for
-example, \verb!get!, \verb!calcforce!, \verb!load!, and so on. The action is
-further specified by the second argumen; say \verb!lj! specifies that action
-\verb!calcforce! should apply the pair-wise Lennard-Jones force. The specifier
-arguments are given as the final input.
+The action can be any particular action the user wishes to perform, for example,
+\verb!calcforce!, \verb!integrate!, and so on. The action is specified by the
+second argument; say, \verb!lj! specifies that action \verb!calcforce! should
+apply the Lennard-Jones interaction. The specifier arguments are given in the
+final input and can be a single number, string, vector, or a sequence of these.
 
-Listing 1 shows the simplest script simulating a standard Lennard-Jones (LJ)
-system in the micro-canonical ensemble where number of particles, volume, and
-total energy is conserved. 
+\section{First quick example: The Lennard-Jones liquid}
+Listing 1 shows a script simulating a standard Lennard-Jones (LJ) system in the
+micro-canonical ensemble, where number of particles, volume, and total energy is
+conserved.
 
 \bigskip
 
@@ -137,7 +181,7 @@ molsim('load', 'xyz', 'start.xyz');
 % Main mol. simulation loop - 10 thousand time steps
 for n=1:10000
 
-  % Reset everything
+  % Reset forces etc
   molsim('reset');
 
   % Calculate force between particles of type A (default type)
@@ -153,8 +197,8 @@ molsim('clear');
 \end{verbatim}
 ---
 
-\noindent In Listing 1 information is printed or saved. Inside the main loop you
-can add the command
+\noindent In Listing 1 no information is printed or saved, and admitted not very
+useful. Inside the main loop the user can call the \textsf{print}-action
 \begin{verbatim}
 if rem(n,100)==0
   molsim('print');
@@ -177,40 +221,48 @@ v = molsim('get', 'velocities');
 \end{verbatim}
 
 \subsection{NVT and NPT simulations}
-Often you will not perform simulations in the microcanonical ensemble, but under
+Often you will not perform simulations in the micro-canonical ensemble, but under
 a desired temperature and/or pressure. One way to achieve this with
 \verb!molsim! is to use simple relaxation algorithms. To simulate at
 temperature, say 2.2, you call the action \verb!'thermostate'! with specifier
 \verb!'relax'! after the integration step
 \begin{verbatim}
-molsim('thermostate', 'relax', 2.2, 0.01);
+molsim('thermostate', 'relax', 'A', 2.2, 0.01);
 \end{verbatim}
 The last argument is the relaxation parameter; the higher value the faster
 relaxation. Notice that too large values makes the system unrealistically
-stiff. The best value is optimed via trail-and-error.
+stiff; the best value is optimized via trail-and-error. There is also a
+Nos\'{e}-Hoover thermostate available with the interface
+\begin{verbatim}
+molsim('thermostate', 'nosehoover','A' ,2.2, 10.0);
+\end{verbatim}
+The last argument is here the thermostat mass and not the relaxation
+time. Again, you should choose this parameter with care.
 
 To simulate at pressure, say 0.9, you call the action \verb!'barostate'! after
 the integration step,
 \begin{verbatim}
-molsim('barostate', 'relax', 0.9, 0.01);
+molsim('barostate', 'relax', 0.9, 0.01, 'iso');
 \end{verbatim}
-The choice of relaxation parameter is again a matter of the system. The
-barostate works by changing the system box length in the $z$-direction only
-(an-isotropic scaling); this is practical when doing sampling as two directions
-are fixed. You can use the barostate and the thermostate relaxation actions in
-the same simulation mimicking an NPT system.
+The choice of relaxation parameter, here 0.01, is again a matter of the specific
+system. The last argument tells the barostate to do an isotropic compression. If
+this is left out the barostate works by changing the system box length in the
+$z$-direction only (an-isotropic scaling); this is practical when doing sampling
+as two directions are fixed. You can use the barostate and the thermostate
+in the same simulation mimicking an NPT system.
 
 
 \section{The \textsf{molsim} force field}
 \textsf{molsim} supports simulations of confined, charged, and molecular
-systems. In general, the interaction \textsf{molsim} force field is defined from
-the potential functional form
+systems. In general, the \textsf{molsim} force field is defined from the
+potential function
 \begin{equation}
   U(\mathbf{r}_i, r_{ij}, \ldots)
   =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coloumb}} +
   U_\mathrm{bonds} + U_\mathrm{angles} + 
   U_\mathrm{torsion}
 \end{equation}
+
 The first term allows for a simulation of a fictitious fixed crystal
 arrangement, where the particles/atoms are tethered around a pre-set lattice
 site. The potential function is a harmonic spring type
@@ -219,8 +271,9 @@ site. The potential function is a harmonic spring type
   \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2
 \end{equation}
 where $k_0$ is the spring constant, $\mathbf{r}_i$ is the position of
-particle/atom $i$, and $\mathbf{r}_0$ is the lattice site. The default
-lattice site positions are the initial particle positions.
+particle/atom $i$, and $\mathbf{r}_0$ is the lattice site. Using this requires
+that the crystal sites are set: use \textsf{molsim('set', 'virtualsites');} to
+set the current positions as crystal sites. 
 
 The short ranged van der Waals pair interaction is given via the standard
 Lennard-Jones potential
@@ -237,23 +290,23 @@ The Coulomb potential is
 \begin{equation}
   U_{\mathrm{coloumb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}} \, .
 \end{equation}
-This long ranged interaction is evaluated using approximative shifted-force or
-Wolf methods; this can be specified. These two implementations do not apply to
-confined systems.
+Currently this long ranged interaction is evaluated using approximate
+shifted-force or Wolf methods; this can be specified. Note: these two
+algorithms do not apply to confined systems.
 
-Particle bonds are model via the harmonic spring potential
+Bonds are model via the harmonic spring potential
 \begin{equation}
   U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2
 \end{equation}
-$k_s$ is the spring constant and $l_0$ is the zero force bond length. Note,
-currently \textsf{molsim} does not support rigid bonds. 
+$k_s$ is the spring constant and $l_0$ is the zero force bond length. 
+Currently \textsf{molsim} does not support rigid bonds. 
 
 The angle potential is the cosine squared potential
 \begin{equation}
   U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 \, ,
 \end{equation}
-where $k_\theta$ is the force amplitude, and the zero-force angle
-$\theta_0$. See Fig. \ref{fig:torsion} for the angle definition.
+where $k_\theta$ is the force amplitude, and $\theta_0$ the zero-force
+angle. See Fig. \ref{fig:torsion} for the angle definition.
 
 \begin{figure}[h]
   \begin{center}
@@ -273,31 +326,26 @@ Finally, the torsion angle potential is the Ryckaert-Belleman potential
 \end{equation}
 Here $c_n$ are the six Ryckaert-Belleman coefficients, and $\phi$ is the
 torsion angle, see Fig. \ref{fig:torsion}. Two illustrative 
-examples are when $c_n = 0$ except for $n=1$:
+examples are when only $c_1 \neq 0$:
 \begin{enumerate}
 \item If $c_1 > 0$ then the minimum energy torsion angle is $\phi = 0$; this is
-  illustrated in the right-hand figure in Fig. \ref{fig:torsion} with torsion
-  angle defined by the 1-2-3-5 bonds. Useful for closed molecular ring
-  structures.
-\item If $c_1 < 0$ then the minimum torsion angle is $\phi = \pi$; this is
-  illustrated in the right-hand figure in Fig. \ref{fig:torsion} with
-  torsion defined by the 1-2-3-4 bonds. Useful for branched molecular
-  structures. 
+  illustrated in the right-hand figure of a planar molecule with the torsion
+  angle defined by the 1-2-3-5 bonds. 
+\item If $c_1 < 0$ then the minimum energy torsion angle is $\phi = \pi$; this
+  is the torsion angle defined by the 1-2-3-4 bonds. 
 \end{enumerate}
-Below a more complex example is given.
 
 Importantly, you can have different types of particles with different charges,
-different bonds, angles, and torsion angles, all determined from the interaction
-parameters. It is thus possible to simulate mixtures, highly complex molecules,
-etc.
+different bonds, angles, and torsion angles. It is thus possible to simulate
+mixtures, highly complex molecules, etc.
 
 \section{Molecular systems: Toluene}
 This example shows how to setup a simulation of model liquid toluene. The model
-of the molecule is a united atomic unit (UAU) model. This means that each carbon
-group is represented by a single Lennard-Jones particle, thus, the toluene
-molecule is composed of seven Lennard-Jones particles, six forming the phenyl
-ring structure (index 2-7) and one representing the -CH$_3$ group (index 1), see
-Fig. \ref{fig:toluene}.
+of the molecule is a so-called united atomic unit (UAU) model. This means that
+each carbon group is represented by a single Lennard-Jones particle, thus, the
+toluene molecule is composed of seven Lennard-Jones particles, six forming the
+phenyl ring structure (particle indices 2-7) and one representing the methyl
+group (index 1), see Fig. \ref{fig:toluene}.
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=.4]{toluene.pdf}
@@ -308,18 +356,19 @@ Fig. \ref{fig:toluene}.
   \end{center}
 \end{figure}
 
-The intra-molecular interactions are given through bond, angle, and torsion
-angle potentials; Lennard-Jones interactions between carbon groups in same
-molecule are excluded. The model is further simplifed by using only two bonds
-and one angle interaction. There are two different torsion angles, eg., 1-2-3-4
-form one type of torsion angle, $\phi=\pi$, whereas 7-2-3-4 is an example of the
-other torsion angle with $\phi=0$. We define the molecular model in two files;
-one with extension \verb!.xyz! giving UAU positions for the molecule and one with
-extension \verb!.top! defining bonds and angles in the molecule. You can find
-examples of these two files for different molecules under the \verb!resources!
-directory. To setup the entire system (i.e. the ensemble of molecules) we copy the
-single molecule \verb!.xyz! and \verb!.top! to the current directory and use the
-\verb!set! action; for example to simulate 500 molecules
+To define the molecule geometry (or topology) we need different intra-molecular
+interactions, i.e., bond, angle, and torsion angle potentials. Lennard-Jones
+interactions between carbon groups in same molecule are excluded. The model is
+further simplified by using only two different bond types and one angle
+type. There are two different torsion angles, eg., 1-2-3-4 form one type of
+torsion angle, $\phi=\pi$, whereas 7-2-3-4 form torsion angle with $\phi=0$. We
+define the molecular model in two files; one with extension \verb!.xyz! giving
+the carbon groups' positions for one molecule and one with extension \verb!.top!
+defining bonds and angles in the molecule. You can find examples of these two
+files for different molecules under the \verb!resources!  directory. To setup
+the entire system (i.e. the ensemble of molecules) we copy the single molecule
+\verb!.xyz!  and \verb!.top! to the current directory and use the \verb!set!
+action; for example to simulate 500 molecules 
 \begin{verbatim}
 >> molsim('set', 'molconfig', 'toluene.xyz', 'toluene.top', ... 
    500, 0.05, 42)
@@ -327,18 +376,21 @@ single molecule \verb!.xyz! and \verb!.top! to the current directory and use the
 The two last arguments are the molecular number density (keep very low initially
 and compress the system afterwards), and a seed for the random number
 generator. This generates a system \verb!start.xyz! file and \verb!start.top!
-file. 
+file that can be loaded. 
+
+We exclude the molecular dipole moment, i.e., we do not apply any charges to the
+system. 
 
 We now only need the parameter values for the interaction potentials and we will
-simply take what is available in the literature and convert them into MD reduced
-units. Listing 2 shows the resulting script
+simply take what is available in the literature \cite{Hansen} and convert them
+into MD reduced units. Listing 2 shows the resulting script
 
 \bigskip
 
 \noindent \textbf{Listing 2}
 \begin{verbatim}
 % Simulation parameters
-temp0 = 4.0; dens0 = 1.95; dt  = 0.001; nloops = 200000;
+temp0 = 4.969; dens0 = 1.96; dt  = 0.001; nloops = 200000;
 
 % Intra-molecular parameters
 bondlength_0 = 0.4; bondlength_1 = 0.38; springconstant = 48910;
@@ -379,14 +431,21 @@ end
 
 \noindent ---
 
-\noindent Note, the bond and angle types are specified through the third
-argument.  
+\noindent Notice that
+\begin{itemize}
+\item \verb!molsim('set', 'exclusion', 'molecule');! ensures that van der Waals
+  and Coulomb interactions are excluded if the particles are in same
+  molecule. Exclusion can also be set for bonded particles using the 'bonded'
+  argument. 
+\item For the \verb!bond!, \verb!angle!, and \verb!torsion! specifiers the first
+  argument pertains to the type.  
+\end{itemize}
 
 \section{Sampling}
 The user can access the system configuration through the \verb!get! action and
 from this perform data analysis via GNU Octave's or Matlab's built-in
-tools. \textsf{molsim} also offers some runtime data sampling. The different
-samplers can be initialised before the main loop using the \verb!sample! action
+tools. \textsf{molsim} also offers some run-time data sampling. The different
+samplers can be initialized before the main loop using the \verb!sample! action
 \begin{verbatim}
 molsim('sample', <sample specifier>, <arguments>);
 \end{verbatim}
@@ -395,36 +454,88 @@ and over a sample time span window of 5.0 we write
 \begin{verbatim}
 molsim('sample', 'sacf', 200, 5.0);
 \end{verbatim}
-The actual sampling is carried out by the specifier \verb!do!, and in the main
-loop there must be the call
+The actual sampling is carried out by the specifier \verb!do!; inside the main
+loop there must be a call
 \begin{verbatim}
 molsim('sample', 'do'); 
 \end{verbatim}
-Typically this call is done just after the integration call. Check the reference
+Typically this call is done just after the integration. Check the reference
 sheet for the list of available samplers. 
 
-\section{The two parallisation paradigms}
-\textsf{molsim} offers two types of sheared memory parallisation methods,
-namely,  
+\section{Parallization}
+\textsf{molsim} offers two types of sheared memory parallization, namely,
 \begin{itemize}
-\item Loop parallisation n in force calculations
-\item Task-block parallisation
+\item Loop parallization 
+\item Task-block parallization
 \end{itemize}
-To use the first method simply use the \verb!set! action
+We here only document the first type; the task-block type will be included in
+later versions of the tutorial. To use loop parallization simply call
+the \verb!set! action with argument \verb!omp!
 \begin{verbatim}
 molsim('set', 'omp', <nthreads>);
 \end{verbatim}
-where \verb!nthreads! is the number of threads you will use. The call is placed
-anywhere before the main loop. Be aware that depending on your hardware and the
-particular system the parallelisation efficiency quickly drop as function of
-number of threads. Fig. \ref{fig:bench} shows an example of a benchmark for a
-simple Lennard-Jones system.  
+where \verb!nthreads! is the number of threads you will use. Typically you do
+not wish to use more threads than the number of cpu-cores\footnote{not even with
+  hyper-threading}.  The call is placed anywhere before the main loop. Be aware
+that depending on your hardware and the particular system the parallization
+eefficiency quickly drop as function of number of threads. To explore this we
+define the speed-up and efficiency by
+\begin{equation}
+  \mathrm{speedup} = \frac{t_\mathrm{single}}{t_\mathrm{parallel}} \ \
+  \mathrm{and} \ \ 
+  \mathrm{efficiency} = \frac{t_\mathrm{single}}{t_\mathrm{parallel}
+    N_\mathrm{threads}}
+  \, ,
+\end{equation}
+where $t_\mathrm{single}$ is the single thread execution time and
+$t_\mathrm{parallel}$ the parallel execution time. The speed-up is plotted in
+Fig. \ref{fig:bench} for a simple Lennard-Jones liquid simulation.
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.4]{speedup.eps}
+  \caption{
+    \label{fig:bench}
+    Left: Speed-up as function of number of threads. Right: Efficiency as
+    function of number of threads. The test machine is a 72-core machine, and
+    this result is not valid for a standard desktop.
+  }
+  \end{center}
+\end{figure}
+The efficiency is also plotted in Fig. \ref{fig:bench}. The efficiency quickly
+drops, even on this multi-core machine, and adding more threads (using more cpu
+cores) is not always optimal.
 
+
+\begin{thebibliography}{9}
+
+\bibitem{AllenTildesley}
+  M. P. Allen and D. J. Tildesley, \emph{Computer Simulation of Liquids}, (1989). 
+
+\bibitem{FrenkelSmit}
+  D. Frenkel and B. Smit, \emph{Understanding Molecular Simulation}, (1996).
+
+\bibitem{Rapaport}
+ D. C. Rapaport, \emph{The Art of Molecular Dynamics Simulation}, (1995).
+
+\bibitem{Sadus}
+  R. J. Sadus, \emph{Molecular Simulation of Fluids. Theory, Algorithms and
+    Object-Orientation}, (1999).
+
+\bibitem{Hansen}
+  J.S. Hansen \emph{Where is the hydrodynamic limit?} Mol. Sim., 47:1391 (2021).
+\end{thebibliography}
 
 \appendix
 
 \clearpage
+
 \begin{center}
+
+  {\huge{Reference sheet}}
+  
+  \bigskip
+
+  \bigskip
   
   \begin{tabular}{cclclcccc}
     {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
@@ -447,13 +558,177 @@ simple Lennard-Jones system.
     $\mbox{}$  && \verb!omp! && No. of threads && \\
     $\mbox{}$ && \verb!exclusion! && 'bonded' or 'molecule' && \\
     $\mbox{}$ && \verb!temperaturerelax! && relaxation time (0.01) && \\
-    $\mbox{}$ && \verb!compressionfactor! && compress factor && \\
+    $\mbox{}$ && \verb!compressionfactor! && compress factor (0.9999) && \\
     $\mbox{}$ && \verb!types! && particles types (vector string) && \\
     $\mbox{}$ && \verb!skin! && buffer-skin neighblist && \\
     $\mbox{}$ && \verb!charges! && atom charges (vector) && \\
-    $\mbox{}$ && \verb!lattice! && 1: array $N_x , N_y , N_z$ && \\
-    $\mbox{}$ && $\mbox{}$      && 2: array $L_x, L_y, L_z$ && \\
+    $\mbox{}$ && \verb!lattice! && 1: array [$N_x , N_y , N_z$] && \\
+    $\mbox{}$ && $\mbox{}$      && 2: array [$L_x, L_y, L_z$] && \\
+    $\mbox{}$ && \verb!molconfig!&& 1: \textsf{xyz} file && \\
+              &&                 && 2: \textsf{top} file && \\
+              &&                 && 3: No. molecules && \\
+              &&                 && 4: Crystal density && \\
+              &&                 && 5: Random seed && \\
+              &&\verb!virtualsites!&& && \\ 
+    && && && \\
+    \hline                                           
   \end{tabular}
 
 \end{center}
+
+
+\clearpage
+\begin{center}
+  
+  \begin{tabular}{cclclclll}
+    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!get! && \verb!numbpart!&& && scalar\\
+               && \verb!box! && && 3-vector \\
+               && \verb!energies! && && 2-vector (kin, pot)\\
+               && \verb!pressure! && && scalar \\
+               && \verb!velocities! && && $N_\mathrm{part.}\times 3$-matrix \\
+               && \verb!positions! && &&  $N_\mathrm{part.}\times 3$-matrix \\
+               && \verb!forces! && &&  $N_\mathrm{part.}\times 3$-matrix \\
+               && \verb!types! && && $N_\mathrm{part.}$-string \\
+               && \verb!molpositions! && && $N_\mathrm{mol}\times 3$-matrix \\
+    
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!calcforce! && \verb!lj! && 1: part. types && \\
+                                   && && 2: cutoff&& \\
+                                   && && 3: $\sigma$ && \\
+                                   && && 4: $\epsilon$ && \\
+                                   && && 5: $a_w$ && \\
+                    && \verb!bond! && 1: type && \\  
+                    &&             && 2: bond length && \\
+                    &&             && 3: spring constant && \\
+                    && \verb!angle!&& 1: type && \\  
+                    &&             && 2: zero angle force && \\
+                    &&             && 3: force constant && \\            
+                    && \verb!torsion! && 1: type && \\  
+                    &&             && 2: tors. param && \\
+                    && \verb!lattice! && 1: part. type && \\
+                    &&               && 2: spring constant && \\   
+                    && \verb!dpd! && 1: part. types && \\
+                    &&            && 2: cutoff && \\  
+                    &&            && 3: rep. parameter && \\ 
+                    &&            && 4: $\sigma$ && \\
+                                   && && && \\
+    \hline
+    && && && 
+  \end{tabular}
+
+\end{center}
+
+
+\clearpage
+\begin{center}
+  
+  \begin{tabular}{cclclclll}
+    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!integrate! && \verb!leapfrog! && && \\
+    $\mbox{}$ && \verb!dpd!      && $\lambda$ && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!thermostate! && \verb!relax! && 1: type && \\
+    $\mbox{}$   &&       && 2: target temperature && \\
+    $\mbox{}$  &&        && 3: relax time && \\
+    $\mbox{}$  && \verb!nosehoover! && 1: type && \\
+    $\mbox{}$  &&            && 2: target temperature && \\
+    $\mbox{}$  &&            && 3: themostate mass && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!barostate! && \verb!relax! && 1: target pressure && \\
+    $\mbox{}$   &&       && 2: relax time && \\
+    $\mbox{}$  &&        && 3: opt. iso && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!compress! && && target density && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!add! && \verb!force! && 1: force vector && \\
+    $\mbox{}$   &&             && 2: direction (0,1,2) && \\
+    $\mbox{}$   && \verb!tolattice! && 1: dx (scalar) && \\
+    $\mbox{}$   &&             && 2: direction (0,1,2) && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!clear! & & && && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!reset! & & && && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+   \verb!print! & & && && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+ 
+  \end{tabular}
+
+\end{center}
+
+\begin{center}
+  
+  \begin{tabular}{cclclclll}
+    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+
+    \verb!sample! && \verb!vacf! or \verb!mvacf! &&  1: sample vector length && \\
+    $\mbox{}$   && &&  2: sample time span && \\
+    $\mbox{}$   && \verb!sacf! or \verb!msacf! &&1: sample vector length && \\
+    $\mbox{}$   &&                   &&  2: sample time span && \\
+    $\mbox{}$   && \verb!msd! && 1: sample vector length && \\
+    $\mbox{}$   &&            &&  2: sample time span && \\
+    $\mbox{}$   &&            &&  3: no. wavevectors && \\
+    $\mbox{}$   &&            &&  4: particle type && \\
+    $\mbox{}$   && \verb!hydrocorrelations! or && 1: sample vector length && \\
+    $\mbox{}$   && \verb!mhydrocorrelations!  &&  2: sample time span && \\
+    $\mbox{}$   &&            &&  3: no. wavevectors && \\
+    $\mbox{}$   && \verb!profiles! &&1: particle type && \\
+    $\mbox{}$   &&                   &&  2: sample vector length && \\
+    $\mbox{}$   &&                   &&  3: sample interval && \\
+    $\mbox{}$   && \verb!do!         &&  && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+    \verb!task! && \verb!lj!       && 1: part. types && \\
+                                   && && 2: cutoff&& \\
+                                   && && 3: $\sigma$ && \\
+                                   && && 4: $\epsilon$ && \\
+                                   && && 5: $a_w$ && \\
+                                   && && 6: block id \\ 
+                    && \verb!bond! && 1: type && \\  
+                    &&             && 2: bond length && \\
+                                   &&             && 3: spring constant && \\
+                                   && && 4: block id \\
+                    && \verb!angle!&& 1: type && \\  
+                    &&             && 2: zero angle force && \\
+                                   &&             && 3: force constant && \\
+                                   && && 4: block id \\
+                    && \verb!torsion! && 1: type && \\  
+                                   &&             && 2: tors. param && \\
+                                   && && 3: block id \\
+                   && \verb!coulomb! && 1: cutoff && \\  
+                   &&                && 3: block id && \\
+                   && \verb!do! && no. blocks && \\
+  \end{tabular}
+
+\end{center}
+
 \end{document}
