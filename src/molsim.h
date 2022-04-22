@@ -41,7 +41,7 @@ enum {
   GET=320, PRINT=557, SAVE=431,
   TASK=435, COMPRESS=876, CLEAR=519,
   SET=332, HELLO=532, LOAD=416,
-  HASHVALUE=961, BAROSTATE=965
+  HASHVALUE=961, BAROSTATE=965, CONVERT=769
 };
 
 // Wrapper functions for actions
@@ -61,6 +61,7 @@ void action_compress(int nrhs, const mxArray **prhs);
 void action_clear(int nrhs, const mxArray **prhs);
 void action_add(int nrhs, const mxArray **prhs);
 void action_hash(int nrhs, const mxArray **prhs);
+void action_convert(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs);
 
 // Local helper functions
 double spring_x0(double r2, char opt);

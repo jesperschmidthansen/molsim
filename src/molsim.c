@@ -47,6 +47,8 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   case HELLO:  mexPrintf("Hello. \n"); break;
 
+  case CONVERT: action_convert(nlhs, plhs, nrhs, prhs); break;
+
   case HASHVALUE: action_hash(nrhs, prhs); break;
     
   default:
@@ -952,6 +954,53 @@ void action_add(int nrhs, const mxArray **prhs){
     free(specifier);
 #endif
 
+}
+
+void action_convert(int nlhs, mxArray **plhs,
+		    int nrhs, const mxArray **prhs){
+
+#define KB 1.3806503e-23 // J/K
+#define NA 6.0221e23     // per mol
+#define EPS0 8.8542e-12  // (C/(Vm))
+  
+  if (nrhs != 4) 
+    mexErrMsgTxt("Three input arguments required."); 
+
+  // Base SI units 
+  double sigma = mxGetScalar(prhs[1])*1.0e-10; 
+  double eps = mxGetScalar(prhs[2])*KB;
+  double mass = mxGetScalar(prhs[3])*1.0e-3/NA;
+
+  const int nfields = 10;
+  const char *keys[] = {"time", "density", "temperature",  "pressure", "charge", "dipole", "force", "torque", "diffusion", "viscosity"};
+  const char *units[] = {"Seconds", "kg/m^3", "Kelvin", "Pascal", "Coulomb", "Coulomb meter", "Newton", "m^2/sec^2", "m^2/sec.", "Pascal sec."};
+  
+  double fieldval[nfields];
+  
+  mxArray *fields = mxCreateStructMatrix (1, 1, nfields, keys);
+  mxArray *funits = mxCreateStructMatrix (1, 1, nfields, keys);
+
+  fieldval[0] = sigma*sqrt(mass/eps);
+  fieldval[1] = mass/pow(sigma,3.0);
+  fieldval[2] = eps/KB;
+  fieldval[3] = 1.0/sigma*mass*pow(fieldval[0], -2.0);
+  fieldval[4] = sqrt(4.0*M_PI*EPS0*sigma*eps);
+  fieldval[5] = sqrt(4.0*M_PI*EPS0*pow(sigma,3.0)*eps); 
+  fieldval[6] = mass*sigma/pow(fieldval[0],2.0);
+  fieldval[7] = pow(sigma/fieldval[0],2.0);
+  fieldval[8] = sigma/sqrt(mass/eps);
+  fieldval[9] = mass/(sigma*fieldval[0]);
+
+  for ( int n=0; n<nfields; n++ ){
+    mxSetFieldByNumber (fields, 0, n, mxCreateDoubleScalar(fieldval[n]));
+    mxSetFieldByNumber (funits, 0, n, mxCreateString(units[n]));
+  }
+  
+  plhs[0] = fields; plhs[1] = funits;
+
+#undef KB
+#undef NA
+#undef EPS0
 }
 
 void action_hash(int nrhs, const mxArray **prhs){
