@@ -310,7 +310,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
 
     char *specifier = mxArrayToString(prhs[1]);
     
-    // van der Waal
+    // van der Waal LJ
     if ( strcmp("lj", specifier)==0 ){
       if ( nrhs != 7 ) inputerror(__func__);
       char *types =  mxArrayToString(prhs[2]);
