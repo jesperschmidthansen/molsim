@@ -8,7 +8,7 @@
 
 #define MAXNUMBTASK 12
 
-// Globals static variables *sigh*
+// Globals static variables *sigh* Perhaps a structure instead
 static sepatom *atoms;
 static sepsys sys;
 static sepret ret;
@@ -31,6 +31,7 @@ static bool inittasks = false;
 static double lbox[3], dt=0.005, maxcutoff=2.5, temperature=1.0,
   compressionfactor = 0.9995, taufactor=0.01; 
 
+static int msacf_int_sample = -1;
 static unsigned int ntasks = 0;
 
 // Hard-coded hash values for switch - *I* cannot "optimize" further
