@@ -321,12 +321,14 @@ void action_calcforce(int nrhs, const mxArray **prhs){
       
       double param[4]={cf, epsilon, sigma, postfac};
 
-      if ( msacf_int_sample != -1 ){
-	if ( iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
-	else sys.omp_flag = true;
-      }
+      bool tmp = sys.omp_flag;
+      
+      if ( tmp && iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
 
       sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
+      
+      sys.omp_flag = tmp;
+      
 #ifdef OCTAVE
       free(types);
 #endif
@@ -699,7 +701,7 @@ void action_sample(int nrhs, const mxArray **prhs){
 
     if ( strcmp(specifier, "do")==0 && initsampler ){
       if ( nrhs != 2 ) inputerror(__func__);
-      sep_sample(atoms, &sampler, &ret, sys, iterationNumber);
+      sep_sample(atoms, &sampler, &ret, sys, iterationNumber-1);
     }
     else if ( strcmp(specifier, "vacf")==0 ){
       if ( nrhs != 4 ) inputerror(__func__);
