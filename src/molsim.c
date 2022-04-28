@@ -310,7 +310,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
 
     char *specifier = mxArrayToString(prhs[1]);
     
-    // van der Waal LJ
+    // van der Waal
     if ( strcmp("lj", specifier)==0 ){
       if ( nrhs != 7 ) inputerror(__func__);
       char *types =  mxArrayToString(prhs[2]);
@@ -321,10 +321,10 @@ void action_calcforce(int nrhs, const mxArray **prhs){
       
       double param[4]={cf, epsilon, sigma, postfac};
 
-      if ( iterationNumber%msacf_int_sample == 0 )
-	sys.omp_flag = false;
-      else
-	sys.omp_flag = true;
+      if ( msacf_int_sample != -1 ){
+	if ( iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
+	else sys.omp_flag = true;
+      }
 
       sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
 #ifdef OCTAVE
@@ -736,10 +736,9 @@ void action_sample(int nrhs, const mxArray **prhs){
       double time = mxGetScalar(prhs[3]);
       sep_add_sampler(&sampler, "msacf", sys, lvec, time);
 
-      // Need to set a flag such that OMP is disabled every
+      // msacf_int_sample is set such that OMP is disabled every
       // time we sample
-      
-      msacf_int_sample = (time/sys.dt)/lvec;
+      msacf_int_sample = (int)(time/sys.dt)/lvec;
     }
     else if ( strcmp(specifier, "mvacf")==0 ){
       if ( nrhs != 4 ) inputerror(__func__);

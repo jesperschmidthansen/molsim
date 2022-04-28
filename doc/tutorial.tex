@@ -23,11 +23,12 @@
 \textsf{molsim} is a GNU Octave/Matlab toolbox for molecular dynamics
 simulations. \textsf{molsim} supports simulations of
 \begin{itemize}
-\item standard Lennard-Jones systems,
+\item simple Lennard-Jones systems,
 \item molecular systems with bond, angle, and torsion potentials, 
 \item confined flow systems, eg., Couette and Poiseuille flows,
 \item charged systems using shifted force and Wolf methods,
 \item dissipative particle dynamics systems,
+\item different ensembles, 
 \item and more \ldots
 \end{itemize}
 
@@ -37,9 +38,9 @@ library, which is a light-weight flexible molecular dynamics simulation library
 written in ISO-C99. \textsf{seplib} is CPU-based and offers shared memory
 parallization; this parallizaton is supported by
 \textsf{molsim}. \textsf{seplib} is also developed and maintained by this
-author, and the underlying algorithms are based on the books by Allen and 
-Tildesley \cite{AllenTildesley}, Rapaport \cite{Rapaport}, Frenkel and Smit
-\cite{FrenkelSmit}, and R. Sadus \cite{Sadus}.
+author, and the underlying algorithms are based on the books by Allen and
+Tildesley \cite{AllenTildesley}, Frenkel and Smit \cite{FrenkelSmit}, Rapaport
+\cite{Rapaport}, and R. Sadus \cite{Sadus}.
 
 \bigskip
 \noindent In this text
@@ -60,21 +61,12 @@ then makes the necessary changes.
 
 \section{Installation}
 \subsection{GNU Octave}
-GNU Octave's package manager offers a very easy installation. From
-
-\begin{verbatim}
-https://github.com/jesperschmidthansen/molsim/
+GNU Octave's package manager offers a very easy installation. From the command
+prompt type on one single line
+\begin{verbatim} 
+>> pkg install "https://github.com/jesperschmidthansen/molsim/archive/refs/tags/v<version>.tar.gz"
 \end{verbatim}
-
-\noindent download and save the current release
-\verb!molsim-<version>.tar.gz! in a directory of your choice. Start GNU
-Octave and if needed change directory to the directory where the file is saved.
-
-\noindent Then type
-\begin{verbatim}
->> pkg install molsim-<version>.tar.gz 
-\end{verbatim}
-to install the package. Check contact by
+to install the package. \verb!<version>! can be for example \verb!0.9.2! Check contact by
 \begin{verbatim}
 >> molsim('hello')
 Hello. 
@@ -84,8 +76,16 @@ In case this fails, check the path where \textsf{molsim} is install by
 >> pkg list molsim
 \end{verbatim}
 If the path is not in your GNU Octave search path add this using the
-\verb!addpath! command.
-
+\verb!addpath! command. You can also download the \verb!tar.gz! file manually from
+\begin{verbatim}
+https://github.com/jesperschmidthansen/molsim
+\end{verbatim}
+and save it in some directory of your choice. From this directory enter GNU
+Octave and type
+\begin{verbatim}
+>> pkg install molsim-<version>.tar.gz 
+\end{verbatim}
+    
 \subsection{Matlab}
 From
 \begin{verbatim}
