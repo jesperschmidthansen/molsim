@@ -62,21 +62,17 @@ then makes the necessary changes.
 \section{Installation}
 \subsection{GNU Octave}
 GNU Octave's package manager offers a very easy installation. From the command
-prompt type on one single line
+prompt type (one single line)
 \begin{verbatim} 
->> pkg install "https://github.com/jesperschmidthansen/molsim/archive/refs/tags/v<version>.tar.gz"
+>> pkg install "https://github.com/jesperschmidthansen/molsim/archive/ \
+                                             refs/tags/v<version>.tar.gz"
 \end{verbatim}
 to install the package. \verb!<version>! can be for example \verb!0.9.2! Check contact by
 \begin{verbatim}
 >> molsim('hello')
 Hello. 
 \end{verbatim}
-In case this fails, check the path where \textsf{molsim} is install by
-\begin{verbatim}
->> pkg list molsim
-\end{verbatim}
-If the path is not in your GNU Octave search path add this using the
-\verb!addpath! command. You can also download the \verb!tar.gz! file manually from
+You can also download the \verb!tar.gz! file manually from
 \begin{verbatim}
 https://github.com/jesperschmidthansen/molsim
 \end{verbatim}
@@ -108,15 +104,16 @@ and run the script \verb!buildmex!
 \begin{verbatim}
 >> buildmex
 \end{verbatim}
-Depending on the system this will build a \textsf{molsim.mex<archtype>}
-file. You can copy this file to a directory in your Matlab search path.
+Depending on the system this will build a \verb!molsim.mex<archtype>!  file;
+\verb!<archtype>! being your computer architecture. Copy this file to a
+directory in your Matlab search path.
 
 \bigskip
 
 \noindent Note: Matlab compatibility is not guarantied. \textsf{molsim} will
 only be tested against very limited Matlab versions.
 
-\section{The basic interface strategy}
+\section{The interface strategy}
 This tutorial is not meant to introduce molecular dynamics; such introduction
 can be found in the books listed in the reference list. In brief, the basic idea
 is to solve the classical equation of motion of an ensemble of interacting
@@ -128,18 +125,20 @@ law
 \end{equation}
 where $\mathbf{r}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the particle position,
 momentum and force acting on the particle, respectively. In a standard
-simulation we solve this set of (non-linear) differential equations by (i)
-evaluating the forces, and (ii) from this integrate forward in time. The
-following pseudo code lists the basic idea
+simulation we solve this set of differential equations by (i) evaluating the
+forces acting on the particles, and (ii) from this integrate forward in
+time. The following pseudo code lists the basic idea
 
 \bigskip
+
+\clearpage
 
 \noindent \textbf{Listing 0}
 \begin{lstlisting}
 Set simulation parameters
 Set initial configuration $\mathbf{r}, \mathbf{p}$
 
-do (as many times we want)
+do (as many times as we want)
    $\mathbf{f}$ $\leftarrow$ calcforce($\mathbf{r}$)
    $\mathbf{r},\mathbf{p}$ $\leftarrow$ integrate($\mathbf{f}$,$\mathbf{p}$)
 done
@@ -156,18 +155,18 @@ The action can be any particular action the user wishes to perform, for example,
 \verb!calcforce!, \verb!integrate!, and so on. The action is specified by the
 second argument; say, \verb!lj! specifies that action \verb!calcforce! should
 apply the Lennard-Jones interaction. The specifier arguments are given in the
-final input and can be a single number, string, vector, or a sequence of these.
+final input and can be a scalar, string, vector, or a sequence of these.
 
 \section{First quick example: The Lennard-Jones liquid}
 Listing 1 shows a script simulating a standard Lennard-Jones (LJ) system in the
-micro-canonical ensemble, where number of particles, volume, and total energy is
-conserved.
+micro-canonical ensemble, where number of particles, volume, and total
+mechanical energy is conserved.
 
 \bigskip
 
 \noindent \textbf{Listing 1}
 \begin{verbatim}
-% Specify the LJ paramters
+% Specify the LJ parameters
 cutoff = 2.5; epsilon = 1.0; sigma = 1.0; aw=1.0;
 
 % Set init. position and velocities 10x10x10 particles 
@@ -197,7 +196,7 @@ molsim('clear');
 \end{verbatim}
 ---
 
-\noindent In Listing 1 no information is printed or saved, and admitted not very
+\noindent In Listing 1 no information is printed or saved, and, admitted, not very
 useful. Inside the main loop the user can call the \textsf{print}-action
 \begin{verbatim}
 if rem(n,100)==0
@@ -219,61 +218,67 @@ and particle positions and velocities
 x = molsim('get', 'positions');
 v = molsim('get', 'velocities');
 \end{verbatim}
+In the reference sheet (see Appendix) you can find the list of
+specifiers for the 2\verb!get! action.
 
 \subsection{NVT and NPT simulations}
-Often you will not perform simulations in the micro-canonical ensemble, but under
-a desired temperature and/or pressure. One way to achieve this with
+Often you will not perform simulations in the micro-canonical ensemble, but
+under a desired temperature and/or pressure. One way to achieve this with
 \verb!molsim! is to use simple relaxation algorithms. To simulate at
-temperature, say 2.2, you call the action \verb!'thermostate'! with specifier
+temperature, say 2.2, you call the action \verb!'thermostat'! with specifier
 \verb!'relax'! after the integration step
 \begin{verbatim}
-molsim('thermostate', 'relax', 'A', 2.2, 0.01);
+molsim('thermostat', 'relax', 'A', 2.2, 0.01);
 \end{verbatim}
 The last argument is the relaxation parameter; the higher value the faster
-relaxation. Notice that too large values makes the system unrealistically
+relaxation. Notice that too large values make the system unrealistically
 stiff; the best value is optimized via trail-and-error. There is also a
-Nos\'{e}-Hoover thermostate available with the interface
+Nos\'{e}-Hoover thermostat available with the interface
 \begin{verbatim}
-molsim('thermostate', 'nosehoover','A' ,2.2, 10.0);
+molsim('thermostat', 'nosehoover','A' ,2.2, 10.0);
 \end{verbatim}
 The last argument is here the thermostat mass and not the relaxation
 time. Again, you should choose this parameter with care.
 
-To simulate at pressure, say 0.9, you call the action \verb!'barostate'! after
+To simulate at pressure, say 0.9, you call the action \verb!'barostat'! after
 the integration step,
 \begin{verbatim}
-molsim('barostate', 'relax', 0.9, 0.01, 'iso');
+molsim('barostat', 'relax', 0.9, 0.01, 'iso');
 \end{verbatim}
 The choice of relaxation parameter, here 0.01, is again a matter of the specific
-system. The last argument tells the barostate to do an isotropic compression. If
-this is left out the barostate works by changing the system box length in the
+system. The last argument tells the barostat to do an isotropic compression. If
+this is left out the barostat works by changing the system box length in the
 $z$-direction only (an-isotropic scaling); this is practical when doing sampling
-as two directions are fixed. You can use the barostate and the thermostate
-in the same simulation mimicking an NPT system.
-
+as two directions are fixed. You can use the barostate and the thermostat
+in the same simulation mimicking an NPT system. For the expert: The barostat is
+based on the atomic pressure, a molecular pressure barostat is planned for
+future releases.  
 
 \section{The \textsf{molsim} force field}
-\textsf{molsim} supports simulations of confined, charged, and molecular
-systems. In general, the \textsf{molsim} force field is defined from the
-potential function
+\verb!molsim! supports simulations of more complicated systems. In general, the
+\textsf{molsim} force field is defined from the potential function
 \begin{equation}
   U(\mathbf{r}_i, r_{ij}, \ldots)
-  =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coloumb}} +
+  =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coulomb}} +
   U_\mathrm{bonds} + U_\mathrm{angles} + 
   U_\mathrm{torsion}
 \end{equation}
-
-The first term allows for a simulation of a fictitious fixed crystal
-arrangement, where the particles/atoms are tethered around a pre-set lattice
-site. The potential function is a harmonic spring type
+The first term allows for simulations of fictitious fixed crystal arrangements,
+where the particles/atoms are tethered around a pre-set lattice site. This is
+particular useful for systems with walls. The potential function is a harmonic
+spring type
 \begin{equation}
   U_\mathrm{lattice} =
-  \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2
+  \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2 \ ,
 \end{equation}
 where $k_0$ is the spring constant, $\mathbf{r}_i$ is the position of
-particle/atom $i$, and $\mathbf{r}_0$ is the lattice site. Using this requires
-that the crystal sites are set: use \textsf{molsim('set', 'virtualsites');} to
-set the current positions as crystal sites. 
+particle/atom $i$, and $\mathbf{r}_0$ is the virtual lattice site. Using this
+requires that the virtual crystal sites are set: use \textsf{molsim('set',
+  'virtualsites');} to set the current positions as crystal sites. The force
+from this potential is calculated by 
+\begin{verbatim}
+molsim('calcforce', 'lattice', <part. type>, <ks>)
+\end{verbatim}
 
 The short ranged van der Waals pair interaction is given via the standard
 Lennard-Jones potential
