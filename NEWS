@@ -35,8 +35,8 @@ molsim-0.9.3
 
   * Added 'convert' action
   * Molecular stress calculations enabled under parallisation
-  * Added more specifiers: get<-mass,  
+  * Added more specifiers: get<-mass, sample<-radial 
   * Revision of tutorial
-
+  * Changed actions 'thermostate' and 'barostate' to 'thermostat' and 'barostat'
 
 
