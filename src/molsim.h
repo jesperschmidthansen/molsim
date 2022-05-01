@@ -41,11 +41,11 @@ static unsigned int ntasks = 0;
 // Hash value is simply the string (lower case) character sum
 enum {
   RESET=547, CALCFORCE=930, INTEGRATE=963,
-  THERMOSTATE=1200, SAMPLE=642, ADD=297,
+  THERMOSTAT=1099, SAMPLE=642, ADD=297,
   GET=320, PRINT=557, SAVE=431,
   TASK=435, COMPRESS=876, CLEAR=519,
   SET=332, HELLO=532, LOAD=416,
-  HASHVALUE=961, BAROSTATE=965, CONVERT=769
+  HASHVALUE=961, BAROSTAT=864, CONVERT=769
 };
 
 // Wrapper functions for actions

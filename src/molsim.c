@@ -9,7 +9,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     mexPrintf("molsim - a wrapper for seplib. Check documentation. \n");
     return;
   }
-  
+     
   // ...and ACTION!!
   char *action = mxArrayToString(prhs[0]);
 	 
@@ -25,9 +25,9 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   case INTEGRATE: action_integrate(nrhs, prhs); break;
 
-  case THERMOSTATE: action_thermostate(nrhs, prhs); break;
+  case THERMOSTAT: action_thermostate(nrhs, prhs); break;
 
-  case BAROSTATE: action_barostate(nrhs, prhs); break;
+  case BAROSTAT: action_barostate(nrhs, prhs); break;
     
   case SAVE: action_save(nrhs, prhs); break;
 
