@@ -381,7 +381,13 @@ void action_calcforce(int nrhs, const mxArray **prhs){
       char *algorithm =  mxArrayToString(prhs[2]);
       if ( strcmp(algorithm, "sf") == 0 ){
 	double cf = mxGetScalar(prhs[3]);
+
+	bool tmp = sys.omp_flag;
+	if ( tmp && iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
+
 	sep_coulomb_sf(atoms, cf, &sys, &ret, exclusionflag);
+
+	sys.omp_flag = tmp;
       }
       else if ( strcmp(algorithm, "wolf") == 0 ) {
 	double cf = mxGetScalar(prhs[3]);
