@@ -33,9 +33,10 @@ molsim-0.9.2
 molsim-0.9.3
 ------------
 
-  * Revision of tutorial
   * Added 'convert' action
   * Molecular stress calculations enabled under parallisation
-  * Added more specifiers
+  * Added more specifiers: get<-mass,  
+  * Revision of tutorial
+
 
 

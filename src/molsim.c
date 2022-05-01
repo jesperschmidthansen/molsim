@@ -553,6 +553,15 @@ void action_get(mxArray **plhs, int nrhs, const mxArray **prhs){
     
     free(types);
   }
+   // Types
+  else if ( strcmp("mass", specifier)==0 ){
+    plhs[0] = mxCreateDoubleMatrix(natoms, 1, mxREAL);
+
+    double *mass = mexGetPr(plhs[0]);
+    
+    for ( int n=0; n<natoms; n++ ) mass[n] = atoms[n].m;
+  }
+ 
   // Energies
   else if ( strcmp("energies", specifier)==0 ){
     plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);

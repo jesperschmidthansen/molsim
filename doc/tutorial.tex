@@ -592,7 +592,7 @@ size, density and number of threads; use the \verb!help! command for usage.
     $\mbox{}$  && \verb!temperature! && temperature (1.0) && \\
     $\mbox{}$  && \verb!cutoff! && Max. cut-off (2.5) && \\
     $\mbox{}$  && \verb!omp! && No. of threads && \\
-    $\mbox{}$ && \verb!exclusion! && 'bonded' or 'molecule' && \\
+    $\mbox{}$ && \verb!exclusion! && 'bond' or 'molecule' && \\
     $\mbox{}$ && \verb!temperaturerelax! && relaxation time (0.01) && \\
     $\mbox{}$ && \verb!compressionfactor! && compress factor (0.9999) && \\
     $\mbox{}$ && \verb!types! && particles types (vector string) && \\
@@ -629,9 +629,9 @@ size, density and number of threads; use the \verb!help! command for usage.
                && \verb!positions! && &&  $N_\mathrm{part.}\times 3$-matrix \\
                && \verb!forces! && &&  $N_\mathrm{part.}\times 3$-matrix \\
                && \verb!types! && && $N_\mathrm{part.}$-string \\
+               && \verb!mass! && && $N_\mathrm{part.}$-vector \\
                && \verb!molpositions! && && $N_\mathrm{mol}\times 3$-matrix \\
-    
-                                   && && && \\
+                                       && && && \\
     \hline
                                    && && && \\
     \verb!calcforce! && \verb!lj! && 1: part. types && \\
