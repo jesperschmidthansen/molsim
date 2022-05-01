@@ -33,7 +33,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 
   case PRINT: action_print(); break;
     
-  case GET: action_get(plhs, nrhs, prhs); break;
+  case GET: action_get(nlhs, plhs, nrhs, prhs); break;
 
   case SAMPLE: action_sample(nrhs, prhs); break; 
 
@@ -505,7 +505,7 @@ void action_print(void){
 
 }
 
-void action_get(mxArray **plhs, int nrhs, const mxArray **prhs){
+void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
 
   if ( nrhs != 2 && nrhs != 3 ) inputerror(__func__);
   
@@ -574,13 +574,11 @@ void action_get(mxArray **plhs, int nrhs, const mxArray **prhs){
     
     sep_pressure_tensor(&ret, &sys);
     plhs[0] = mxCreateDoubleScalar(ret.p);
-    
-  }
-  // Pressure
-  else if ( strcmp("molpressure", specifier)==0 ){
 
-    sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
-    plhs[0] = mxCreateDoubleScalar(ret.p_mol);
+    if ( initmol && !sys.omp_flag && nlhs == 2 ){
+      sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
+      plhs[1] = mxCreateDoubleScalar(ret.p_mol);
+    }
     
   }
   // Number of particles 

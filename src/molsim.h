@@ -8,7 +8,7 @@
 
 #define MAXNUMBTASK 12
 
-// Globals static variables *sigh* Perhaps a structure instead
+// Globals static variables *sigh* Perhaps a structure in future
 static sepatom *atoms;
 static sepsys sys;
 static sepret ret;
@@ -58,7 +58,7 @@ void action_barostate(int nrhs, const mxArray **prhs);
 void action_integrate(int nrhs, const mxArray **prhs);
 void action_save(int nrhs, const mxArray **prhs);
 void action_print(void);
-void action_get(mxArray **plhs, int nrhs, const mxArray **prhs);
+void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs);
 void action_sample(int nrhs, const mxArray **prhs);
 void action_task(int nrhs, const mxArray **prhs);
 void action_compress(int nrhs, const mxArray **prhs);
