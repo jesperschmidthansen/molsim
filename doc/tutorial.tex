@@ -273,14 +273,16 @@ spring type
 \end{equation}
 where $k_0$ is the spring constant, $\mathbf{r}_i$ is the position of
 particle/atom $i$, and $\mathbf{r}_0$ is the virtual lattice site. Using this
-requires that the virtual crystal sites are set: use \textsf{molsim('set',
-  'virtualsites');} to set the current positions as crystal sites. The force
-from this potential is calculated by 
+requires that the virtual crystal sites are set: use
+\verb!molsim('set','virtualsites');! to set the current positions as crystal
+sites. The force from this potential is calculated by
 \begin{verbatim}
-molsim('calcforce', 'lattice', <part. type>, <ks>)
+molsim('calcforce', 'lattice', <part. type>, <k0>);
 \end{verbatim}
+where \verb!<part. type>! is the particle type and \verb!<k0>! is the force
+constant. 
 
-The short ranged van der Waals pair interaction is given via the standard
+The short ranged van der Waals pair interaction is given via the 
 Lennard-Jones potential
 \begin{equation}
   U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}}
@@ -289,30 +291,58 @@ Lennard-Jones potential
 \end{equation}
 Here $r_{ij}$ is the particle distance, $\epsilon$ and $\sigma$ define the
 characteristic energy and length scales. The parameter $a_w$ determines the
-weight of the attractive second term in the potential function.
+weight of the attractive second term in the potential function. The force call
+is
+\begin{verbatim}
+molsim('calcforce', 'lj', <pair>, <cutoff>, <sigma>, <eps>, <aw>)
+\end{verbatim}
+where \verb!<cutoff>! is the maximum interaction length (or cut-off). This must
+be less than or equal to the maximum system interaction length which is by
+default 2.5. The system maximum interaction length can be set through the
+\verb!set! action
+\begin{verbatim}
+molsim('set', 'cutoff', <value>);
+\end{verbatim}
 
 The Coulomb potential is 
 \begin{equation}
-  U_{\mathrm{coloumb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}} \, .
+  U_{\mathrm{coulomb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}} \, .
 \end{equation}
 Currently this long ranged interaction is evaluated using approximate
 shifted-force or Wolf methods; this can be specified. Note: these two
-algorithms do not apply to confined systems.
+algorithms do not apply to confined systems. The call is
+\begin{verbatim}
+molsim('calcforce', 'coulomb', <method>, <cutoff>, <optWolf>);
+\end{verbatim}
+\verb!<method>! can take value \verb!'sf'! or \verb!'wolf'!, and
+\verb!<optWolf>! is the Wolf screening parameter which must be specified if the
+Wolf method is chosen. Again, the cut-off must be less than or equal to the
+maximum system interaction length.
 
 Bonds are model via the harmonic spring potential
 \begin{equation}
   U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2
 \end{equation}
 $k_s$ is the spring constant and $l_0$ is the zero force bond length. 
-Currently \textsf{molsim} does not support rigid bonds. 
+Currently \textsf{molsim} does not support rigid bonds. To calculate the force
+from bonds use
+\begin{verbatim}
+molsim('calcforce', 'bond', <type>, <ks>);
+\end{verbatim} 
+\verb!<type>! specifies the specific bond type. Bond, angle, and torsion angle
+types specified through integers, see example script later. 
 
 The angle potential is the cosine squared potential
 \begin{equation}
   U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 \, ,
 \end{equation}
 where $k_\theta$ is the force amplitude, and $\theta_0$ the zero-force
-angle. See Fig. \ref{fig:torsion} for the angle definition.
-
+angle. See Fig. \ref{fig:torsion} for the angle definition. The call is
+\begin{verbatim}
+molsim('calcforce', 'angle', <type>, <a0>, <ka>);
+\end{verbatim}
+where \verb!<type>! specifies the type, \verb!<a0>! the zero force angle,
+$\theta_0$, and \verb!<ka>! the force constant, $k_\theta$.  
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=.7]{diheadral.pdf}
@@ -325,7 +355,7 @@ angle. See Fig. \ref{fig:torsion} for the angle definition.
 
 Finally, the torsion angle potential is the Ryckaert-Belleman potential 
 \begin{equation}
-  U_\mathrm{dihedral}=\sum_{\mathrm{dihedrals}} \sum_{n=0}^5 c_n
+  U_\mathrm{torsion}=\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n
   \cos^n(\pi-\phi)
    \, . 
 \end{equation}
@@ -339,10 +369,13 @@ examples are when only $c_1 \neq 0$:
 \item If $c_1 < 0$ then the minimum energy torsion angle is $\phi = \pi$; this
   is the torsion angle defined by the 1-2-3-4 bonds. 
 \end{enumerate}
-
-Importantly, you can have different types of particles with different charges,
-different bonds, angles, and torsion angles. It is thus possible to simulate
-mixtures, highly complex molecules, etc.
+The torsion angle is often referred to as the diheadral angle. To calculate the
+force from this interaction potential use
+\begin{verbatim}
+molsim('calcforce', 'torsion', <type>, <RB-coef>);
+\end{verbatim}
+\verb!<RB-coef>! is an array of length six specifying the Ryckert-Belleman
+coefficients.
 
 \section{Molecular systems: Toluene}
 This example shows how to setup a simulation of model liquid toluene. The model
@@ -350,7 +383,8 @@ of the molecule is a so-called united atomic unit (UAU) model. This means that
 each carbon group is represented by a single Lennard-Jones particle, thus, the
 toluene molecule is composed of seven Lennard-Jones particles, six forming the
 phenyl ring structure (particle indices 2-7) and one representing the methyl
-group (index 1), see Fig. \ref{fig:toluene}.
+group (index 1).  We exclude the molecular dipole moment, i.e., we do not apply
+any charges to the system. The model molecule is shown in Fig. \ref{fig:toluene}.
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=.4]{toluene.pdf}
@@ -382,9 +416,6 @@ The two last arguments are the molecular number density (keep very low initially
 and compress the system afterwards), and a seed for the random number
 generator. This generates a system \verb!start.xyz! file and \verb!start.top!
 file that can be loaded. 
-
-We exclude the molecular dipole moment, i.e., we do not apply any charges to the
-system. 
 
 We now only need the parameter values for the interaction potentials and we will
 simply take what is available in the literature \cite{Hansen} and convert them
@@ -439,9 +470,9 @@ end
 \noindent Notice that
 \begin{itemize}
 \item \verb!molsim('set', 'exclusion', 'molecule');! ensures that van der Waals
-  and Coulomb interactions are excluded if the particles are in same
-  molecule. Exclusion can also be set for bonded particles using the 'bonded'
-  argument. 
+  (and in general also the Coulomb) interactions are excluded if the particles
+  are in same molecule. Exclusion can also be set for bonded particles using the
+  'bonded' argument.
 \item For the \verb!bond!, \verb!angle!, and \verb!torsion! specifiers the first
   argument pertains to the type.  
 \end{itemize}
@@ -450,7 +481,7 @@ end
 The user can access the system configuration through the \verb!get! action and
 from this perform data analysis via GNU Octave's or Matlab's built-in
 tools. \textsf{molsim} also offers some run-time data sampling. The different
-samplers can be initialized before the main loop using the \verb!sample! action
+samplers are initialized before the main loop using the \verb!sample!-action
 \begin{verbatim}
 molsim('sample', <sample specifier>, <arguments>);
 \end{verbatim}
@@ -460,7 +491,7 @@ and over a sample time span window of 5.0 we write
 molsim('sample', 'sacf', 200, 5.0);
 \end{verbatim}
 The actual sampling is carried out by the specifier \verb!do!; inside the main
-loop there must be a call
+loop there must be one call
 \begin{verbatim}
 molsim('sample', 'do'); 
 \end{verbatim}
@@ -479,11 +510,11 @@ the \verb!set! action with argument \verb!omp!
 \begin{verbatim}
 molsim('set', 'omp', <nthreads>);
 \end{verbatim}
-where \verb!nthreads! is the number of threads you will use. Typically you do
-not wish to use more threads than the number of cpu-cores\footnote{not even with
+where \verb!nthreads! is the number of threads you wish to use. Typically, do
+use more threads than the number of cpu-cores\footnote{not even with
   hyper-threading}.  The call is placed anywhere before the main loop. Be aware
 that depending on your hardware and the particular system the parallization
-eefficiency quickly drop as function of number of threads. To explore this we
+efficiency quickly drops as function of number of threads. To explore this we
 define the speed-up and efficiency by
 \begin{equation}
   \mathrm{speedup} = \frac{t_\mathrm{single}}{t_\mathrm{parallel}} \ \
@@ -501,15 +532,15 @@ Fig. \ref{fig:bench} for a simple Lennard-Jones liquid simulation.
   \caption{
     \label{fig:bench}
     Left: Speed-up as function of number of threads. Right: Efficiency as
-    function of number of threads. The test machine is a 72-core machine, and
-    this result is not valid for a standard desktop.
+    function of number of threads. The test machine is a 72-core machine.
   }
   \end{center}
 \end{figure}
 The efficiency is also plotted in Fig. \ref{fig:bench}. The efficiency quickly
 drops, even on this multi-core machine, and adding more threads (using more cpu
-cores) is not always optimal.
-
+cores) is not always optimal. In the \verb!test!-directory you can find
+\verb!molsim_runparallel.m! that times the execution time for a given system
+size, density and number of threads; use the \verb!help! command for usage.
 
 \begin{thebibliography}{9}
 
@@ -608,6 +639,9 @@ cores) is not always optimal.
                                    && && 3: $\sigma$ && \\
                                    && && 4: $\epsilon$ && \\
                                    && && 5: $a_w$ && \\
+                  &&\verb!coulomb!&& 1: method && \\
+                                   && && 2: cutoff && \\
+                                   && && 3: opt. Wolf param.\\
                     && \verb!bond! && 1: type && \\  
                     &&             && 2: bond length && \\
                     &&             && 3: spring constant && \\

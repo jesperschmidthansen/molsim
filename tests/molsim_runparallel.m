@@ -1,6 +1,10 @@
 %%
 %% molsim_runparallel: Example of simple Lennard-Jones simulation
 %%
+%% usage: execution_time = molsim_runparallel(ndir, density, num threads);
+%%
+%%        where ndir is the number of particles per direction
+%%
 
 function t= molsim_runparallel(nxyz, density, nthreads)
 
