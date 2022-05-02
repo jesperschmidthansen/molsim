@@ -581,7 +581,7 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
     sep_pressure_tensor(&ret, &sys);
     plhs[0] = mxCreateDoubleScalar(ret.p);
 
-    if ( initmol && !sys.omp_flag && nlhs == 2 ){
+    if ( initmol && nlhs == 2 ){
       sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
       plhs[1] = mxCreateDoubleScalar(ret.p_mol);
     }
