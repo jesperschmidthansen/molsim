@@ -113,10 +113,11 @@ void action_reset(int nrhs){
   
   sep_reset_retval(&ret);
   sep_reset_force(atoms, &sys);
-  
-  if ( initmol )
+
+  // Resetting the Fijmol arrays is slow - therefore only when necessary
+  if ( initmol && iterationNumber%msacf_int_sample == 0 ){
     sep_reset_force_mol(&sys);
-  
+  }
 }
 
 void action_set(int nrhs, const mxArray* prhs[]){
@@ -323,7 +324,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
 
       bool tmp = sys.omp_flag;
       
-      if ( tmp && iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
+      if ( initmol && tmp && iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
 
       sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
       
@@ -383,7 +384,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
 	double cf = mxGetScalar(prhs[3]);
 
 	bool tmp = sys.omp_flag;
-	if ( tmp && iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
+	if ( initmol && tmp && iterationNumber%msacf_int_sample == 0 ) sys.omp_flag = false;
 
 	sep_coulomb_sf(atoms, cf, &sys, &ret, exclusionflag);
 
@@ -581,10 +582,12 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
     sep_pressure_tensor(&ret, &sys);
     plhs[0] = mxCreateDoubleScalar(ret.p);
 
-    if ( initmol && nlhs == 2 ){
+    if ( initmol && nlhs == 2 && (iterationNumber-1)%msacf_int_sample == 0){
       sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
       plhs[1] = mxCreateDoubleScalar(ret.p_mol);
     }
+    else if ( initmol && nlhs == 2 )
+      plhs[1] =mxCreateDoubleScalar(0.0f);
     
   }
   // Number of particles 
