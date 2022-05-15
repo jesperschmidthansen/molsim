@@ -40,7 +40,7 @@ parallization; this parallizaton is supported by
 \textsf{molsim}. \textsf{seplib} is also developed and maintained by this
 author, and the underlying algorithms are based on the books by Allen and
 Tildesley \cite{AllenTildesley}, Frenkel and Smit \cite{FrenkelSmit}, Rapaport
-\cite{Rapaport}, and R. Sadus \cite{Sadus}.
+\cite{Rapaport}, and Sadus \cite{Sadus}.
 
 \bigskip
 \noindent In this text
@@ -67,7 +67,8 @@ prompt type (one single line)
 >> pkg install "https://github.com/jesperschmidthansen/molsim/archive/ \
                                              refs/tags/v<version>.tar.gz"
 \end{verbatim}
-to install the package. \verb!<version>! can be for example \verb!0.9.2! Check contact by
+to install the package. \verb!<version>! can be for example \verb!0.9.2!. Check
+contact to \verb!molsim! by
 \begin{verbatim}
 >> molsim('hello')
 Hello. 
@@ -100,7 +101,7 @@ To build the \textsf{mex}-file enter Matlab
 \begin{verbatim}
 $ matlab -nodesktop
 \end{verbatim}
-and run the script \verb!buildmex!
+and run the script \verb!buildmex!, that is, 
 \begin{verbatim}
 >> buildmex
 \end{verbatim}
@@ -123,11 +124,11 @@ law
   \frac{\mathrm{d}\mathbf{r}_i}{\mathrm{d} t} = \mathbf{v}_i \ , \ \
   \frac{\mathrm{d}\mathbf{p}_i}{\mathrm{d} t} = \mathbf{f}_i
 \end{equation}
-where $\mathbf{r}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the particle position,
-momentum and force acting on the particle, respectively. In a standard
-simulation we solve this set of differential equations by (i) evaluating the
-forces acting on the particles, and (ii) from this integrate forward in
-time. The following pseudo code lists the basic idea
+where $\mathbf{r}_i, \mathbf{v}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the
+particle position, velocity, momentum and force acting on the particle, respectively. In a
+standard simulation we solve this set of differential equations by (i)
+evaluating the forces acting on the particles, and (ii) from this integrate
+forward in time. The following pseudo code lists the basic idea
 
 \bigskip
 
@@ -145,9 +146,9 @@ done
 \end{lstlisting}
 ---
 
-\noindent The \textsf{molsim} interface seeks to emulate this basic idea, and at
-the same time give the user coding flexibility and accessibility to the
-simulation quantities. In general, the \verb!molsim! interface is on the form
+\noindent The \textsf{molsim} interface seeks to emulate this, and give the user
+coding flexibility and accessibility to the simulation quantities. In general,
+the \verb!molsim! interface is on the form
 \begin{verbatim}
 molsim(<action>, <specifier>, <arguments>);
 \end{verbatim}
@@ -197,7 +198,8 @@ molsim('clear');
 ---
 
 \noindent In Listing 1 no information is printed or saved, and, admitted, not very
-useful. Inside the main loop the user can call the \textsf{print}-action
+useful. Inside the main loop the user can call the \textsf{print}-action, for
+example, 
 \begin{verbatim}
 if rem(n,100)==0
   molsim('print');
@@ -219,7 +221,7 @@ x = molsim('get', 'positions');
 v = molsim('get', 'velocities');
 \end{verbatim}
 In the reference sheet (see Appendix) you can find the list of
-specifiers for the 2\verb!get! action.
+specifiers for the \verb!get! action.
 
 \subsection{NVT and NPT simulations}
 Often you will not perform simulations in the micro-canonical ensemble, but
@@ -282,7 +284,7 @@ molsim('calcforce', 'lattice', <part. type>, <k0>);
 where \verb!<part. type>! is the particle type and \verb!<k0>! is the force
 constant. 
 
-The short ranged van der Waals pair interaction is given via the 
+The short ranged van der Waals pair interaction is given via the 12-6 
 Lennard-Jones potential
 \begin{equation}
   U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}}
@@ -294,11 +296,11 @@ characteristic energy and length scales. The parameter $a_w$ determines the
 weight of the attractive second term in the potential function. The force call
 is
 \begin{verbatim}
-molsim('calcforce', 'lj', <pair>, <cutoff>, <sigma>, <eps>, <aw>)
+molsim('calcforce', 'lj', <pair>, <cutoff>, <sigma>, <eps>, <aw>);
 \end{verbatim}
 where \verb!<cutoff>! is the maximum interaction length (or cut-off). This must
 be less than or equal to the maximum system interaction length which is by
-default 2.5. The system maximum interaction length can be set through the
+default 2.5. The system maximum interaction length can be set via the
 \verb!set! action
 \begin{verbatim}
 molsim('set', 'cutoff', <value>);
@@ -321,7 +323,7 @@ maximum system interaction length.
 
 Bonds are model via the harmonic spring potential
 \begin{equation}
-  U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2
+  U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2 \, .
 \end{equation}
 $k_s$ is the spring constant and $l_0$ is the zero force bond length. 
 Currently \textsf{molsim} does not support rigid bonds. To calculate the force
@@ -330,7 +332,7 @@ from bonds use
 molsim('calcforce', 'bond', <type>, <ks>);
 \end{verbatim} 
 \verb!<type>! specifies the specific bond type. Bond, angle, and torsion angle
-types specified through integers, see example script later. 
+types are specified through integers, see example script later. 
 
 The angle potential is the cosine squared potential
 \begin{equation}
@@ -341,7 +343,7 @@ angle. See Fig. \ref{fig:torsion} for the angle definition. The call is
 \begin{verbatim}
 molsim('calcforce', 'angle', <type>, <a0>, <ka>);
 \end{verbatim}
-where \verb!<type>! specifies the type, \verb!<a0>! the zero force angle,
+where \verb!<type>! specifies the angle type, \verb!<a0>! the zero force angle,
 $\theta_0$, and \verb!<ka>! the force constant, $k_\theta$.  
 \begin{figure}[h]
   \begin{center}
@@ -369,22 +371,22 @@ examples are when only $c_1 \neq 0$:
 \item If $c_1 < 0$ then the minimum energy torsion angle is $\phi = \pi$; this
   is the torsion angle defined by the 1-2-3-4 bonds. 
 \end{enumerate}
-The torsion angle is often referred to as the diheadral angle. To calculate the
-force from this interaction potential use
+To calculate the force from this interaction potential use
 \begin{verbatim}
 molsim('calcforce', 'torsion', <type>, <RB-coef>);
 \end{verbatim}
 \verb!<RB-coef>! is an array of length six specifying the Ryckert-Belleman
-coefficients.
+coefficients. Note, the torsion angle is often referred to as the diheadral angle. 
 
 \section{Molecular systems: Toluene}
 This example shows how to setup a simulation of model liquid toluene. The model
 of the molecule is a so-called united atomic unit (UAU) model. This means that
 each carbon group is represented by a single Lennard-Jones particle, thus, the
-toluene molecule is composed of seven Lennard-Jones particles, six forming the
-phenyl ring structure (particle indices 2-7) and one representing the methyl
-group (index 1).  We exclude the molecular dipole moment, i.e., we do not apply
-any charges to the system. The model molecule is shown in Fig. \ref{fig:toluene}.
+toluene molecule is composed of seven identical Lennard-Jones particles, six
+forming the phenyl ring structure (particle indices 2-7) and one representing
+the methyl group (index 1).  We exclude the molecular dipole moment, i.e., we do
+not apply any charges to the system. The model molecule is shown in
+Fig. \ref{fig:toluene}.
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=.4]{toluene.pdf}
@@ -398,16 +400,18 @@ any charges to the system. The model molecule is shown in Fig. \ref{fig:toluene}
 To define the molecule geometry (or topology) we need different intra-molecular
 interactions, i.e., bond, angle, and torsion angle potentials. Lennard-Jones
 interactions between carbon groups in same molecule are excluded. The model is
-further simplified by using only two different bond types and one angle
-type. There are two different torsion angles, eg., 1-2-3-4 form one type of
-torsion angle, $\phi=\pi$, whereas 7-2-3-4 form torsion angle with $\phi=0$. We
-define the molecular model in two files; one with extension \verb!.xyz! giving
-the carbon groups' positions for one molecule and one with extension \verb!.top!
-defining bonds and angles in the molecule. You can find examples of these two
-files for different molecules under the \verb!resources!  directory. To setup
-the entire system (i.e. the ensemble of molecules) we copy the single molecule
-\verb!.xyz!  and \verb!.top! to the current directory and use the \verb!set!
-action; for example to simulate 500 molecules 
+further simplified by using only two different bond types (with different zero
+force bond length, but same force constant), and one angle type. There are two
+different torsion angles, eg., 1-2-3-4 form one type of torsion angle,
+$\phi=\pi$, whereas 7-2-3-4 form torsion angle with $\phi=0$. We define the
+molecular model in two files; one with extension \verb!.xyz! giving the carbon
+groups' positions for one molecule and one with extension \verb!.top!  defining
+bonds and angles in the molecule. You can find examples of these two files for
+different molecules under the \verb!resources!  directory.
+
+To setup the entire system (i.e. the ensemble of molecules) we copy the single
+molecule \verb!.xyz!  and \verb!.top! to the current directory and use the
+\verb!set!  action; for example to simulate 500 molecules
 \begin{verbatim}
 >> molsim('set', 'molconfig', 'toluene.xyz', 'toluene.top', ... 
    500, 0.05, 42)
@@ -415,25 +419,26 @@ action; for example to simulate 500 molecules
 The two last arguments are the molecular number density (keep very low initially
 and compress the system afterwards), and a seed for the random number
 generator. This generates a system \verb!start.xyz! file and \verb!start.top!
-file that can be loaded. 
+file that can be loaded by your program. 
 
 We now only need the parameter values for the interaction potentials and we will
-simply take what is available in the literature \cite{Hansen} and convert them
+simply use what is available in the literature \cite{Hansen} and convert them
 into MD reduced units. Listing 2 shows the resulting script
 
 \bigskip
 
 \noindent \textbf{Listing 2}
 \begin{verbatim}
-% Simulation parameters
+% Simulation parameters 
+% (Corresponds to 298.15 K, 862 kg/m^3)
 temp0 = 4.969; dens0 = 1.96; dt  = 0.001; nloops = 200000;
 
 % Intra-molecular parameters
 bondlength_0 = 0.4; bondlength_1 = 0.38; springconstant = 48910;
 bondangle = 2.09; angleconstant = 1173;
 
-torsionparam_0 = [0.0, 133.0, 0.0 0.0 0.0]; 
-torsionparam_1 = [0.0, -133.0, 0.0 0.0 0.0];
+torsionparam_0 = [0.0, 133.0, 0.0, 0.0, 0.0]; 
+torsionparam_1 = [0.0, -133.0, 0.0, 0.0, 0.0];
 
 % Load positions, set temp, remove intra-molecular pair-interaction etc
 molsim('load', 'xyz', 'start.xyz');
@@ -472,7 +477,7 @@ end
 \item \verb!molsim('set', 'exclusion', 'molecule');! ensures that van der Waals
   (and in general also the Coulomb) interactions are excluded if the particles
   are in same molecule. Exclusion can also be set for bonded particles using the
-  'bonded' argument.
+  'bond' argument.
 \item For the \verb!bond!, \verb!angle!, and \verb!torsion! specifiers the first
   argument pertains to the type.  
 \end{itemize}
@@ -504,14 +509,14 @@ sheet for the list of available samplers.
 \item Loop parallization 
 \item Task-block parallization
 \end{itemize}
-We here only document the first type; the task-block type will be included in
-later versions of the tutorial. To use loop parallization simply call
-the \verb!set! action with argument \verb!omp!
+We here only document the first type\footnote{Yep - I'm lazy}; the task-block
+type will be included in later versions of the tutorial. To use loop
+parallization simply call the \verb!set! action with specifier \verb!omp!
 \begin{verbatim}
 molsim('set', 'omp', <nthreads>);
 \end{verbatim}
 where \verb!nthreads! is the number of threads you wish to use. Typically, do
-use more threads than the number of cpu-cores\footnote{not even with
+not use more threads than the number of cpu-cores\footnote{not even with
   hyper-threading}.  The call is placed anywhere before the main loop. Be aware
 that depending on your hardware and the particular system the parallization
 efficiency quickly drops as function of number of threads. To explore this we
@@ -538,9 +543,9 @@ Fig. \ref{fig:bench} for a simple Lennard-Jones liquid simulation.
 \end{figure}
 The efficiency is also plotted in Fig. \ref{fig:bench}. The efficiency quickly
 drops, even on this multi-core machine, and adding more threads (using more cpu
-cores) is not always optimal. In the \verb!test!-directory you can find
+cores) is not always optimal. In the \verb!tests!-directory you can find
 \verb!molsim_runparallel.m! that times the execution time for a given system
-size, density and number of threads; use the \verb!help! command for usage.
+size, density and number of threads; use the \verb!help! command for its usage.
 
 \begin{thebibliography}{9}
 
