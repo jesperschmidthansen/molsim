@@ -629,6 +629,35 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
       for ( int n=0; n<nmols; n++ )
 	dipole[k*nmols + n] = mols[n].pel[k];
   }
+  // Molecular cm velocities
+  else if ( strcmp("molvelocities", specifier)==0 ){
+    const int nmols = sys.molptr->num_mols;
+	
+    plhs[0] = mxCreateDoubleMatrix(nmols, 3, mxREAL);
+    double *velocities = mxGetPr(plhs[0]);
+
+    sep_mol_velcm(atoms, mols, &sys);
+     
+    for ( int k=0; k<3; k++ )
+      for ( int n=0; n<nmols; n++ )
+	velocities[k*nmols + n] = mols[n].v[k];
+    
+  }
+  // Atomic indicies
+  else if ( strcmp("indices", specifier) ){
+    if ( nrhs!= 3 ) inputerror(__func__);
+    
+    unsigned int molindex = (unsigned)mxGetScalar(prhs[2]);
+    if ( molindex - 1 > sys.molptr->num_mols )
+      mexErrMsgTxt("Molecular index larger than number of molecules \n");    
+
+    const long nuau = (long unsigned)mols[molindex].nuau;
+    plhs[0] = mxCreateNumericArray(1, &nuau, mxINT32_CLASS, mxREAL);
+    int *ptr = (int *)mxGetPr(plhs[0]);
+
+    for ( unsigned n=0; n<mols[molindex].nuau; n++ )
+      ptr[n] = mols[molindex].index[n];
+  }
   // Molecular end-to-end
   else if ( strcmp("endtoend", specifier)==0 ){
     const int nmols = sys.molptr->num_mols;
@@ -795,6 +824,17 @@ void action_sample(int nrhs, const mxArray **prhs){
       int nk = (int)mxGetScalar(prhs[4]);
       sep_add_sampler(&sampler, "mgh", sys, lvec, time, nk, 0, 1);
     }
+    else if ( strcmp(specifier, "mprofiles")==0 ){
+      if ( nrhs != 5 ) inputerror(__func__);
+      char *type =  mxArrayToString(prhs[2]);
+      int lvec = (int)mxGetScalar(prhs[3]);
+      int interval = (int)mxGetScalar(prhs[4]);
+      sep_add_sampler(&sampler, "mprofs", sys, lvec, type[0], interval);
+#ifdef OCTAVE
+      free(type);
+#endif    
+    }
+
     else {
       mexErrMsgTxt("Activator 'sample' -> not valid specifier\n");
     }

@@ -909,8 +909,7 @@ void sep_eval_mol_pressure_tensor(sepatom *atoms, sepmol *mols,
 
       for ( int k=0; k<3; k++ )	
 	for ( int kk=0; kk<3; kk++ )
-	  ret->pot_P_mol[k][kk] += sys->molptr->Fij[i][j][k]*rij[kk];
-	
+	  ret->pot_P_mol[k][kk] += sys->molptr->Fij[i][j][k]*rij[kk];	
     }
   }
 	
@@ -918,8 +917,9 @@ void sep_eval_mol_pressure_tensor(sepatom *atoms, sepmol *mols,
 
   for ( int k=0; k<3; k++ )
     for ( int kk=0; kk<3; kk++ )
-      ret->P_mol[k][kk] = (ret->kin_P_mol[k][kk] + ret->pot_P_mol[k][kk])*ivol; 
-  
+      ret->P_mol[k][kk] = (ret->kin_P_mol[k][kk] + 
+			   ret->pot_P_mol[k][kk])*ivol; 
+
   ret->p_mol=0.0;
   for ( int k=0; k<3; k++ )
     ret->p_mol += ret->P_mol[k][k];

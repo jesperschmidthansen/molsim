@@ -1253,7 +1253,7 @@ void sep_mgh_sampler(sepatom *ptr, sepmol *mols, sepmgh *mgh, sepsys sys){
 
       mgh->fk_dip[index][n]   +=  mols[m].pel[1]*kfac;
       mgh->fkm_dip[index][n]  +=  mols[m].pel[1]*kfac_m;
-      
+
       if ( mgh->safe == false ){
 	mgh->fk_X[index][n]  +=  mols[m].w[0]*kfac;
 	mgh->fkm_X[index][n] +=  mols[m].w[0]*kfac_m;
@@ -1265,7 +1265,6 @@ void sep_mgh_sampler(sepatom *ptr, sepmol *mols, sepmgh *mgh, sepsys sys){
   (mgh->i)++;
 
   if ( mgh->i == mgh->lvec ){
-    
     for ( unsigned k=0; k<mgh->nwave; k++ ){
       for ( unsigned n=0; n<mgh->lvec; n++ ){
 	for ( unsigned nn=0; nn<mgh->lvec-n; nn++ ){
@@ -1281,8 +1280,7 @@ void sep_mgh_sampler(sepatom *ptr, sepmol *mols, sepmgh *mgh, sepsys sys){
 	  mgh->c_vav[n][k]   += mgh->fkm_vav[nn][k]*mgh->fk_vav[n+nn][k];
 
 	  mgh->c_dip[n][k]   += mgh->fkm_dip[nn][k]*mgh->fk_dip[n+nn][k];
-	 
-	  
+
 	  if ( mgh->safe == false )
 	    mgh->c_X[n][k]   += mgh->fkm_X[nn][k]*mgh->fk_X[n+nn][k];
 	}
