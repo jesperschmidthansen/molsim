@@ -30,13 +30,13 @@ molsim-0.9.2
   * Bug fixes
   * More example scripts/functions
 
-molsim-0.9.3
+molsim-0.9.3 
 ------------
 
-  * Added 'convert' action
-  * Molecular stress calculations enabled under parallisation
-  * Added more specifiers: get<-mass, sample<-radial 
-  * Revision of tutorial
+  * Added 'convert' action 
+  * Molecular stress calculations now supported under parallisation 
+  * Added more specifiers to get: 'molvelocities', 'indices' 
+  * Revision to tutorial
   * Changed actions 'thermostate' and 'barostate' to 'thermostat' and 'barostat'
 
 
