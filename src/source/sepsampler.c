@@ -72,6 +72,7 @@ void sep_add_sampler(sepsampler *sptr, const char *sampler,
 
       char type = va_arg(args, int);
       int isample = va_arg(args, int);
+      // ACHTUNG!!!!
       int dir = 2;
       int dirvel = 0;  
       int diramom = 1;
@@ -289,7 +290,8 @@ sepsacf *sep_sacf_init(int lvec, double tsample, double dt){
 
 
 void sep_sacf_sample(sepsacf *sptr, sepret *ret, sepsys sys){
-
+  unsigned int k, n, nn;
+  
 
   sep_pressure_tensor(ret, &sys);
 
@@ -302,25 +304,41 @@ void sep_sacf_sample(sepsacf *sptr, sepret *ret, sepsys sys){
   (sptr->i)++;
 
   if ( sptr->i == sptr->lvec ){
-     
-    for ( int k=0; k<3; k++ ){
-      for ( unsigned n=0; n<sptr->lvec; n++ ){
-        for ( unsigned nn=0; nn<sptr->lvec-n; nn++ ){
-          sptr->sacf[n] += sptr->stress[nn][k]*sptr->stress[n+nn][k];
+    double *parray = sep_vector(sptr->lvec);
+
+    SEP_TICTOC;
+    SEP_TIC;
+    
+#pragma omp parallel for schedule(dynamic) \
+  private(k, n, nn)			   \
+  reduction(+:parray[:sptr->lvec])
+    for ( k=0; k<3; k++ ){
+      for ( n=0; n<sptr->lvec; n++ ){
+        for ( nn=0; nn<sptr->lvec-n; nn++ ){
+          parray[n] += sptr->stress[nn][k]*sptr->stress[n+nn][k];
         }
       }
     }
 
+    for ( n=0; n<sptr->lvec; n++ )  sptr->sacf[n] += parray[n];
+    free(parray);
+    
+    printf("\n Calc. %d\n", SEP_TOC); SEP_FLUSH;
+    
     (sptr->nsample)++;
 
     FILE *fout1 = fopen("sacf.dat", "w");
-   
+
+    SEP_TIC;
+    
     for ( unsigned n=0; n<sptr->lvec; n++ ){
       double t   = n*sptr->dtsample;
       double fac = sys.volume/(3*(sptr->lvec-n)*sptr->nsample);
       fprintf(fout1, "%f %f\n", t, sptr->sacf[n]*fac);
     }
 
+    printf("\nPrint %d\n", SEP_TOC); SEP_FLUSH;
+    
     fclose(fout1); 
     
     sptr->i = 0;
