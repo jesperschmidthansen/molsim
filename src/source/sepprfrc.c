@@ -821,6 +821,7 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
 	      for ( kk=0; kk<3; kk++ )
 		pconf[k*3+kk] += f[k]*r[kk];
 	  }
+	     
 	}
 	n++;
       }
@@ -839,7 +840,7 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
   }
   
   else {
-
+   
     for (i1=0; i1<sys->npart; i1++){
     
       if ( ptr[i1].type != types[0] && ptr[i1].type != types[1] )
@@ -884,7 +885,7 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
 	      if ( (moli_i1 != -1 && moli_i2 != -1) && (moli_i1 != moli_i2) ){
 		for ( k=0; k<3;k++ ){
 		  sys->molptr->Fij[moli_i1][moli_i2][k] += f[k];
-		  sys->molptr->Fij[moli_i2][moli_i1][k] -= f[k];
+		  sys->molptr->Fij[moli_i2][moli_i1][k] -= f[k];	
 		}
 	      }	
 	    }

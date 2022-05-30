@@ -51,7 +51,7 @@
 /**
  * Get time now
  */
-#define SEP_TOC ((int)((clock()-time_then)/CLOCKS_PER_SEC))
+#define SEP_TOC ((int)(1000*(clock()-time_then)/CLOCKS_PER_SEC))%1000
 
 
 /**

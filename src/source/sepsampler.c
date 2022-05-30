@@ -72,6 +72,7 @@ void sep_add_sampler(sepsampler *sptr, const char *sampler,
 
       char type = va_arg(args, int);
       int isample = va_arg(args, int);
+      // ACHTUNG!!!!
       int dir = 2;
       int dirvel = 0;  
       int diramom = 1;
@@ -289,7 +290,8 @@ sepsacf *sep_sacf_init(int lvec, double tsample, double dt){
 
 
 void sep_sacf_sample(sepsacf *sptr, sepret *ret, sepsys sys){
-
+  unsigned int k, n, nn;
+  
 
   sep_pressure_tensor(ret, &sys);
 
@@ -302,19 +304,25 @@ void sep_sacf_sample(sepsacf *sptr, sepret *ret, sepsys sys){
   (sptr->i)++;
 
   if ( sptr->i == sptr->lvec ){
-     
-    for ( int k=0; k<3; k++ ){
-      for ( unsigned n=0; n<sptr->lvec; n++ ){
-        for ( unsigned nn=0; nn<sptr->lvec-n; nn++ ){
-          sptr->sacf[n] += sptr->stress[nn][k]*sptr->stress[n+nn][k];
+    double *parray = sep_vector(sptr->lvec);
+
+#pragma omp parallel for schedule(dynamic) 	\
+  private(k, n, nn)				\
+  reduction(+:parray[:sptr->lvec])
+    for ( k=0; k<3; k++ ){
+      for ( n=0; n<sptr->lvec; n++ ){
+        for ( nn=0; nn<sptr->lvec-n; nn++ ){
+          parray[n] += sptr->stress[nn][k]*sptr->stress[n+nn][k];
         }
       }
     }
+    
+    for ( n=0; n<sptr->lvec; n++ )  sptr->sacf[n] += parray[n];
+    free(parray);
 
     (sptr->nsample)++;
 
     FILE *fout1 = fopen("sacf.dat", "w");
-   
     for ( unsigned n=0; n<sptr->lvec; n++ ){
       double t   = n*sptr->dtsample;
       double fac = sys.volume/(3*(sptr->lvec-n)*sptr->nsample);
@@ -324,9 +332,7 @@ void sep_sacf_sample(sepsacf *sptr, sepret *ret, sepsys sys){
     fclose(fout1); 
     
     sptr->i = 0;
-    
   }
-
 }
 
 void sep_sacf_close(sepsacf *ptr){
@@ -719,7 +725,8 @@ sepmsacf *sep_msacf_init(int lvec, double tsample, double dt){
 
 void sep_msacf_sample(sepmsacf *sptr, sepatom *atoms, sepmol *mols, 
 		      sepret *ret, sepsys sys){
-
+  unsigned k, n, nn;
+  
   sep_mol_pressure_tensor(atoms, mols, ret, &sys);
 
   int index = sptr->i;
@@ -735,16 +742,27 @@ void sep_msacf_sample(sepmsacf *sptr, sepatom *atoms, sepmol *mols,
   (sptr->i)++;
 
   if ( sptr->i == sptr->lvec ){
+    double *parray_sym = sep_vector(sptr->lvec);
+    double *parray_asym = sep_vector(sptr->lvec);
 
-    for ( int k=0; k<3; k++ ){
-      for ( unsigned n=0; n<sptr->lvec; n++ ){
-        for ( unsigned nn=0; nn<sptr->lvec-n; nn++ ){
-          sptr->sacf[n][0] += sptr->sstress[nn][k]*sptr->sstress[n+nn][k];
-	  sptr->sacf[n][1] += sptr->astress[nn][k]*sptr->astress[n+nn][k];
+#pragma omp parallel for schedule(dynamic) 	\
+  private(k, n, nn)				\
+  reduction(+:parray_sym[:sptr->lvec],parray_asym[:sptr->lvec])
+    for ( k=0; k<3; k++ ){
+      for ( n=0; n<sptr->lvec; n++ ){
+        for ( nn=0; nn<sptr->lvec-n; nn++ ){
+          parray_sym[n] += sptr->sstress[nn][k]*sptr->sstress[n+nn][k];
+	  parray_asym[n] += sptr->astress[nn][k]*sptr->astress[n+nn][k];
         }
       }
     }
 
+    for ( unsigned n=0; n<sptr->lvec; n++ ){ 
+      sptr->sacf[n][0] += parray_sym[n];
+      sptr->sacf[n][1] += parray_asym[n];
+    }
+    free(parray_sym); free(parray_asym);
+    
     (sptr->nsample)++;
 
     FILE *fout1 = fopen("msacf.dat", "w");
@@ -1253,7 +1271,7 @@ void sep_mgh_sampler(sepatom *ptr, sepmol *mols, sepmgh *mgh, sepsys sys){
 
       mgh->fk_dip[index][n]   +=  mols[m].pel[1]*kfac;
       mgh->fkm_dip[index][n]  +=  mols[m].pel[1]*kfac_m;
-      
+
       if ( mgh->safe == false ){
 	mgh->fk_X[index][n]  +=  mols[m].w[0]*kfac;
 	mgh->fkm_X[index][n] +=  mols[m].w[0]*kfac_m;
@@ -1265,7 +1283,6 @@ void sep_mgh_sampler(sepatom *ptr, sepmol *mols, sepmgh *mgh, sepsys sys){
   (mgh->i)++;
 
   if ( mgh->i == mgh->lvec ){
-    
     for ( unsigned k=0; k<mgh->nwave; k++ ){
       for ( unsigned n=0; n<mgh->lvec; n++ ){
 	for ( unsigned nn=0; nn<mgh->lvec-n; nn++ ){
@@ -1281,8 +1298,7 @@ void sep_mgh_sampler(sepatom *ptr, sepmol *mols, sepmgh *mgh, sepsys sys){
 	  mgh->c_vav[n][k]   += mgh->fkm_vav[nn][k]*mgh->fk_vav[n+nn][k];
 
 	  mgh->c_dip[n][k]   += mgh->fkm_dip[nn][k]*mgh->fk_dip[n+nn][k];
-	 
-	  
+
 	  if ( mgh->safe == false )
 	    mgh->c_X[n][k]   += mgh->fkm_X[nn][k]*mgh->fk_X[n+nn][k];
 	}
