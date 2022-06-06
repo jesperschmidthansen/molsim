@@ -514,10 +514,8 @@ void action_print(void){
 
 void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
 
-  if ( nrhs != 2 && nrhs != 3 ) inputerror(__func__);
-  
   char *specifier =  mxArrayToString(prhs[1]);
-    
+
   // Positions
   if ( strcmp("positions", specifier)==0 ){
     plhs[0] = mxCreateDoubleMatrix(natoms, 3, mxREAL);
@@ -550,7 +548,7 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
   }
   // Types
   else if ( strcmp("types", specifier)==0 ){
-    char *types = malloc(sizeof(char)*(natoms + 1));
+    char *types = malloc(sizeof(char)*natoms);
     if ( types == NULL )
       mexErrMsgTxt("Memory allocation error\n");
     
@@ -652,7 +650,7 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
     
   }
   // Atomic indicies
-  else if ( strcmp("indices", specifier) ){
+  else if ( strcmp("indices", specifier)==0 ){
     if ( nrhs!= 3 ) inputerror(__func__);
     
     unsigned int molindex = (unsigned)mxGetScalar(prhs[2]);
