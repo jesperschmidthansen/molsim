@@ -39,4 +39,9 @@ molsim-0.9.3
   * Revision to tutorial
   * Changed actions 'thermostate' and 'barostate' to 'thermostat' and 'barostat'
 
+molsim-0.9.4
+------------
+
+  * Added more specifiers to get: 'charges' 
+  * Revision to tutorial
 

@@ -568,6 +568,14 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
     
     for ( int n=0; n<natoms; n++ ) mass[n] = atoms[n].m;
   }
+  // Charges
+  else if ( strcmp("charges", specifier)==0 ){
+    plhs[0] = mxCreateDoubleMatrix(natoms, 1, mxREAL);
+
+    double *charges = mxGetPr(plhs[0]);
+    
+    for ( int n=0; n<natoms; n++ ) charges[n] = atoms[n].z;
+  }
    // Energies
   else if ( strcmp("energies", specifier)==0 ){
     plhs[0] = mxCreateDoubleMatrix(1, 2, mxREAL);

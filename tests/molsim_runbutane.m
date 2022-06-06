@@ -35,7 +35,7 @@ function molsim_runbutane()
     molsim('calcforce', 'torsion', 0, torsionparam);
 
     molsim('integrate', 'leapfrog')
-    molsim('thermostate', 'relax', 'C', temp0, tau);
+    molsim('thermostat', 'relax', 'C', temp0, tau);
 
     molsim('sample', 'do');
 
