@@ -1001,8 +1001,10 @@ void sep_eval_mol_couple_tensor(sepatom *atoms, sepmol *mols,
 // neutral molecules only
 void sep_mol_dipoles(seppart *atom, sepmol *mol, sepsys *sys){
 
+  sep_mol_cm(atom, mol, sys);
+  
   const int nmol = sys->molptr->num_mols;
-
+  
   for ( int i=0; i<nmol; i++ ){
 		
     double sumz = 0.0;

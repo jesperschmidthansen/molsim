@@ -364,6 +364,19 @@ sepradial *sep_radial_init(int lvec, int sampleinterval, char types[]){
 
   ptr->hist = sep_matrix_int(lvec, ptr->ncomb);
 
+  FILE *fout=  fopen("radial_info.dat", "w");
+  if ( fout == NULL )
+    sep_error("%s: Couldn't open file", __func__);
+
+  fprintf(fout, "Pairs in radial.dat columns are\n");
+  for ( int nt_1 = 0; nt_1<ptr->ntypes; nt_1++ ){
+    for  ( int nt_2 = nt_1; nt_2<ptr->ntypes; nt_2++ ){
+      fprintf(fout, "%c%c  ", ptr->types[nt_1],  ptr->types[nt_2]);
+    }
+  }
+     
+  fclose(fout);
+  
   return ptr;
 }
 
@@ -549,8 +562,6 @@ void sep_msd_sample(seppart *atom, sepmsd *sptr, sepsys sys){
       sd += a;
       qd += a*a;
     }
-
-
   }
   
   for ( int i=0; i<sptr->nk; i++ ){
