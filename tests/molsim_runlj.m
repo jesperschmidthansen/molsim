@@ -1,6 +1,8 @@
 
 %%
-%% molsim_runlj: Example of simple Lennard-Jones simulation
+%% molsim_runlj: Simple Lennard-Jones simulation
+%%
+%% Test: 
 %%
 
 function molsim_runlj()
@@ -22,7 +24,10 @@ function molsim_runlj()
 
   end
 
+  molsim('save', 'A', 'start.xyz');
   molsim('clear');
   fprintf('\n');
+
+  
   
 end

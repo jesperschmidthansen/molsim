@@ -270,10 +270,7 @@ void action_load(int nrhs, const mxArray **prhs){
     
     sys = sep_sys_setup(lbox[0], lbox[1], lbox[2],
 			maxcutoff, dt, natoms, SEP_LLIST_NEIGHBLIST);
-    
-    if ( !tempflag )
-      sep_set_vel(atoms, temperature, sys);
-    
+
     initflag = true;
     
 #ifdef OCTAVE
