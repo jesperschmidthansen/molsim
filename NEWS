@@ -45,3 +45,4 @@ molsim-0.9.4
   * Added more specifiers to get: 'charges' 
   * Revisions/update to tutorial
   * Bug squashing
+  * Optimization to sf-Coulomb interaction calculations (seplib) 

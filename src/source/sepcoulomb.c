@@ -27,7 +27,9 @@ void sep_coulomb_sf_brute(seppart *ptr,  double cf, sepsys *sys,
   icf = 1.0/cf;
 
   for ( n=0; n<sys->npart-1; n++ ){
-		
+
+    if ( fabs(ptr[n].z) < DBL_EPSILON ) continue;
+    
     int i = ptr[n].molindex;		
     
     for ( m=n+1; m<sys->npart; m++ ){
@@ -102,6 +104,9 @@ void sep_coulomb_sf_neighb(seppart *ptr, double cf, sepsys *sys, sepret *retval)
 
 
   for (i1=0; i1<sys->npart; i1++){
+    
+    if ( fabs(ptr[i1].z) < DBL_EPSILON ) continue;
+
     int moli_i1	= ptr[i1].molindex;
     n = 0;
     while (1){
@@ -172,6 +177,8 @@ void sep_coulomb_sf_neighb_omp(seppart *ptr, double cf, sepsys *sys,
   private(i1, n, i2, k, kk, r, r2, ft, f)			\
   reduction(+:ecoul, force_array[:lvec]) 
   for (i1=0; i1<sys->npart; i1++){
+    
+    if ( fabs(ptr[i1].z) < DBL_EPSILON ) continue;
     
     n = 0;
     while (1){
@@ -248,6 +255,8 @@ void sep_coulomb_wolf_brute(seppart *ptr, double alpha, double rcf, sepsys *sys,
   ecoul= 0.0;
   
   for ( int n=0; n<sys->npart-1; n++ ){
+    
+    if ( fabs(ptr[n].z) < DBL_EPSILON ) continue;
     
     // self term 
     int i = ptr[n].molindex;
@@ -334,7 +343,9 @@ void sep_coulomb_wolf_neighb(seppart *ptr, double alpha, double rcf,
   ecoul= 0.0;
   
   for ( i=0; i<sys->npart; i++ ){
-   
+
+    if ( fabs(ptr[i].z) < DBL_EPSILON ) continue;
+    
     // self term 
     int moli_i = ptr[i].molindex;
     if ( moli_i == -1 )
