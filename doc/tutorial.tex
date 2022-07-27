@@ -223,6 +223,16 @@ v = molsim('get', 'velocities');
 In the reference sheet (see Appendix) you can find the list of
 specifiers for the \verb!get! action.
 
+\textbf{IMPORTANT NOTE} For molecular systems the pressure is
+calculated using the molecular pressure tensor. In general this is different
+from the atomic pressure. The user must enable this calculation using the
+\verb!set! action with specifier \verb!molstresscalc!. For example, to
+calculate the (molecular) pressure every ten time step use
+\begin{verbatim}
+molsim('set', 'molstresscalc', 10);
+\end{verbatim}
+
+
 \subsection{NVT and NPT simulations}
 Often you will not perform simulations in the micro-canonical ensemble, but
 under a desired temperature and/or pressure. One way to achieve this with
@@ -547,6 +557,10 @@ cores) is not always optimal. In the \verb!tests!-directory you can find
 \verb!molsim_runparallel.m! that times the execution time for a given system
 size, density and number of threads; use the \verb!help! command for its usage.
 
+\bigskip
+
+\noindent
+
 \begin{thebibliography}{9}
 
 \bibitem{AllenTildesley}
@@ -610,7 +624,8 @@ size, density and number of threads; use the \verb!help! command for its usage.
               &&                 && 3: No. molecules && \\
               &&                 && 4: Crystal density && \\
               &&                 && 5: Random seed && \\
-              &&\verb!virtualsites!&& && \\ 
+              &&\verb!virtualsites!&& && \\
+    $\mbox{}$ &&\verb!molstresscalc! && iterations between calculation && \\ 
     && && && \\
     \hline                                           
   \end{tabular}
@@ -627,7 +642,7 @@ size, density and number of threads; use the \verb!help! command for its usage.
     \verb!get! && \verb!numbpart!&& && scalar\\
     $\mbox{}$  && \verb!box! && && 3-vector \\
     $\mbox{}$  && \verb!energies! && && 2-vector (kin, pot)\\
-    $\mbox{}$  && \verb!pressure! && && scalar, 2-vector (p, pmol) \\
+    $\mbox{}$  && \verb!pressure! && && scalar(s) (p, pmol) \\
     $\mbox{}$  && \verb!velocities! && && $N_\mathrm{part.}\times 3$-matrix \\
     $\mbox{}$  && \verb!positions! && &&  $N_\mathrm{part.}\times 3$-matrix \\
     $\mbox{}$  && \verb!forces! && &&  $N_\mathrm{part.}\times 3$-matrix \\
