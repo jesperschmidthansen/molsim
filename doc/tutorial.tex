@@ -231,7 +231,12 @@ calculate the (molecular) pressure every ten time step use
 \begin{verbatim}
 molsim('set', 'molstresscalc', 10);
 \end{verbatim}
-
+Then in the main loop retrieve the pressure
+\begin{verbatim}
+if rem(n,10)==0
+  [press_atomic, press_mol]=molsim('get', 'pressure');
+end
+\end{verbatim}
 
 \subsection{NVT and NPT simulations}
 Often you will not perform simulations in the micro-canonical ensemble, but

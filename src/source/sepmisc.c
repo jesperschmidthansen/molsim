@@ -1070,7 +1070,6 @@ void sep_set_omp(unsigned nthreads, sepsys *sys){
 
   omp_set_num_threads(nthreads);
 
-  sep_warning("omp disables the molecular pressure tensor calculations");
 }
 
 void sep_set_skin(sepsys *sys, double value){
