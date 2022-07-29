@@ -115,12 +115,14 @@ void action_reset(int nrhs){
   sep_reset_force(atoms, &sys);
 
   // Resetting the Fijmol arrays is slow - therefore only when necessary
-  if ( initmol && msacf_int_sample > 0 && iterationNumber%msacf_int_sample == 0 ){
-    sep_reset_force_mol(&sys);
-  }
-  if ( initmol && msacf_int_calc > 0 && iterationNumber%msacf_int_calc == 0 ){
-    sep_reset_force_mol(&sys);
-  }
+   if ( initmol ){
+    if ( msacf_int_sample > 0 && iterationNumber%msacf_int_sample == 0 )
+      sep_reset_force_mol(&sys);
+    else if ( msacf_int_calc > 0 && (iterationNumber+1)%msacf_int_calc == 0 )
+      sep_reset_force_mol(&sys);
+   }
+   
+
 }
 
 void action_set(int nrhs, const mxArray* prhs[]){
@@ -140,8 +142,11 @@ void action_set(int nrhs, const mxArray* prhs[]){
     maxcutoff = mxGetScalar(prhs[2]);
   }
   else if ( strcmp(specifier, "temperature")==0 ){
+   
     if ( nrhs != 3 ) inputerror(__func__);
+   
     temperature = mxGetScalar(prhs[2]);
+
     sep_set_vel_seed(atoms, temperature, 42, sys);
     tempflag = true;
   }
@@ -328,14 +333,14 @@ void action_calcforce(int nrhs, const mxArray **prhs){
       double param[4]={cf, epsilon, sigma, postfac};
 
       bool tmp = sys.omp_flag;
-
-      if ( initmol && tmp ){
+      
+      if ( initmol ){
 	if ( msacf_int_sample > 0 && iterationNumber%msacf_int_sample == 0 )
 	  sys.omp_flag = false;
-	if ( msacf_int_calc > 0 && iterationNumber%msacf_int_calc == 0 )
+	else if ( msacf_int_calc > 0 && (iterationNumber+1)%msacf_int_calc == 0 )
 	  sys.omp_flag = false;
       }
-      
+
       sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
       
       sys.omp_flag = tmp;
@@ -604,16 +609,14 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
     sep_pressure_tensor(&ret, &sys);
     plhs[0] = mxCreateDoubleScalar(ret.p);
 
-    if ( initmol && nlhs == 2 && !sys.omp_flag ){
-      sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
-      plhs[1] = mxCreateDoubleScalar(ret.p_mol);
+    if ( nlhs == 2 ) {
+      if ( initmol && iterationNumber%msacf_int_calc == 0){
+	sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
+	plhs[1] = mxCreateDoubleScalar(ret.p_mol);
+      }
+      else
+	plhs[1] = mxCreateDoubleScalar(0.0f);
     }
-    else if ( initmol && nlhs == 2 && iterationNumber%msacf_int_calc == 0){
-      sep_eval_mol_pressure_tensor(atoms, mols, &ret, &sys);
-      plhs[1] = mxCreateDoubleScalar(ret.p_mol);
-    }
-    else if ( nlhs == 2 )
-      plhs[1] = mxCreateDoubleScalar(0.0f);
     
   }
   // Number of particles 
