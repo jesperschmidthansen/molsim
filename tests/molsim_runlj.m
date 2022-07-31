@@ -26,8 +26,7 @@ function molsim_runlj()
 
   molsim('save', 'A', 'start.xyz');
   molsim('clear');
+  
   fprintf('\n');
 
-  
-  
 end
