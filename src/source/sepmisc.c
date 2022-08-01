@@ -1032,6 +1032,34 @@ void sep_compress_box_dir(sepatom *ptr, double rhoD, double xi,
 
 }
 
+void sep_compress_box_dir_length(sepatom *ptr, double length, double xi, 
+				 int dir, sepsys *sys){
+
+  if ( sys->length[dir] > length ){ 
+    
+    sys->length[dir] *= xi;
+    if  ( sys->length[dir] < sys->cf*2.0 )
+      sep_warning("%s at %d: Box length too small compared to the maximum cut-off", 
+		   __func__, __LINE__);
+			   
+    double scale = pow(xi, 1.0/3.0); 
+    for ( int n=0; n<sys->npart; n++ ) ptr[n].x[dir] *= scale;
+    
+    // Need to update the sub boxes
+    if ( sys->neighb_update != 0 ){
+      sys->nsubbox[dir] = sep_nsubbox(sys->cf, 0.0, sys->length[dir]);
+      if ( sys->nsubbox[dir] < 3 ) 
+	sep_warning("%s at %d: Number of subboxes in x direction are less than three", 
+		    __func__, __LINE__);
+    
+      sys->lsubbox[dir] = sys->length[dir]/sys->nsubbox[dir];
+    }
+
+    sys->volume = sys->length[0]*sys->length[1]*sys->length[2];
+  }
+
+}
+
 
 
 void sep_set_charge(seppart *ptr, char type, double z, sepsys sys){

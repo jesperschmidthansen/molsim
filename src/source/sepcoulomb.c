@@ -179,7 +179,7 @@ void sep_coulomb_sf_neighb_omp(seppart *ptr, double cf, sepsys *sys,
   for (i1=0; i1<sys->npart; i1++){
     
     if ( fabs(ptr[i1].z) < DBL_EPSILON ) continue;
-        
+    
     n = 0;
     while (1){
       i2 = ptr[i1].neighb[n];

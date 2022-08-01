@@ -972,11 +972,17 @@ void action_task(int nrhs, const mxArray **prhs){
 
 void action_compress(int nrhs, const mxArray **prhs){
 
-  if ( nrhs != 2 ) inputerror(__func__);
+  if ( nrhs > 3 ) inputerror(__func__);
   
-  double targetdens = mxGetScalar(prhs[1]);
-  sep_compress_box(atoms, targetdens, compressionfactor, &sys);  
-
+  double target = mxGetScalar(prhs[1]);
+  
+  if ( nrhs == 2 ) 
+    sep_compress_box(atoms, target, compressionfactor, &sys);  
+  else if ( nrhs == 3 ) {
+    int dir = (int)mxGetScalar(prhs[2]);
+    sep_compress_box_dir_length(atoms, target, compressionfactor, dir, &sys);
+  }
+    
 }
 
 void action_clear(int nrhs, const mxArray **prhs){

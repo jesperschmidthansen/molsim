@@ -153,9 +153,8 @@ void sep_set_vel_seed(seppart*ptr, double temp, unsigned int seed,
   double smom[3], scale, sekin;
 
   srand(seed);
-
+  
   for (m=0; m<ndim; m++) smom[m]=0.0;
-
   sekin = 0.0;
   for (n=0; n<npart; n++){
     for (m=0; m<ndim; m++){
@@ -164,7 +163,6 @@ void sep_set_vel_seed(seppart*ptr, double temp, unsigned int seed,
       sekin      += ptr[n].v[m]*ptr[n].v[m]*ptr[n].m;
     }
   }
-
   
   scale = sqrt(npart*ndim*temp/sekin);
   for (n=0; n<npart; n++){
@@ -172,7 +170,6 @@ void sep_set_vel_seed(seppart*ptr, double temp, unsigned int seed,
       ptr[n].v[m]  = (ptr[n].v[m]-smom[m]/(ptr[n].m*npart))*scale;
     }
   }
-
 
   // Check on momentum and temperature
   for (m=0; m<ndim; m++) smom[m]=0.0;

@@ -840,6 +840,7 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
   }
   
   else {
+   
     for (i1=0; i1<sys->npart; i1++){
     
       if ( ptr[i1].type != types[0] && ptr[i1].type != types[1] )
@@ -880,7 +881,6 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
 		retval->pot_P[k][kk] += f[k]*r[kk];
 	    
 	    if ( sys->molptr->flag_Fij == 1 ){
-	      
 	      moli_i2 = ptr[i2].molindex;
 	      if ( (moli_i1 != -1 && moli_i2 != -1) && (moli_i1 != moli_i2) ){
 		for ( k=0; k<3;k++ ){

@@ -386,6 +386,20 @@ void sep_compress_box_dir(sepatom *ptr, double rhoD, double xi,
 			  int dir, sepsys *sys);
 
 
+
+/**
+ * Compress/reduce on side of the simulation box if length larger smaller than
+ * a specific value. Other directions are left as is. Should be called multiple
+ * times in order to reach desired length.
+ * @param ptr Pointer to seplib particle structure
+ * @param length Desired length in direction dir
+ * @param xi Reduction parameter
+ * @param dir Direction specifier (0,1,2) for (x,y,z)-directions
+ * @param sys Pointer to seplib system structure
+ */
+void sep_compress_box_dir_length(sepatom *ptr, double length, double xi, 
+				 int dir, sepsys *sys);
+  
 /**
  * Pseudo random number from a uniform distribution in interval ]0;1[
  * SLOW  
