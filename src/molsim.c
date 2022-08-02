@@ -749,6 +749,33 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
     r[0] = creal(sump_m); r[1] = cimag(sump_m);
     // plhs[1].real = creal(sump_m); plhs[1].imag = cimag(sump_m);
   }
+  else if ( strcmp("torsions", specifier)==0 ){
+    const int ntorsion = sys.molptr->num_dihedrals;
+
+    plhs[0] = mxCreateDoubleMatrix(ntorsion, 1, mxREAL);
+    double *tptr = mxGetPr(plhs[0]);
+
+    for ( int n=0; n<ntorsion; n++ )
+	tptr[n] = sys.molptr->dihedrals[n];
+  }
+  else if ( strcmp("angles", specifier)==0 ){
+    const int nangles = sys.molptr->num_angles;
+
+    plhs[0] = mxCreateDoubleMatrix(nangles, 1, mxREAL);
+    double *tptr = mxGetPr(plhs[0]);
+
+    for ( int n=0; n<nangles; n++ )
+	tptr[n] = sys.molptr->angles[n];
+  }
+  else if ( strcmp("bondlengths", specifier)==0 ){
+    const int nbonds = sys.molptr->num_bonds;
+
+    plhs[0] = mxCreateDoubleMatrix(nbonds, 1, mxREAL);
+    double *tptr = mxGetPr(plhs[0]);
+
+    for ( int n=0; n<nbonds; n++ )
+	tptr[n] = sys.molptr->blengths[n];
+  } 
   else {
     mexErrMsgTxt("Action 'get' -> Not a valid specifier\n");
   }

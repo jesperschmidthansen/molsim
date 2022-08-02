@@ -657,15 +657,28 @@ size, density and number of threads; use the \verb!help! command for its usage.
     $\mbox{}$  && \verb!molpositions! && && $N_\mathrm{mol}\times 3$-matrix \\
     $\mbox{}$  && \verb!molvelocities! && && $N_\mathrm{mol}\times 3$-matrix \\
     $\mbox{}$ && \verb!indices! && && $N_\mathrm{uau}$-vector \\
+    $\mbox{}$ && \verb!bondlengths! && && $N_\mathrm{nbonds}$-vector \\
+    $\mbox{}$ && \verb!angles! && && $N_\mathrm{nangles}$-vector \\
+    $\mbox{}$ && \verb!torsions! && && $N_\mathrm{ntorsion}$-vector \\
     $\mbox{}$ && && && \\
     \hline
                                    && && && \\
+  \end{tabular}
+
+\end{center}
+    
+\begin{center}
+  
+  \begin{tabular}{cclclclll}
+    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
+                                   && && && \\
+    \hline
     \verb!calcforce! && \verb!lj! && 1: part. types && \\
                                    && && 2: cutoff&& \\
                                    && && 3: $\sigma$ && \\
                                    && && 4: $\epsilon$ && \\
                                    && && 5: $a_w$ && \\
-                  &&\verb!coulomb!&& 1: method && \\
+                   &&\verb!coulomb!&& 1: method && \\
                                    && && 2: cutoff && \\
                                    && && 3: opt. Wolf param.\\
                     && \verb!bond! && 1: type && \\  
