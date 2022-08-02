@@ -42,7 +42,8 @@ molsim-0.9.3
 molsim-0.9.4
 ------------
 
-  * Added more specifiers to get: 'charges' 
+  * Added more specifiers to get: 'charges', 'bondlengths', 'angles' and 'torsions'
   * Revisions/update to tutorial
-  * Bug squashing
-  * Optimization to sf-Coulomb interaction calculations (seplib) 
+  * Bug squashing: Pressure tensor calculation handling. 
+  * Optimization to sf-Coulomb interaction calculations (seplib)
+  
