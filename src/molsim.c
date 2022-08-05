@@ -139,6 +139,12 @@ void action_set(int nrhs, const mxArray* prhs[]){
   }
   else if ( strcmp(specifier, "cutoff")==0 ){
     if ( nrhs != 3 ) inputerror(__func__);
+
+    if ( initflag ){
+      mexErrMsgTxt("The cutoff length must be set before loading");
+      return;
+    }
+    
     maxcutoff = mxGetScalar(prhs[2]);
   }
   else if ( strcmp(specifier, "temperature")==0 ){
@@ -280,7 +286,7 @@ void action_load(int nrhs, const mxArray **prhs){
     char *file = mxArrayToString(prhs[2]);
     
     atoms = sep_init_xyz(lbox, &natoms, file, 'v');
-    
+
     sys = sep_sys_setup(lbox[0], lbox[1], lbox[2],
 			maxcutoff, dt, natoms, SEP_LLIST_NEIGHBLIST);
 
@@ -403,7 +409,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
 	if ( initmol && tmp ){
 	  if ( msacf_int_sample > 0 && iterationNumber%msacf_int_sample == 0 ) 
 	    sys.omp_flag = false;
-	  if ( msacf_int_calc > 0 && iterationNumber%msacf_int_calc == 0 )
+	  if ( msacf_int_calc > 0 && (iterationNumber+1)%msacf_int_calc == 0 )
 	    sys.omp_flag = false;
 	}
 
@@ -1006,7 +1012,12 @@ void action_compress(int nrhs, const mxArray **prhs){
   if ( nrhs == 2 ) 
     sep_compress_box(atoms, target, compressionfactor, &sys);  
   else if ( nrhs == 3 ) {
-    int dir = (int)mxGetScalar(prhs[2]);
+
+    int dir = (int)mxGetScalar(prhs[2])-1;
+
+    if ( dir <0 || dir > 2 )
+      mexErrMsgTxt("Direction in compress specifier must be 0-2");
+    
     sep_compress_box_dir_length(atoms, target, compressionfactor, dir, &sys);
   }
     

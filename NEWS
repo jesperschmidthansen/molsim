@@ -43,6 +43,7 @@ molsim-0.9.4
 ------------
 
   * Added more specifiers to get: 'charges', 'bondlengths', 'angles' and 'torsions'
+  * Added specifiers to compress: Desired length can be set in one direction (anisotropic compr)
   * Revisions/update to tutorial
   * Bug squashing: Pressure tensor calculation handling. 
   * Optimization to sf-Coulomb interaction calculations (seplib)
