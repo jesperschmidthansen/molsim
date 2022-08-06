@@ -37,14 +37,16 @@ molsim-0.9.3
   * Molecular stress calculations now supported under parallisation 
   * Added more specifiers to get: 'molvelocities', 'indices' 
   * Revision to tutorial
-  * Changed actions 'thermostate' and 'barostate' to 'thermostat' and 'barostat'
+  * Changed actions 'thermostate' and 'barostate' to
+    'thermostat' and 'barostat'
 
 molsim-0.9.4
 ------------
 
-  * Added more specifiers to get: 'charges', 'bondlengths', 'angles' and 'torsions'
-  * Added specifiers to compress: Desired length can be set in one direction (anisotropic compr)
-  * Revisions/update to tutorial
-  * Bug squashing: Pressure tensor calculation handling. 
+  * Added more specifiers to action 'get': 'charges',
+    'bondlengths', 'angles' and 'torsions'
+  * Action 'compress' now allows anisotropic compression
   * Optimization to sf-Coulomb interaction calculations (seplib)
-  
+  * Revisions/update to tutorial
+  * Bug squashing 
+  * Initial version of a test script 

@@ -12,7 +12,7 @@
 
 \title{\textsf{molsim} tutorial \\ \bigskip \tiny{for the v. 0.9 series}}
 \author{J.S. Hansen}
-\date{Februaray 2022}
+\date{February 2022}
   
 \begin{document}
 
@@ -209,6 +209,15 @@ to print current iteration number, potential energy per particle, kinetic energy
 per particle, total energy per particle, kinetic temperature, and total momentum
 to screen every 100 time step.
 
+\begin{center}
+\fbox{\parbox{0.5\textwidth}{
+    \begin{center}
+      The default particle type is \textsf{A}
+    \end{center}
+  }
+}
+\end{center}
+
 Information can also be stored into variables for further analysis. For example,
 to get the system energies and pressure
 \begin{verbatim}
@@ -222,6 +231,7 @@ v = molsim('get', 'velocities');
 \end{verbatim}
 In the reference sheet (see Appendix) you can find the list of
 specifiers for the \verb!get! action.
+
 
 \textbf{IMPORTANT NOTE} For molecular systems the pressure is
 calculated using the molecular pressure tensor. In general this is different
