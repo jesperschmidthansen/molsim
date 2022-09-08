@@ -1,9 +1,9 @@
 name: molsim 
-version: 0.9.3
-date: 2022-21-05
+version: 0.9.5
+date: 2022-07-09
 author: Jesper Schmidt Hansen <jesperschmidthansen@gmail.com>
 maintainer: Jesper Schmidt Hansen <jesperschmidthansen@gmail.com>
-title: molsim: a GNU Octave molecular dynamics package
+title: molsim - a GNU Octave molecular dynamics package
 categories: package 
 description: Wrapper for seplib, a molecular dynamics simulation library.
 license: GPLv3

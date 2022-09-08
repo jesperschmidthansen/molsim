@@ -388,7 +388,7 @@ void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
   const double dg = 0.5*lbox/sptr->lvec;
 
   double rv[3];
-  
+
   for ( int i=0; i<npart-1; i++ ){
     for ( int j=i+1; j<npart; j++ ){
 
@@ -420,7 +420,7 @@ void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
       
     }
   }
-  
+
   sptr->nsample++;
 
   FILE *fout = fopen("radial.dat", "w");
@@ -1515,8 +1515,7 @@ void sep_profs_sampler(seppart *pptr, sepprofs *ptr, sepsys sys){
 // Hydro profiler (molecular) 
 sepmprofs *sep_mprofs_init(char type, int lvec, int isample, int dir, int dirvel, 
 			   int diramom){
-  
-  sepmprofs *ptr = malloc(sizeof(sepprofs));
+  sepmprofs *ptr = malloc(sizeof(sepmprofs));
   if ( ptr==NULL )
     sep_error("%s at line %d: Couldn't allocate memory", __func__, __LINE__);
 

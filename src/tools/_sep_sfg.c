@@ -210,7 +210,9 @@ unsigned readxyz(molecule *mol, const char *file,
        mol[moli].z == NULL || mol[moli].mass == NULL ) 
     merror("Memory allocation error",  __func__, __LINE__);
   
-  fgets(str, 256, fin);
+  if ( fgets(str, 256, fin)== NULL ){
+    merror("Couldn't read xyz-file", __func__, __LINE__);
+  }
   
   float cm[3] = {0.0};
   for ( unsigned n=0; n<mol[moli].nuau; n++ ){
@@ -692,19 +694,38 @@ void pipe( molecule *mol, int ntypes ){
     dihed += mol[n].ndihedrals;
   }
 
-  system("rm -f start.top");
+  if ( system("rm -f start.top") == -1 )
+    merror("Linux system call 'rm' failed", __func__, __LINE__);
 
+  int retsys = 0;
   if ( bonds > 0 ){
-    system("cat __bonds.top >> start.top");
-    system("echo ""  >> start.top");
+    retsys = system("cat __bonds.top >> start.top");
+    if ( retsys == -1 )
+      merror("Linux system call 'rm' failed", __func__, __LINE__);
+
+    retsys = system("echo ""  >> start.top");
+    if ( retsys == -1 )
+      merror("Linux system call 'rm' failed", __func__, __LINE__);
+    
   }
   if ( ang > 0 ) {
-    system("cat __angles.top >> start.top");
-    system("echo ""  >> start.top");
+    retsys = system("cat __angles.top >> start.top");
+    if ( retsys == -1 )
+      merror("Linux system call 'rm' failed", __func__, __LINE__);
+
+    retsys = system("echo ""  >> start.top");
+    if ( retsys == -1 )
+      merror("Linux system call 'rm' failed", __func__, __LINE__);
+
   }
   if ( dihed > 0 ){
-    system("cat __dihedrals.top >> start.top");
-    system("echo ""  >> start.top");
+    retsys=system("cat __dihedrals.top >> start.top");
+    if ( retsys == -1 )
+      merror("Linux system call 'rm' failed", __func__, __LINE__);
+
+    retsys = system("echo ""  >> start.top");
+    if ( retsys == -1 )
+      merror("Linux system call 'rm' failed", __func__, __LINE__);
   }
 
 }

@@ -3,28 +3,25 @@ clear all;
 %%
 %% _lj: Simple Lennard-Jones simulation (liquid, super crit. fluids, gasses)
 %%
-%% Test: 1) Energy conserveration (no thermostat)
-%%       2) Momentum conservation
-%%       3) omp
-%%       4) Structure
 %%
+
 function [epot, ekin, sum_mom]=_lj(nloops, temp0, optThermostat, optOmp)
   cutoff = 2.5; epsilon = 1.0; sigma = 1.0; aw=1.0;
   
   molsim('load', 'xyz', 'start.xyz');
   molsim('set', 'temperature', temp0);
-  
+
   molsim('sample', 'vacf', 100, 5.0);
   molsim('sample', 'radial', 100, 50, 'A');
-  
+
   if ( optOmp )
     molsim('set', 'omp', 2);
   end
 
   m = 1;
   for n=1:nloops
-
     molsim('reset');
+
     molsim('calcforce', 'lj', 'AA', cutoff, sigma, epsilon, aw);
 
     if ( optThermostat )
@@ -34,9 +31,9 @@ function [epot, ekin, sum_mom]=_lj(nloops, temp0, optThermostat, optOmp)
     else
       molsim('integrate', 'leapfrog');
     end
-    
+
     molsim('sample', 'do');
-    
+
     if ( rem(n,100) == 0) 
       energies(m,:) = molsim('get', 'energies');
 
@@ -44,8 +41,9 @@ function [epot, ekin, sum_mom]=_lj(nloops, temp0, optThermostat, optOmp)
       sum_mom(m, :) = [sum(v(:,1)), sum(v(:,2)), sum(v(:,3))];
 
       m=m+1;
-    end
 
+    end
+    
   end
 
   ekin = energies(:,1)./1000;
@@ -78,7 +76,7 @@ if ( testArray(1) )
   molsim('set', 'lattice', [10 10 10], [lbox lbox lbox]);
   
   [epot, ekin, sum_mom]=_lj(10000, temp0, false, false);
-  
+
   fprintf(stdout, "\n  *Result*: "); fprintf(log_file, "\n  *Result*: ");
   printf("Single CPU; energy %.5e +/- %.5e, momentum %.4e \n\n", ...
 	 mean(epot+ekin), std(epot+ekin), mean(sum_mom(:,1)));
@@ -100,7 +98,7 @@ end
 
 %%%% Test 2 LJ Ref. Morsali et al., Chem. Phys., 310:11 (2005)
 if ( testArray(2) )
-  
+
   fprintf(stdout, "\n --- Test 2: LJ structure --- \n \n"); fflush(stdout);
   fprintf(log_file, "\n--- Test 2: LJ structure --- \n \n");
   
@@ -110,6 +108,8 @@ if ( testArray(2) )
   molsim('set', 'lattice', [10 10 10], [lbox lbox lbox]);
   
   [epot, ekin, sum_mom]=_lj(10000, temp0, true, false);
+
+
   system("cp final.xyz start.xyz");
   [epot, ekin, sum_mom]=_lj(100000, temp0, true, false);
   

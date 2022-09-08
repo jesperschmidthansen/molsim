@@ -68,17 +68,13 @@ seppart *sep_init_xyz(double *lbox, int *npart, const char *file,
  
   if ( verbose == 'v' )
     fprintf(stdout, "Opening %s\n", file);
-  
-  
+   
   FILE *fin = fopen(file, "r");
   if ( fin==NULL )
-    sep_error("%s at line %d: Couldn't open file\n",
-	      __func__, __LINE__);
+    sep_error("%s at line %d: Couldn't open file\n", __func__, __LINE__);
   
-
   if ( fscanf(fin, "%d", npart) != 1 )
-    sep_error("%s at line %d: Error reading xyz file\n",
-	      __func__, __LINE__);
+    sep_error("%s at line %d: Error reading xyz file\n", __func__, __LINE__);
 
   seppart *ptr = sep_init(*npart, SEP_NUM_NEIGHB);
   

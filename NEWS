@@ -49,4 +49,11 @@ molsim-0.9.4
   * Optimization to sf-Coulomb interaction calculations (seplib)
   * Revisions/update to tutorial
   * Bug squashing 
-  * Initial version of a test script 
+  * Initial version of a test script
+
+molsim-0.9.5 
+------------
+
+  * A few bug fixes (thanks to Kai's compiler for pointing out these issues)
+  * Added test 
+

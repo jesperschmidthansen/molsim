@@ -857,9 +857,9 @@ void action_sample(int nrhs, const mxArray **prhs){
     else if ( strcmp(specifier, "radial")==0 ){
       if ( nrhs != 5 ) inputerror(__func__);
       int lvec = (int)mxGetScalar(prhs[2]);
-      int sampleinterval = (int)mxGetScalar(prhs[3]);
+      int nsample = (int)mxGetScalar(prhs[3]);
       char *types =  mxArrayToString(prhs[4]);
-      sep_add_sampler(&sampler, "radial", sys, lvec, sampleinterval, types);
+      sep_add_sampler(&sampler, "radial", sys, lvec, nsample, types);
 #ifdef OCTAVE
       free(types);
 #endif
