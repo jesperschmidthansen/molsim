@@ -75,7 +75,7 @@ void sep_read_bonds_top(sepatom *aptr, sepmolinfo *ptr,
 		  __func__, __LINE__);
      
       (ptr->num_bonds) ++;
-     
+    
       ptr->blist = realloc(ptr->blist, sizeof(unsigned)*3*ptr->num_bonds);
       if ( ptr->blist == NULL )
 	sep_error("%s at line %d: Couldn't allocate memory", 
