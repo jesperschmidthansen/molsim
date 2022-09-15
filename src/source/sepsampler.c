@@ -381,7 +381,8 @@ sepradial *sep_radial_init(int lvec, int sampleinterval, char types[]){
 }
 
 void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
-
+  static int cc = 0;
+  
   const int npart = sys.npart;
   const double lbox = sys.length[0];
   
@@ -391,7 +392,7 @@ void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
 
   for ( int i=0; i<npart-1; i++ ){
     for ( int j=i+1; j<npart; j++ ){
-
+	
       double r2 = 0.0;
       for ( int k=0; k<3; k++){
 	rv[k]  = atom[i].x[k]-atom[j].x[k];
@@ -411,15 +412,6 @@ void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
 		 ||
 		 (atom[i].type == sptr->types[nt_2] &&
 		  atom[j].type == sptr->types[nt_1]) ){
-	      printf("--------------\n");
-	      printf("lbox: %f %f %f\n",sys.length[0], sys.length[1], sys.length[2]);
-	      printf("%f %f %f and %f %f %f\n",
-		     atom[i].x[0],  atom[i].x[1],  atom[i].x[2],
-		     atom[j].x[0],  atom[j].x[1],  atom[j].x[2]);
-	      printf("%d %d %f %f %f ", i, j, r2, r, dg);   
-	      printf("%d/%d %d/%d\n",
-		     index, sptr->lvec, counter, sptr->ncomb);
-	      fflush(stdout);
 	      sptr->hist[index][counter] += 1;
 	    }
 	    counter++;
@@ -453,7 +445,8 @@ void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
   }
   
   fclose(fout);
-  
+
+  cc++;
 }
 
 void sep_radial_close(sepradial *ptr){

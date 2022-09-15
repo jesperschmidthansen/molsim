@@ -291,6 +291,8 @@ void action_load(int nrhs, const mxArray **prhs){
 			maxcutoff, dt, natoms, SEP_LLIST_NEIGHBLIST);
 
     initflag = true;
+
+    sep_set_vel_seed(atoms, 1.0, 42, sys); // Basically reset momentum
     
 #ifdef OCTAVE
     free(file);
