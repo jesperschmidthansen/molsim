@@ -24,4 +24,16 @@ load mem.out; mem_1 = max(mem);
 printf("\n  *Result*: ");  
 printf("Mem. before test %f after test %f\n", mem_0, mem_1);
 
+for n=1:1000
+  _lj(110, 1.0, false, false);
+end
+
+str=sprintf("ps aux | grep %d > ps.out", pid);
+system(str);
+system("awk '{ print $4 }' ps.out > mem.out");
+load mem.out; mem_1 = max(mem);
+  
+printf("\n  *Result*: ");  
+printf("Mem. before test %f after test %f\n", mem_0, mem_1);
+
   

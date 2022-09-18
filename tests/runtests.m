@@ -1,6 +1,6 @@
 
-dotests = [true,  
-	   true,
+dotests = [false,  
+	   false,
 	   true];
 itest = 1;
 tests=["_test01.m"; "_test02.m"; "_test03.m"];

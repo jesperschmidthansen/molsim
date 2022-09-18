@@ -1,10 +1,11 @@
 
-1: Always import latest seplib revision
+
+0: Make seplib release (includes molsim build and test)
+1: Import latest seplib revision
 2: Compilation with max. warning level (pass with no warning)
 3: All tests must pass
 4: Update file NEWS 
 5: Update file DESCRIPTION
-6: Make seplib release
-7: Make molsim release
-8: Generate sha key
-9: edit molsim.yaml as necessary and submit
+6: Make molsim release
+7: Generate sha key
+8: edit molsim.yaml as necessary and submit
