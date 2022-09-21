@@ -10,9 +10,9 @@ function molsim_runbutane()
   dt  = 0.002;
 
   bondlength = 0.4;
-  bondconstant = 2000.0;
+  bondconstant =  33615;
   bondangle = 1.9;
-  angleconstant = 400.0;
+  angleconstant = 866.0;
   torsionparam = [15.5000,  20.3050, -21.9170, -5.1150,  43.8340, -52.6070];
 
   molsim('load', 'xyz', 'butane.xyz');
