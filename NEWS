@@ -57,6 +57,6 @@ molsim-0.9.5
   * A few bug fixes (thanks to Kai's compiler for pointing out these issues)
   * Added 'dihedral' specfier for to the calcforce action (alternative to 'torsion')
   * Minor update to tutorial
-  * Re-arrangement of the test suit
-  
+  * Re-arrangement of the test suit and addition of some more tests (still a bit messy)
+  * Added a release checklist
 

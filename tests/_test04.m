@@ -1,5 +1,5 @@
 
-file = fopen("test04.m", "w");
+file = fopen("test04.log", "w");
 fprintf(file, "\n --- Test 4: Molecular simulations --- \n \n"); fflush(stdout);
 
 _water();

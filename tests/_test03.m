@@ -1,5 +1,5 @@
 
-file=fopen("test03.log");
+file=fopen("test03.log", "w");
 
 fprintf(file, "\n --- Test 3: Mem. management --- \n \n"); 
   

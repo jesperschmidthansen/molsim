@@ -2,7 +2,7 @@
 %%%% Test 1 LJ
 
 file=fopen("test01.log", "w");
-printf(file, "\n --- Test 1: LJ conservation --- \n \n");
+fprintf(file, "\n --- Test 1: LJ conservation --- \n \n");
 
 dens0 = 0.8; temp0=1.2;
 lbox = (1000/dens0)^(1/3);

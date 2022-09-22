@@ -1,7 +1,4 @@
 
-file = fopen("test05.log", "w");
-fprintf(file,"\n --- Test 5: Effect of memory clearence --- \n \n"); fflush(stdout);
-
 tic();
 _lj(2000, 2.0, false, false);
 x=molsim('get', 'positions');
@@ -25,6 +22,8 @@ timer_2=toc();
 
 load tmp.mat;
 
+file = fopen("test05.log", "w");
+fprintf(file,"\n --- Test 5: Effect of memory clearence --- \n \n"); fflush(stdout);
 fprintf(file,"Timers: %f sec.  %f sec. \n\n", timer_1, timer_2);
 fclose(file);
 
