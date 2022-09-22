@@ -1,5 +1,7 @@
 
-printf("\n --- Test 3: Mem. management --- \n \n"); fflush(stdout);
+file=fopen("test03.log");
+
+fprintf(file, "\n --- Test 3: Mem. management --- \n \n"); 
   
 dens0 = 0.8;
 lbox = (1000/dens0)^(1/3);
@@ -23,7 +25,6 @@ system(str);
 system("awk '{ print $4 }' ps.out > mem.out");
 load mem.out; mem_1 = max(mem);
 
-file = fopen("memtest.log", "w");
 fprintf(file, "\n  *Result*: ");  
 fprintf(file, "Mem. before test %f after test %f\n", mem_0, mem_1);
 

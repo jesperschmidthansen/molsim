@@ -1,11 +1,12 @@
 
-dotests = [false,  
-	   false,
-	   false,
+dotests = [true,  
+	   true,
+	   true,
+	   true,
 	   true];
 
 itest = 1;
-tests=["_test01.m"; "_test02.m"; "_test03.m"; "_test04.m"];
+tests=["_test01.m"; "_test02.m"; "_test03.m"; "_test04.m" ; "_test05.m"];
 
 save test.mat itest dotests tests;
 
@@ -18,7 +19,9 @@ do
    if ( dotests(itest) )
      run(tests(itest,:));
    endif
-   
+
+   load test.mat
+    
    itest = 1 + itest;
    
    save test.mat itest dotests tests;

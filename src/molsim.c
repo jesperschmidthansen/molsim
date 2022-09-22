@@ -378,7 +378,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
       sep_angle_harmonic(atoms, type, angle, constant, &sys, &ret);
     }
     // Torsion force
-    else if ( strcmp(specifier, "torsion")==0 ) {
+    else if ( strcmp(specifier, "torsion")==0 || strcmp(specifier, "dihedral")==0 ) {
       if ( nrhs != 4 ) inputerror(__func__);
  
       int type =  (int)mxGetScalar(prhs[2]);

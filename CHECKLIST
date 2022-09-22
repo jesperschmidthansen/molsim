@@ -7,5 +7,6 @@
 4: Update file NEWS 
 5: Update file DESCRIPTION
 6: Make molsim release
-7: Generate sha key
-8: edit molsim.yaml as necessary and submit
+7: Install directly 
+8: Generate sha key
+9: edit molsim.yaml as necessary and submit to community

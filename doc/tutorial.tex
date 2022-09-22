@@ -265,8 +265,15 @@ Nos\'{e}-Hoover thermostat available with the interface
 molsim('thermostat', 'nosehoover','A' ,2.2, 10.0);
 \end{verbatim}
 The last argument is here the thermostat mass and not the relaxation
-time. Again, you should choose this parameter with care.
-
+time. Again, you should choose this parameter with care. Impotant:
+\begin{itemize}
+\item With specifier \textsf{'nosehoover'} the thermostat is called before the
+  integrator
+\item 
+  With specifier \textsf{'relax'} the thermostat is called after the
+  integrator
+\end{itemize}
+  
 To simulate at pressure, say 0.9, you call the action \verb!'barostat'! after
 the integration step,
 \begin{verbatim}
@@ -279,7 +286,10 @@ $z$-direction only (an-isotropic scaling); this is practical when doing sampling
 as two directions are fixed. You can use the barostate and the thermostat
 in the same simulation mimicking an NPT system. For the expert: The barostat is
 based on the atomic pressure, a molecular pressure barostat is planned for
-future releases.  
+future releases.  Note
+\begin{itemize}
+  \item The \textsf{'barostat'} action should be called after the integrator
+\end{itemize}
 
 \section{The \textsf{molsim} force field}
 \verb!molsim! supports simulations of more complicated systems. In general, the
