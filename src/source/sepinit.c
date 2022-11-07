@@ -38,14 +38,16 @@ seppart *sep_init(size_t npart, size_t nneighb){
     ptr[n].z = 0.0;
     ptr[n].ldiff = 1.0;
 
-    for (k=0; k<3; k++)
+    for (k=0; k<3; k++){
       ptr[n].x[k] = 0.0;
-    for ( k=0; k<4; k++ )
-      ptr[n].bond[k] = -1;
-    for (k=0; k<3; k++)
       ptr[n].crossings[k] = 0;
-    for (k=0; k<3; k++)
       ptr[n].cross_neighb[k] = 0;
+      ptr[n].randn[k] = 0.0;
+      ptr[n].prevf[k] = 0.0;
+    }
+	
+    for ( k=0; k<4; k++ ) ptr[n].bond[k] = -1;
+         
   }
   
   return ptr;
@@ -56,7 +58,6 @@ void sep_close(seppart *ptr, size_t npart){
 
   for (n=0; n<npart; n++)
     free(ptr[n].neighb);
-  
 
   free(ptr);
 }
@@ -68,17 +69,13 @@ seppart *sep_init_xyz(double *lbox, int *npart, const char *file,
  
   if ( verbose == 'v' )
     fprintf(stdout, "Opening %s\n", file);
-  
-  
+   
   FILE *fin = fopen(file, "r");
   if ( fin==NULL )
-    sep_error("%s at line %d: Couldn't open file\n",
-	      __func__, __LINE__);
+    sep_error("%s at line %d: Couldn't open file\n", __func__, __LINE__);
   
-
   if ( fscanf(fin, "%d", npart) != 1 )
-    sep_error("%s at line %d: Error reading xyz file\n",
-	      __func__, __LINE__);
+    sep_error("%s at line %d: Error reading xyz file\n", __func__, __LINE__);
 
   seppart *ptr = sep_init(*npart, SEP_NUM_NEIGHB);
   

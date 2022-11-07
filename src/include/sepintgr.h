@@ -7,7 +7,6 @@
 * There is ABSOLUTELY NO WARRANTY, not even for MERCHANTIBILITY or
 * FITNESS FOR A PARTICULAR PURPOSE.
 *
-* Contact: schmidt@zigzak.net
 */
 
 
@@ -36,6 +35,17 @@ double sep_periodic(sepatom *atoms, unsigned n, sepsys *sys);
 void sep_leapfrog(seppart *ptr, sepsys *sys, sepret *retval);
 
 /**
+ * Updates the positions and velocities using the Grønbeck-Jensen Farago algorithm.
+ * Implemented from Mol. Phys. 111:983-991 (2013)
+ * @param ptr Pointer to the seplib particle structure
+ * @param temp0 Desired temperature
+ * @param alpha Langevin thermostat parameter
+ * @param sys Pointer to the seplib system structure
+ * @param retval Pointer to the seplib return structure
+ */
+void sep_langevinGJF(sepatom *ptr, double temp0, double alpha, sepsys *sys, sepret *retval);
+
+/**
  * Updates the Nose-Hoover thermostat friction coefficient and adds the
  * corresponding force to particles of specified type. Used before and in
  * connection with the leap-frog algorithm 
@@ -46,22 +56,9 @@ void sep_leapfrog(seppart *ptr, sepsys *sys, sepret *retval);
  * @param Q Thermostat 'mass'
  * @param sys Pointer to seplib system structure
  */
-void sep_nosehoover_type(seppart *ptr, char type, double Td, 
-			 double *alpha, const double Q, sepsys *sys);
+void sep_nosehoover(seppart *ptr, char type, double Td, 
+		    double *alpha, const double Q, sepsys *sys);
 
-/**
- * Updates the Nose-Hoover thermostat friction coefficient and adds the
- * corresponding force to all system particles. Used before and in
- * connection with the leap-frog algorithm 
- * @param ptr Pointer to the seplib particle structure
- * @param Td Desired temperature
- * @param alpha Thermostat state; double array of length 3. Must be initialized eg alpha[3]={0.1}
- * @param Q Thermostat 'mass'
- * @param sys Pointer to seplib system structure
- */
-void sep_nosehoover(seppart *ptr, double Td, double *alpha, const double Q, 
-		    sepsys *sys);
- 
 /**
  * Updates the positions and velocties with Langevin dynamics - Fokker-Planck level. 
  * Currently the integrator applies to all system particles.

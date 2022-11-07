@@ -491,7 +491,7 @@ void action_thermostate(int nrhs, const mxArray **prhs){
     if ( strcmp(specifier, "relax") == 0 )
       sep_relax_temp(atoms, types[0], Temp0, tauQ, &sys);
     else if ( strcmp(specifier, "nosehoover")==0 )
-      sep_nosehoover_type(atoms, types[0], Temp0, alpha, tauQ, &sys);
+      sep_nosehoover(atoms, types[0], Temp0, alpha, 1.0/tauQ, &sys);
     else
       mexErrMsgTxt("Action 'thermostate' - not valid valid specifier\n");
 

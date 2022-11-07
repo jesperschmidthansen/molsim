@@ -395,6 +395,7 @@ void sep_reset_force(seppart *ptr, sepsys *sys){
   for (n=0; n<sys->npart; n++)
     for (k=0; k<3; k++) ptr[n].f[k] = 0.0;
 
+  sys->max_dist2 = 0.0;
 }
 
 
@@ -431,7 +432,6 @@ int sep_is_here(seppart *ptr, double min,
 }
 
 
-
 void sep_get_xp(seppart*ptr, double dt, int npart, int ndim){
   int n, k;
   
@@ -440,6 +440,7 @@ void sep_get_xp(seppart*ptr, double dt, int npart, int ndim){
       ptr[n].xp[k] = ptr[n].x[k] - ptr[n].v[k]*dt;
 
 }
+
 
 int sep_nsubbox(double cf, double delta, double lbox){
   double cut;

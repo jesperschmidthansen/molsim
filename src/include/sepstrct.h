@@ -46,13 +46,16 @@ typedef struct {
   double xtrue[3];       /**< The true position without boundary wrapping */    
 
   double x0[3];         /**< Initial positions */    
-  double xp[3];         /**< Previous positions */
   double xn[3];         /**< Position at last neighborlist update */
+  
+  double xp[3];         /**< Previous positions (SHAKE) */
 
   double px[3];         /**< Predicted postion */
-  double pv[3];         /**< Predicted velocity */
-  double pa[3];         /**< Predicted acceleration */
-						      			 
+  double pv[3];         /**< Predicted velocity (DPD) */
+  double pa[3];         /**< Predicted acceleration (DPD) */
+
+  double randn[3];      /**< Random number (Langevin GJF) */
+  double prevf[3];      /**< Previous force (Langevin GJF) */
 } seppart;
 
 typedef seppart sepatom;
@@ -106,7 +109,8 @@ typedef struct {
   double dt;            /**< Integrator step */
   double tnow;          /**< Time now */ 
   unsigned ndof;        /**< Number of degrees of freedom */
-
+  double max_dist2;     /**< Maximum distance calculate in time step */
+  
   // Force stuff
   double cf;               /**< Maximum particle cut-off */  
   double lsubbox[3];       /**< Length of subboxes */ 

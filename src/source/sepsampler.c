@@ -381,17 +381,18 @@ sepradial *sep_radial_init(int lvec, int sampleinterval, char types[]){
 }
 
 void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
-
+  static int cc = 0;
+  
   const int npart = sys.npart;
   const double lbox = sys.length[0];
   
   const double dg = 0.5*lbox/sptr->lvec;
 
   double rv[3];
-  
+
   for ( int i=0; i<npart-1; i++ ){
     for ( int j=i+1; j<npart; j++ ){
-
+	
       double r2 = 0.0;
       for ( int k=0; k<3; k++){
 	rv[k]  = atom[i].x[k]-atom[j].x[k];
@@ -417,10 +418,10 @@ void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
 	  }
 	}
       }
-      
+
     }
   }
-  
+
   sptr->nsample++;
 
   FILE *fout = fopen("radial.dat", "w");
@@ -444,7 +445,8 @@ void sep_radial_sample(sepradial *sptr,  seppart *atom, sepsys sys){
   }
   
   fclose(fout);
-  
+
+  cc++;
 }
 
 void sep_radial_close(sepradial *ptr){

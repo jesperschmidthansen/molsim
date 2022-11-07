@@ -8,7 +8,6 @@
 * There is ABSOLUTELY NO WARRANTY, not even for MERCHANTIBILITY or
 * FITNESS FOR A PARTICULAR PURPOSE.
 *
-* Contact: schmidt@zigzak.net
 */
 
 #include "sepintgr.h"
@@ -46,7 +45,7 @@ void sep_leapfrog(seppart *ptr, sepsys *sys, sepret *retval){
   int n;
   const double dt = sys->dt;
 
-  double max_d2 = 0.0;
+  //  double max_d2 = 0.0;
 	
   for ( n=0; n<sys->npart; n++ ){
     
@@ -62,7 +61,7 @@ void sep_leapfrog(seppart *ptr, sepsys *sys, sepret *retval){
 
     d2 = sep_periodic(ptr, n, sys);
 
-    if ( d2 > max_d2 ) max_d2 = d2;
+    if ( d2 > sys->max_dist2 ) sys->max_dist2 = d2;
       
     for ( int k=0; k<3 ; k++ )
       for ( int kk=0; kk<3; kk++ )
@@ -70,7 +69,7 @@ void sep_leapfrog(seppart *ptr, sepsys *sys, sepret *retval){
   }
 
   
-  if ( sqrt(max_d2) > sys->skin*0.5 ){
+  if ( sqrt(sys->max_dist2) > sys->skin*0.5 ){
     sys->neighb_flag = 1;
     sys->nupdate_neighb ++;
     
@@ -89,12 +88,91 @@ void sep_leapfrog(seppart *ptr, sepsys *sys, sepret *retval){
 }
 
 
+void sep_langevinGJF(sepatom *ptr, double temp0, double alpha, sepsys *sys, sepret *retval){
+  
+  const double dt = sys->dt;
+  const double cc  = exp(-alpha*dt);
+  
+  double sum_ekin = 0.0;
+  for ( unsigned n=0; n<sys->npart; n++ ){
+    
+    double mass = ptr[n].m;
+    double imass2 = 1.0/(2.0*mass);
+    double fac = sqrt(temp0*(1.0-cc*cc)/mass);
+    
+    double c = alpha*dt*imass2;
+    double a = (1.0-c)/(1.0+c);
+    double b = 1.0/(1.0+c);
+      
+    for ( unsigned k=0; k<3; k++ ){
+      
+      ptr[n].v[k] = a*ptr[n].v[k] + dt*imass2*(a*ptr[n].prevf[k]+ptr[n].f[k]) + b/mass*ptr[n].randn[k];
+      ptr[n].a[k] = ptr[n].f[k]/mass;
 
-void sep_nosehoover_type(seppart *ptr, char type, double Td, 
+      ptr[n].prevf[k] = ptr[n].f[k];
+      
+      sum_ekin += ptr[n].v[k]*ptr[n].v[k]*mass;
+      
+      ptr[n].randn[k] = fac*sep_randn();
+      ptr[n].x[k] += b*dt*ptr[n].v[k] + b*dt*dt*imass2*ptr[n].f[k] + b*dt*imass2*ptr[n].randn[k];
+
+    }
+    double d2 = sep_periodic(ptr, n, sys);
+    if ( d2 > sys->max_dist2 ) sys->max_dist2 = d2;
+    
+    for ( int k=0; k<3 ; k++ )
+      for ( int kk=0; kk<3; kk++ )
+	retval->kin_P[k][kk] += ptr[n].v[k]*ptr[n].v[kk]*mass;
+  }
+
+  if ( sqrt(sys->max_dist2) > sys->skin*0.5 ){
+    sys->neighb_flag = 1;
+    sys->nupdate_neighb ++;
+    
+    sep_set_xn(ptr, sys->npart);
+    
+    for ( int n=0; n<sys->npart; n++ ){
+      for ( int k=0; k<3; k++ ){
+	ptr[n].cross_neighb[k] = 0;
+      }
+    }
+  }
+  
+  sys->tnow += sys->dt;
+  retval->ekin += 0.5*sum_ekin;
+}
+
+  
+void sep_nosehoover(sepatom *ptr, char type, double temp0, double *alpha,
+			 const double tau, sepsys *sys){
+  
+  int ntype = 0;  double ekin = 0.0;
+  for (int n=0; n<sys->npart; n++){
+    if ( ptr[n].type == type ){
+      ntype++;
+      for ( int k=0; k<3; k++ )
+	ekin += sep_Sq(ptr[n].v[k])*ptr[n].m;
+    }
+  }
+
+  ekin = 0.5*ekin/ntype;
+  double temp = 0.666667*ekin;
+
+  *alpha = *alpha + sys->dt/(tau*tau)*(temp/temp0 - 1.0); 
+  
+  for ( int n=0; n<sys->npart; n++ ){
+    if ( ptr[n].type == type ) {
+      for ( int k=0; k<3; k++ )
+	ptr[n].f[k] -= *alpha*ptr[n].m*ptr[n].v[k];
+    }
+  }
+      
+} 
+
+void _sep_nosehoover_type(seppart *ptr, char type, double Td, 
 			double *alpha, const double Q, sepsys *sys){ 
 
-  int ntype = 0;
-  double ekin = 0.0;
+  int ntype = 0;  double ekin = 0.0;
   for (int n=0; n<sys->npart; n++){
     if ( ptr[n].type == type ){
       ntype++;
@@ -104,22 +182,25 @@ void sep_nosehoover_type(seppart *ptr, char type, double Td,
   }
 
   const double g = 3*ntype-3;
+  
   double tmp = alpha[0];
 
   alpha[0] = alpha[1];
   alpha[1] = alpha[2];
   alpha[2] = tmp + 2.0*sys->dt*(ekin - g*Td)/Q;	    
 
-  for ( int n=0; n<sys->npart; n++ )
-    if ( ptr[n].type == type ) 	
-      for ( int k=0;  k<3; k++ ) 
+  for ( int n=0; n<sys->npart; n++ ){
+    if ( ptr[n].type == type ) {	
+      for ( int k=0; k<3; k++ ) { 
 	ptr[n].f[k] -= alpha[1]*ptr[n].v[k]*ptr[n].m;
-
-
+      }
+    }
+  }
+  
 }
 
 
-void sep_nosehoover(seppart *ptr, double Td, double *alpha, 
+void _sep_nosehoover(seppart *ptr, double Td, double *alpha, 
 		    const double Q, sepsys *sys){ 
  
   double ekin = 0.0;
@@ -159,7 +240,7 @@ void sep_fp(seppart *ptr, double temp_desired, sepsys *sys, sepret *retval){
   const double dt = sys->dt;
   const double fac = sqrt(1.0/12.0);
 
-  double max_d2 = 0.0;
+  //double max_d2 = 0.0;
 	
   for ( n=0; n<sys->npart; n++ ){
     
@@ -193,7 +274,7 @@ void sep_fp(seppart *ptr, double temp_desired, sepsys *sys, sepret *retval){
       d2 += sep_Sq(ri);
     }
     
-    if ( d2 > max_d2 ) max_d2 = d2;
+    if ( d2 > sys->max_dist2 ) sys->max_dist2 = d2;
     
     for ( int k=0; k<3 ; k++ )
       for ( int kk=0; kk<3; kk++ )
@@ -201,7 +282,7 @@ void sep_fp(seppart *ptr, double temp_desired, sepsys *sys, sepret *retval){
     
   }
   
-  if ( sqrt(max_d2) > sys->skin*0.5 ){
+  if ( sqrt(sys->max_dist2) > sys->skin*0.5 ){
     sys->neighb_flag = 1;
     sys->nupdate_neighb ++;
     sep_set_xn(ptr, sys->npart);
@@ -213,6 +294,59 @@ void sep_fp(seppart *ptr, double temp_desired, sepsys *sys, sepret *retval){
   retval->ekin += 0.5*sumekin;
 }
 
+
+void sep_verlet_dpd(seppart *ptr, double lambda, int stepnow,
+		    sepsys *sys, sepret *retval){
+  double v[3], sumekin=0.0;
+  int n;
+  const double dt = sys->dt;
+
+  //double max_d2 = 0.0;
+  
+  for ( n=0; n< sys->npart; n++ ){
+    
+    for (int k=0; k<3; k++){
+      
+      ptr[n].a[k] = ptr[n].f[k]/ptr[n].m;
+
+      // Previous time step
+      if ( stepnow > 0 )
+        ptr[n].v[k] += 0.5*dt*(ptr[n].a[k] + ptr[n].pa[k]);
+
+      ptr[n].x[k] += ptr[n].v[k]*dt + 0.5*dt*dt*ptr[n].a[k];
+      ptr[n].pv[k] = ptr[n].v[k] + lambda*dt*ptr[n].a[k];
+	      
+      ptr[n].pa[k] = ptr[n].a[k];
+
+      /* KE from updated velocities that correspond in time to 
+	 positions that were used in the force calculations */
+      v[k] = ptr[n].v[k];
+
+      sumekin += v[k]*v[k]*ptr[n].m;
+
+    } 
+
+    double d2 = sep_periodic(ptr, n, sys);
+    if ( d2 > sys->max_dist2 ) sys->max_dist2 = d2;
+    
+    for ( int k=0; k<3 ; k++ )
+      for ( int kk=0; kk<3; kk++ )
+        retval->kin_P[k][kk] += v[k]*v[kk]*ptr[n].m;
+
+  }  // loop over particles
+  
+  if ( sqrt(sys->max_dist2) > sys->skin*0.5 ){
+    sys->neighb_flag = 1;
+    sep_set_xn(ptr, sys->npart);
+
+    for ( int n=0; n<sys->npart; n++ )
+      for ( int k=0; k<3; k++ ) ptr[n].cross_neighb[k] = 0;
+  }
+
+  retval->ekin += 0.5*sumekin;
+}
+
+/**** SHAKE - maybe out? ****/
 
 void sep_set_shake(sepmol *mols, unsigned nuau, 
 		   int nb, double *blength, sepsys sys){
@@ -459,56 +593,5 @@ void sep_set_leapfrog(sepsys *sys, double dt){
   sys->intgr_type = SEP_LEAPFROG;
   sys->dt = dt;
 
-}
-
-
-void sep_verlet_dpd(seppart *ptr, double lambda, int stepnow,
-		    sepsys *sys, sepret *retval){
-  double v[3], sumekin=0.0;
-  int n;
-  const double dt = sys->dt;
-
-  double max_d2 = 0.0;
-  for ( n=0; n< sys->npart; n++ ){
-    
-    for (int k=0; k<3; k++){
-      
-      ptr[n].a[k] = ptr[n].f[k]/ptr[n].m;
-
-      // Actually previous time step
-      if ( stepnow > 0 )
-        ptr[n].v[k] += 0.5*dt*(ptr[n].a[k] + ptr[n].pa[k]);
-
-      ptr[n].x[k] += ptr[n].v[k]*dt + 0.5*dt*dt*ptr[n].a[k];
-      ptr[n].pv[k] = ptr[n].v[k] + lambda*dt*ptr[n].a[k];
-	      
-      ptr[n].pa[k] = ptr[n].a[k];
-
-      /* KE from updated velocities that correspond in time to 
-	 positions that were used in the force calculations */
-      v[k] = ptr[n].v[k];
-
-      sumekin += v[k]*v[k]*ptr[n].m;
-
-    } // loop over xyz
-
-    double d2 = sep_periodic(ptr, n, sys);
-    if ( d2 > max_d2 ) max_d2 = d2;
-    
-    for ( int k=0; k<3 ; k++ )
-      for ( int kk=0; kk<3; kk++ )
-        retval->kin_P[k][kk] += v[k]*v[kk]*ptr[n].m;
-
-  }  // loop over particles
-  
-  if ( sqrt(max_d2) > sys->skin*0.5 ){
-    sys->neighb_flag = 1;
-    sep_set_xn(ptr, sys->npart);
-
-    for ( int n=0; n<sys->npart; n++ )
-      for ( int k=0; k<3; k++ ) ptr[n].cross_neighb[k] = 0;
-  }
-
-  retval->ekin += 0.5*sumekin;
 }
 
