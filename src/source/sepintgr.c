@@ -143,28 +143,23 @@ void sep_langevinGJF(sepatom *ptr, double temp0, double alpha, sepsys *sys, sepr
 }
 
   
-void sep_nosehoover(sepatom *ptr, char type, double temp0, double *alpha,
-			 const double tau, sepsys *sys){
+void sep_nosehoover(sepatom *ptr, double temp0, double *alpha,
+		    const double tau, sepsys *sys){
   
-  int ntype = 0;  double ekin = 0.0;
+  double ekin = 0.0;
   for (int n=0; n<sys->npart; n++){
-    if ( ptr[n].type == type ){
-      ntype++;
-      for ( int k=0; k<3; k++ )
-	ekin += sep_Sq(ptr[n].v[k])*ptr[n].m;
-    }
+    for ( int k=0; k<3; k++ )
+      ekin += sep_Sq(ptr[n].v[k])*ptr[n].m;
   }
 
-  ekin = 0.5*ekin/ntype;
+  ekin = 0.5*ekin/sys->npart;
   double temp = 0.666667*ekin;
 
   *alpha = *alpha + sys->dt/(tau*tau)*(temp/temp0 - 1.0); 
   
   for ( int n=0; n<sys->npart; n++ ){
-    if ( ptr[n].type == type ) {
-      for ( int k=0; k<3; k++ )
-	ptr[n].f[k] -= *alpha*ptr[n].m*ptr[n].v[k];
-    }
+    for ( int k=0; k<3; k++ )
+      ptr[n].f[k] -= *alpha*ptr[n].m*ptr[n].v[k];
   }
       
 } 

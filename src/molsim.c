@@ -487,24 +487,52 @@ void action_integrate(int nrhs, const mxArray **prhs){
 
 void action_thermostate(int nrhs, const mxArray **prhs){
   
-    if ( nrhs != 5 ) inputerror(__func__);
+  char *specifier = mxArrayToString(prhs[1]);
+  
+  if ( strcmp(specifier, "relax") == 0 ){
     
-    char *specifier = mxArrayToString(prhs[1]);
+    if ( nrhs != 5 ) inputerror(__func__);
+   
     char *types =  mxArrayToString(prhs[2]);
     double Temp0 = mxGetScalar(prhs[3]);
     double tauQ =  mxGetScalar(prhs[4]);
     
-    if ( strcmp(specifier, "relax") == 0 )
-      sep_relax_temp(atoms, types[0], Temp0, tauQ, &sys);
-    else if ( strcmp(specifier, "nosehoover")==0 )
-      sep_nosehoover(atoms, types[0], Temp0, alpha, 1.0/tauQ, &sys);
-    else
-      mexErrMsgTxt("Action 'thermostate' - not valid valid specifier\n");
-
+    sep_relax_temp(atoms, types[0], Temp0, tauQ, &sys);
+          
 #ifdef OCTAVE
-    free(types); free(specifier);
+    free(types); 
 #endif
 
+  }
+  else if ( strcmp(specifier, "nosehoover")==0 ){
+    
+    if ( nrhs == 4 ){ inputerror(__func__);
+
+      double Temp0 = mxGetScalar(prhs[2]);
+      double tauQ =  mxGetScalar(prhs[3]);
+      
+      sep_nosehoover(atoms, Temp0, alpha, 1.0/tauQ, &sys);
+    }
+    else if ( nrhs== 5 ){
+      
+      char *types =  mxArrayToString(prhs[2]);
+      double Temp0 = mxGetScalar(prhs[3]);
+      double tauQ =  mxGetScalar(prhs[4]);
+      
+      _sep_nosehoover_type(atoms, types[0], Temp0, alpha, tauQ, &sys);
+      
+#ifdef OCTAVE
+    free(types); 
+#endif
+    }
+  }
+  else
+    mexErrMsgTxt("Action 'thermostate' - not valid valid specifier\n");
+
+#ifdef OCTAVE
+    free(specifier); 
+#endif
+  
 }
 
 

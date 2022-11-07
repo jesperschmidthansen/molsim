@@ -50,14 +50,12 @@ void sep_langevinGJF(sepatom *ptr, double temp0, double alpha, sepsys *sys, sepr
  * corresponding force to particles of specified type. Used before and in
  * connection with the leap-frog algorithm 
  * @param ptr Pointer to the seplib particle structure
- * @param type Particle types to thermostat
  * @param Td Desired temperature
  * @param alpha Thermostat state; double array of length 3. Must be initialized eg alpha[3]={0.1}
  * @param Q Thermostat 'mass'
  * @param sys Pointer to seplib system structure
  */
-void sep_nosehoover(seppart *ptr, char type, double Td, 
-		    double *alpha, const double Q, sepsys *sys);
+void sep_nosehoover(seppart *ptr, double Td, double *alpha, const double Q, sepsys *sys);
 
 /**
  * Updates the positions and velocties with Langevin dynamics - Fokker-Planck level. 
@@ -82,7 +80,8 @@ void sep_verlet_dpd(seppart *ptr, double lambda, int stepnow,
 
 
 #ifndef DOXYGEN_SKIP
-
+void _sep_nosehoover_type(seppart *ptr, char type, double Td, 
+			  double *alpha, const double Q, sepsys *sys);
 void sep_set_shake(sepmol *mols, unsigned nuau, 
 		   int nb, double *blength, sepsys sys);
 
