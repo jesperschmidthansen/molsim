@@ -506,7 +506,7 @@ void action_thermostate(int nrhs, const mxArray **prhs){
   }
   else if ( strcmp(specifier, "nosehoover")==0 ){
     
-    if ( nrhs == 4 ){ inputerror(__func__);
+    if ( nrhs == 4 ){ 
 
       double Temp0 = mxGetScalar(prhs[2]);
       double tauQ =  mxGetScalar(prhs[3]);
