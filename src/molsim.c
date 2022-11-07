@@ -469,6 +469,12 @@ void action_integrate(int nrhs, const mxArray **prhs){
       double lambda = mxGetScalar(prhs[2]);
       sep_verlet_dpd(atoms, lambda, iterationNumber, &sys, &ret);
     }
+    else if( strcmp(specifier, "langevin") == 0 ){
+      if ( nrhs != 4 ) inputerror(__func__);
+      double temp0 = mxGetScalar(prhs[2]);
+      double alpha = mxGetScalar(prhs[3]);
+      sep_langevinGJF(atoms, temp0, alpha, &sys, &ret);
+    } 
     else
       mexErrMsgTxt("Action 'integrate' - not valid valid specifier\n");
 
