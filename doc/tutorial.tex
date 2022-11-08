@@ -733,21 +733,23 @@ size, density and number of threads; use the \verb!help! command for its usage.
                                    && && && \\
     \verb!integrate! && \verb!leapfrog! && && \\
     $\mbox{}$ && \verb!dpd!      && $\lambda$ && \\
+    $\mbox{}$ && \verb!langevin! && 1:target temperature && \\ 
+    $\mbox{}$ &&                 && 2:$\alpha$ (0.01-1.0)&& \\
                                    && && && \\
     \hline
                                    && && && \\
     \verb!thermostat! && \verb!relax! && 1: type && \\
     $\mbox{}$   &&       && 2: target temperature && \\
     $\mbox{}$  &&        && 3: relax time && \\
-    $\mbox{}$  && \verb!nosehoover! && 1: type && \\
+    $\mbox{}$  && \verb!nosehoover! && 1: type (optional) && \\
     $\mbox{}$  &&            && 2: target temperature && \\
-    $\mbox{}$  &&            && 3: thermostate mass && \\
+    $\mbox{}$  &&            && 3: thermostate mass (10-50)&& \\
                                    && && && \\
     \hline
                                    && && && \\
     \verb!barostat! && \verb!relax! && 1: target pressure && \\
     $\mbox{}$   &&       && 2: relax time && \\
-    $\mbox{}$  &&        && 3: opt. iso && \\
+    $\mbox{}$  &&        && 3: \verb!'iso'! (optional) && \\
                                    && && && \\
     \hline
                                    && && && \\
@@ -766,14 +768,7 @@ size, density and number of threads; use the \verb!help! command for its usage.
     \verb!clear! & & && && \\
                                    && && && \\
     \hline
-                                   && && && \\
-    \verb!reset! & & && && \\
-                                   && && && \\
-    \hline
-                                   && && && \\
-   \verb!print! & & && && \\
-                                   && && && \\
-    \hline
+ 
                                    && && && \\
  
   \end{tabular}
@@ -810,6 +805,14 @@ size, density and number of threads; use the \verb!help! command for its usage.
     
     \hline
                                    && && && \\
+    \verb!reset! & & && && \\
+                                   && && && \\
+    \hline
+                                   && && && \\
+   \verb!print! & & && && \\
+                                   && && && \\
+    \hline
+                                && && && \\
     \verb!convert! && && 1: $\sigma$ && $2\times$ structs \\
     $\mbox{}$  && && 2: $\epsilon/k_B$ && \\
     $\mbox{}$  && && 3: $m$ && \\
