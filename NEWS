@@ -60,3 +60,9 @@ molsim-0.9.5
   * Re-arrangement of the test suit and addition of some more tests (still a bit messy)
   * Added a release checklist
 
+molsim-0.11.0
+-------------
+
+  * Added GJF Langevin integrator
+  * Update to tutorial
+  
