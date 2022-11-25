@@ -3,7 +3,7 @@
 # Macros
 
 CC          =  @CC@
-CFLAGS      =  @CFLAGS@ @INLINE@ @C99@ -fPIC 
+CFLAGS      =  @CFLAGS@ @INLINE@ @C99@ -fPIC -march=native
 RANLIB      =  @RANLIB@
 AR          =  @AR@ 
 COMPLEX     =  @COMPLEX@
