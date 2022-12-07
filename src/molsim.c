@@ -836,7 +836,7 @@ void action_sample(int nrhs, const mxArray **prhs){
       sampler = sep_init_sampler();
 
       if ( initmol ) 
-	sep_add_mol_sampler(&sampler, mols);  
+		sep_add_mol_sampler(&sampler, mols);  
     }
     
     char *specifier =  mxArrayToString(prhs[1]);
@@ -1052,7 +1052,7 @@ void action_compress(int nrhs, const mxArray **prhs){
     int dir = (int)mxGetScalar(prhs[2])-1;
 
     if ( dir <0 || dir > 2 )
-      mexErrMsgTxt("Direction in compress specifier must be 0-2");
+      mexErrMsgTxt("Direction in compress specifier must be 1-3");
     
     sep_compress_box_dir_length(atoms, target, compressionfactor, dir, &sys);
   }
