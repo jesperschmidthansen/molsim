@@ -66,7 +66,8 @@ molsim-0.11.0
   * Added GJF Langevin integrator (seplib)
   * Minor updates to tutorial
   * Documentation of resource files (will later be present in tutorial)
-  * Compiler flag "march=native" default (gcc only) 
+  * Compiler flag "-march=native" default (gcc only) 
+  * Nose-Hoover?
 
   
   
