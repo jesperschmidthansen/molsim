@@ -286,9 +286,11 @@ void action_load(int nrhs, const mxArray **prhs){
     char *file = mxArrayToString(prhs[2]);
     
     atoms = sep_init_xyz(lbox, &natoms, file, 'v');
-
-    sys = sep_sys_setup(lbox[0], lbox[1], lbox[2],
-			maxcutoff, dt, natoms, SEP_LLIST_NEIGHBLIST);
+		
+		printf("In sepinit: Mem. location %p, positions %p %p \n", (void *)atoms, (void*)&(atoms[10].x[0]), (void*)&(atoms[111].x[1]));
+		fflush(stdout);
+		
+    sys = sep_sys_setup(lbox[0], lbox[1], lbox[2],maxcutoff, dt, natoms, SEP_LLIST_NEIGHBLIST);
 
     initflag = true;
 

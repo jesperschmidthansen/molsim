@@ -1,4 +1,14 @@
-
+%
+% usage; molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbond)
+%	
+%  xyzFile: Single molecule xyz file
+%  topFile: Single molecule topology file
+%  densFluid: Desired molecular fluid density
+%  height: Desired slitpore height (confining direction)
+%  numberMol: Number of molecules 
+%  atype: Atomic type (character in molecule) OPTIONAL - defaults to 'A'
+%  lbond: Bond length OPTIONAL - defaults to 1.0
+%
 
 function molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbond)
 
