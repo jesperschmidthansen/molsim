@@ -1,0 +1,11 @@
+This file lists the optimization attempts and implimentaton
+
+1: openmp for-loop parallization in pair force interactions. Reduction on force array +
+   dynamic scheduling. Implemented.
+
+2: openmp for-loop parallization in bond, angle, and dihedral angle force calculuations.
+   Reduction on force array + dynamic scheduling. No effect, not implemented
+
+3: Timing using the seplib atom data structure or simple array data structure shows no effect, not
+   implimented.
+
