@@ -48,47 +48,52 @@ function molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbon
 
 
 		function write_config(lbox, boff)
-		  
-		  str=sprintf("sep_lattice -n=%d,%d,3 -l=%f,%f,3.0 -f=wall.xyz", ...
-				int32(lbox(1)), int32(lbox(2)), lbox(1), lbox(2));
+			
+			nxy = int32(lbox(1));
+			if ! rem(nxy,2)==0
+				nxy = nxy - 1;
+			endif
+		
+			str=sprintf("sep_lattice -b -n=%d,%d,4 -l=%f,%f,4.0 -f=wall.xyz", nxy, nxy, lbox(1), lbox(2))
 
-		  system(str);
+			[status, output] = system(str);
 
-		  fin_mol = fopen("molecules.xyz", 'r');
-		  fin_wall = fopen("wall.xyz", 'r');
+			fin_mol = fopen("molecules.xyz", 'r');
+			fin_wall = fopen("wall.xyz", 'r');
 
-		  npart_wall = readheader(fin_wall, 'string');
-		  npart_mol = readheader(fin_mol, 'string');
+			npart_wall = readheader(fin_wall, 'string');
+			npart_mol = readheader(fin_mol, 'string');
 
-		  fout = fopen("slitpore.xyz", 'w');
+			fout = fopen("slitpore.xyz", 'w');
 
-		  fprintf(fout, "%d\n", npart_wall*2+npart_mol);
-		  fprintf(fout, "%f %f %f\n", lbox(1), lbox(2), lbox(3)*2);
+			fprintf(fout, "%d\n", npart_wall*2+npart_mol);
+			fprintf(fout, "%f %f %f\n", lbox(1), lbox(2), lbox(3)*2);
 
-		  offset = 2.0 + boff; zmax = 0.0;
-		  for n=1:npart_mol
-		    [t, x, y, z, vx, vy, vz, m, q] = fscanf(fin_mol, "%c %f %f %f %f %f %f %f %f\n", "C");
-		    fprintf(fout, "%c %f %f %f %f %f %f %f %f\n",t, x, y, z+offset, vx, vy, vz, m, q);
+			offset = 3.0 + boff; zmax = 0.0;
+			for n=1:npart_mol
+			[t, x, y, z, vx, vy, vz, m, q] = fscanf(fin_mol, "%c %f %f %f %f %f %f %f %f\n", "C");
+			fprintf(fout, "%c %f %f %f %f %f %f %f %f\n",t, x, y, z+offset, vx, vy, vz, m, q);
 
-		    if z > zmax
-		      zmax = z;
-		    end
-		    
-		  endfor
+			if z > zmax
+			  zmax = z;
+			end
 
-		  offset = zmax + 2*boff + 2.0;
+			endfor
 
-		  for n=1:npart_wall
-		    [t, x, y, z, vx, vy, vz, m, q] = fscanf(fin_wall, "%c %f %f %f %f %f %f %f %f\n", "C");
-		    fprintf(fout, "w %f %f %f %f %f %f %f %f\n", x, y, z, vx, vy, vz, m, q);
-		    fprintf(fout, "W %f %f %f %f %f %f %f %f\n", x, y, offset+z, vx, vy, vz, m, q)
-		  endfor
-		  
-		  fclose(fin_mol);fclose(fin_wall);fclose(fout);
+			offset = zmax + 2*boff + 3.0;
 
-		  printf("Wrote configuration in slitpore.xyz\n");
-		  printf("Topology file is start.top\n");
-		  
+			for n=1:npart_wall
+				[t, x, y, z, vx, vy, vz, m, q] = fscanf(fin_wall, "%c %f %f %f %f %f %f %f %f\n", "C");
+				fprintf(fout, "w %f %f %f %f %f %f %f %f\n", x, y, z, vx, vy, vz, m, q);
+				fprintf(fout, "W %f %f %f %f %f %f %f %f\n", x, y, offset+z, vx, vy, vz, m, q)
+			endfor
+
+			fclose(fin_mol);fclose(fin_wall);fclose(fout);
+
+			printf("Wrote configuration in slitpore.xyz\n");
+			printf("Topology file is start.top\n");
+	  		printf("Wall density is set to %.3f\n", nxy^2*4/(lbox(1)^2*4.0));
+			
 		endfunction
 
 
@@ -122,7 +127,7 @@ function molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbon
 		    add_wallforce(molsim('get', 'box')(3));
 		    
 		    molsim('integrate', 'leapfrog')
-		    molsim('thermostat', 'relax', atype, temp0, 0.001);
+		    molsim('thermostat', 'relax', atype, temp0, 0.01);
 		    
 		    molsim('compress', lbox_xy, 1);
 		    molsim('compress', lbox_xy, 2);
@@ -136,7 +141,8 @@ function molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbon
 		  
 		end
 
-		lbox = compress(atype, lbond, numberMol, densFluid, height, xyzFile, topFile)
+		lbox = compress(atype, lbond, numberMol, densFluid, height, xyzFile, topFile);
 		write_config(lbox, 1.5)
 
+		clear all;
 endfunction
