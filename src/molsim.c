@@ -286,10 +286,6 @@ void action_load(int nrhs, const mxArray **prhs){
     char *file = mxArrayToString(prhs[2]);
     
     atoms = sep_init_xyz(lbox, &natoms, file, 'v');
-		
-		printf("In sepinit: Mem. location %p, positions %p %p \n", (void *)atoms, (void*)&(atoms[10].x[0]), (void*)&(atoms[111].x[1]));
-		fflush(stdout);
-		
     sys = sep_sys_setup(lbox[0], lbox[1], lbox[2],maxcutoff, dt, natoms, SEP_LLIST_NEIGHBLIST);
 
     initflag = true;
@@ -720,8 +716,8 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
   else if ( strcmp("indices", specifier)==0 ){
     if ( nrhs!= 3 ) inputerror(__func__);
     
-    unsigned int molindex = (unsigned)mxGetScalar(prhs[2]);
-    if ( molindex - 1 > sys.molptr->num_mols )
+    unsigned int molindex = (unsigned)mxGetScalar(prhs[2]) - 1;
+	if ( molindex > 0 && molindex-1 > sys.molptr->num_mols )
       mexErrMsgTxt("Molecular index larger than number of molecules \n");    
 
     const long nuau = (long unsigned)mols[molindex].nuau;
@@ -729,7 +725,7 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
     int *ptr = (int *)mxGetPr(plhs[0]);
 
     for ( unsigned n=0; n<mols[molindex].nuau; n++ )
-      ptr[n] = mols[molindex].index[n];
+      ptr[n] = mols[molindex].index[n] + 1;
   }
   // Molecular end-to-end
   else if ( strcmp("endtoend", specifier)==0 ){

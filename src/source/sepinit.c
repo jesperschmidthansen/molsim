@@ -103,9 +103,6 @@ seppart *sep_init_xyz(double *lbox, int *npart, const char *file,
 
   fclose(fin);
 
-	
-	printf("In sepinit: Mem. location %p, positions %p %p \n", (void *)ptr, (void*)&(ptr[10].x[0]), (void*)&(ptr[111].x[1]));
-	fflush(stdout);
   return ptr;
 }
 
