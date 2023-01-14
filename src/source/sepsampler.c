@@ -46,8 +46,7 @@ void sep_add_sampler(sepsampler *sptr, const char *sampler,
   else if ( strcmp(sampler, "mgh")==0 ){
     if ( sptr->flag_mgh != 1 ){
       if ( sptr->molptr == NULL ) 
-	sep_error("%s at line %d: molpointer not initialized", 
-		  __func__, __LINE__);
+		sep_error("%s at line %d: molpointer not initialized",   __func__, __LINE__);
 
       double tsample  = va_arg(args, double);
       int nwave = va_arg(args, int);

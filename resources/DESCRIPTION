@@ -39,10 +39,6 @@ top-files: Corresponding topology files defining bonds, angles, and torsion angl
 	Generic diatomic molecule. 
 	
 	
-5: polymerN20.xyz/polymerN20.top -----> A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A-A (1 part. type, 1 bond type)
+5: polymerN20.xyz/polymerN20.top -----> A-A-...-A-A-A (1 part. type, 1 bond type)
 	Generic simple molecule/polymer  
 
-				
-				
-				
-				

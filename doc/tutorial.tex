@@ -10,9 +10,9 @@
   mathescape
 }
 
-\title{\textsf{molsim} tutorial \\ \bigskip \tiny{for the v. 0.9 series}}
+\title{\textsf{molsim} tutorial \\ \bigskip \tiny{for the v. 0.11 series}}
 \author{J.S. Hansen}
-\date{February 2022}
+\date{January 2023}
   
 \begin{document}
 
@@ -122,7 +122,7 @@ particles. In the simplest form this means solving (numerically) Newton's second
 law
 \begin{equation}
   \frac{\mathrm{d}\mathbf{r}_i}{\mathrm{d} t} = \mathbf{v}_i \ , \ \
-  \frac{\mathrm{d}\mathbf{p}_i}{\mathrm{d} t} = \mathbf{f}_i
+  \frac{\mathrm{d}\mathbf{p}_i}{\mathrm{d} t} = \mathbf{f}_i \ ,
 \end{equation}
 where $\mathbf{r}_i, \mathbf{v}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the
 particle position, velocity, momentum and force acting on the particle, respectively. In a
@@ -197,6 +197,21 @@ molsim('clear');
 \end{verbatim}
 ---
 
+\bigskip
+
+\noindent I hope the code is, mostly, clear. Notice, that in action \verb!calcforce! the 
+first argument to the specifier \verb!'lj'!, namely, \verb!'AA'! tells the program that this 
+force acts between particles of type \verb!A!. This type is the default type; a very important point I highlight
+\begin{center}
+\fbox{\parbox{0.5\textwidth}{
+    \begin{center}
+      The default particle type is \textsf{A}
+    \end{center}
+  }
+}
+\end{center}
+
+
 \noindent In Listing 1 no information is printed or saved, and, admitted, not very
 useful. Inside the main loop the user can call the \textsf{print}-action, for
 example, 
@@ -209,15 +224,6 @@ to print current iteration number, potential energy per particle, kinetic energy
 per particle, total energy per particle, kinetic temperature, and total momentum
 to screen every 100 time step.
 
-\begin{center}
-\fbox{\parbox{0.5\textwidth}{
-    \begin{center}
-      The default particle type is \textsf{A}
-    \end{center}
-  }
-}
-\end{center}
-
 Information can also be stored into variables for further analysis. For example,
 to get the system energies and pressure
 \begin{verbatim}
@@ -229,11 +235,10 @@ and particle positions and velocities
 x = molsim('get', 'positions');
 v = molsim('get', 'velocities');
 \end{verbatim}
-In the reference sheet (see Appendix) you can find the list of
-specifiers for the \verb!get! action.
+In the reference sheet (see Appendix) you can find the list of specifiers for the \verb!get! action.
 
 
-\textbf{IMPORTANT NOTE} For molecular systems the pressure is
+\textit{Note} For molecular systems the pressure is
 calculated using the molecular pressure tensor. In general this is different
 from the atomic pressure. The user must enable this calculation using the
 \verb!set! action with specifier \verb!molstresscalc!. For example, to
@@ -251,31 +256,40 @@ end
 \subsection{NVT and NPT simulations}
 Often you will not perform simulations in the micro-canonical ensemble, but
 under a desired temperature and/or pressure. One way to achieve this with
-\verb!molsim! is to use simple relaxation algorithms. To simulate at
-temperature, say 2.2, you call the action \verb!'thermostat'! with specifier
-\verb!'relax'! after the integration step
-\begin{verbatim}
-molsim('thermostat', 'relax', 'A', 2.2, 0.01);
-\end{verbatim}
-The last argument is the relaxation parameter; the higher value the faster
-relaxation. Notice that too large values make the system unrealistically
-stiff; the best value is optimized via trail-and-error. There is also a
-Nos\'{e}-Hoover thermostat available with the interface
-\begin{verbatim}
-molsim('thermostat', 'nosehoover','A' ,2.2, 10.0);
-\end{verbatim}
-The last argument is here the thermostat mass and not the relaxation
-time. Again, you should choose this parameter with care. Impotant:
-\begin{itemize}
-\item With specifier \textsf{'nosehoover'} the thermostat is called before the
-  integrator
-\item 
-  With specifier \textsf{'relax'} the thermostat is called after the
-  integrator
-\end{itemize}
-  
-To simulate at pressure, say 0.9, you call the action \verb!'barostat'! after
-the integration step,
+\verb!molsim! is to use simple relaxation algorithms. 
+
+To perform simulations under specific temperatures you can choose one of three 
+different methods:
+\begin{description}
+	\item{Relaxation} 
+		Using this method call the action \verb!'thermostat'! with specifier
+		\verb!'relax'! \emph{after} the integration step, for example, to thermostat particles of type 
+		\verb!A! such that their kinetic temperature is 2.2 use 
+		\begin{verbatim}
+		molsim('thermostat', 'relax', 'A', 2.2, 0.01);
+		\end{verbatim}
+		The last argument is the relaxation parameter; the higher value the faster
+		relaxation. Notice that too large values make the system unrealistically
+		stiff; the best value is optimized via trail-and-error. 
+	\item{Nos\'{e}-Hoover} 
+		There is also a Nos\'{e}-Hoover thermostat available. This 
+		is called by 
+		\begin{verbatim}
+		molsim('thermostat', 'nosehoover','A' ,2.2, 0.1);
+		\end{verbatim}
+		The last argument is here the inverse thermostat mass. Again, you should choose this parameter with care.
+		Impotantly, this thermostat is called \emph{before} the leap-frog integrator call.
+	\item{GJF-Langevin integrator}
+		This method \emph{replaces} the leap-frog integrator, by 
+		\begin{verbatim}
+		molsim('integrate', 'langevin', 2.2, 0.5);
+		\end{verbatim}
+		The last argument is the thermostate coupling parameter, $\alpha$. Typically $0.01 \leq \alpha \leq 1.0$ 
+		See Ref. \cite{gjf}.
+\end{description}
+
+To simulate at pressure, say 0.9, you call the action \verb!'barostat'! 
+\emph{after} the integration step,
 \begin{verbatim}
 molsim('barostat', 'relax', 0.9, 0.01, 'iso');
 \end{verbatim}
@@ -286,10 +300,7 @@ $z$-direction only (an-isotropic scaling); this is practical when doing sampling
 as two directions are fixed. You can use the barostate and the thermostat
 in the same simulation mimicking an NPT system. For the expert: The barostat is
 based on the atomic pressure, a molecular pressure barostat is planned for
-future releases.  Note
-\begin{itemize}
-  \item The \textsf{'barostat'} action should be called after the integrator
-\end{itemize}
+future releases. 
 
 \section{The \textsf{molsim} force field}
 \verb!molsim! supports simulations of more complicated systems. In general, the
@@ -582,9 +593,7 @@ cores) is not always optimal. In the \verb!tests!-directory you can find
 \verb!molsim_runparallel.m! that times the execution time for a given system
 size, density and number of threads; use the \verb!help! command for its usage.
 
-\bigskip
-
-\noindent
+\clearpage
 
 \begin{thebibliography}{9}
 
@@ -603,6 +612,11 @@ size, density and number of threads; use the \verb!help! command for its usage.
 
 \bibitem{Hansen}
   J.S. Hansen \emph{Where is the hydrodynamic limit?} Mol. Sim., 47:1391 (2021).
+ 
+\bibitem{gjf}
+   \emph{A simple and effective Verlet-type algorithm for simulating Langevin dynamics} 
+   Mol. Phys., 111:983 (2013).
+  
 \end{thebibliography}
 
 \appendix
@@ -676,7 +690,7 @@ size, density and number of threads; use the \verb!help! command for its usage.
     $\mbox{}$  && \verb!charges! && && $N_\mathrm{part.}$-vector \\
     $\mbox{}$  && \verb!molpositions! && && $N_\mathrm{mol}\times 3$-matrix \\
     $\mbox{}$  && \verb!molvelocities! && && $N_\mathrm{mol}\times 3$-matrix \\
-    $\mbox{}$ && \verb!indices! && && $N_\mathrm{uau}$-vector \\
+    $\mbox{}$ && \verb!indices! && 1: mol. index && $N_\mathrm{uau}$-vector \\
     $\mbox{}$ && \verb!bondlengths! && && $N_\mathrm{nbonds}$-vector \\
     $\mbox{}$ && \verb!angles! && && $N_\mathrm{nangles}$-vector \\
     $\mbox{}$ && \verb!torsions! && && $N_\mathrm{ntorsion}$-vector \\

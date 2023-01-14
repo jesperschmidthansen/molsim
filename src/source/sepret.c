@@ -1,6 +1,6 @@
 
 /* 
-* sepret.c - This file is a part of the sep-library 
+ * sepret.c - This file is a part of the sep-library 
 *
 * Copyright (C) 2011 Jesper Schmidt Hansen 
 * 

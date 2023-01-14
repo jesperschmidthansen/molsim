@@ -97,8 +97,9 @@ void sep_langevinGJF(sepatom *ptr, double temp0, double alpha, sepsys *sys, sepr
   for ( unsigned n=0; n<sys->npart; n++ ){
     
     double mass = ptr[n].m;
-    double imass2 = 1.0/(2.0*mass);
-    double fac = sqrt(temp0*(1.0-cc*cc)/mass);
+	double imass = 1.0/mass;
+    double imass2 = 0.5*imass;
+    double fac = sqrt(temp0*(1.0-cc*cc)); // mass?
     
     double c = alpha*dt*imass2;
     double a = (1.0-c)/(1.0+c);
@@ -106,23 +107,25 @@ void sep_langevinGJF(sepatom *ptr, double temp0, double alpha, sepsys *sys, sepr
       
     for ( unsigned k=0; k<3; k++ ){
       
-      ptr[n].v[k] = a*ptr[n].v[k] + dt*imass2*(a*ptr[n].prevf[k]+ptr[n].f[k]) + b/mass*ptr[n].randn[k];
-      ptr[n].a[k] = ptr[n].f[k]/mass;
+      ptr[n].v[k] = a*ptr[n].v[k] + dt*imass2*(a*ptr[n].prevf[k]+ptr[n].f[k]) + b*imass*ptr[n].randn[k];
+      ptr[n].a[k] = ptr[n].f[k]*imass;
 
       ptr[n].prevf[k] = ptr[n].f[k];
       
       sum_ekin += ptr[n].v[k]*ptr[n].v[k]*mass;
       
       ptr[n].randn[k] = fac*sep_randn();
+	  
       ptr[n].x[k] += b*dt*ptr[n].v[k] + b*dt*dt*imass2*ptr[n].f[k] + b*dt*imass2*ptr[n].randn[k];
 
     }
+    
     double d2 = sep_periodic(ptr, n, sys);
     if ( d2 > sys->max_dist2 ) sys->max_dist2 = d2;
     
     for ( int k=0; k<3 ; k++ )
       for ( int kk=0; kk<3; kk++ )
-	retval->kin_P[k][kk] += ptr[n].v[k]*ptr[n].v[kk]*mass;
+		  retval->kin_P[k][kk] += ptr[n].v[k]*ptr[n].v[kk]*mass;
   }
 
   if ( sqrt(sys->max_dist2) > sys->skin*0.5 ){

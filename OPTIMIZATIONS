@@ -1,6 +1,6 @@
-This file lists the optimization attempts and implimentaton
+This file lists the optimization attempts and implimentatons
 
-1: openmp for-loop parallization in pair force interactions. Reduction on force array +
+1: openmp for-loop parallization in pair force interactions. Reduction on a force array +
    dynamic scheduling. Implemented.
 
 2: openmp for-loop parallization in bond, angle, and dihedral angle force calculuations.

@@ -35,27 +35,25 @@ molsim-0.9.3
 
   * Added 'convert' action 
   * Molecular stress calculations now supported under parallisation 
-  * Added more specifiers to get: 'molvelocities', 'indices' 
+  * Added more specifiers to action 'get': 'molvelocities', 'indices' 
   * Revision to tutorial
-  * Changed actions 'thermostate' and 'barostate' to
-    'thermostat' and 'barostat'
+  * Changed actions 'thermostate' and 'barostate' to 'thermostat' and 'barostat'
 
 molsim-0.9.4
 ------------
 
-  * Added more specifiers to action 'get': 'charges',
-    'bondlengths', 'angles' and 'torsions'
+  * Added more specifiers to action 'get': 'charges', 'bondlengths', 'angles' and 'torsions'
   * Action 'compress' now allows anisotropic compression
   * Optimization to sf-Coulomb interaction calculations (seplib)
   * Revisions/update to tutorial
-  * Bug squashing 
+  * Minor bug squashing 
   * Initial version of a test script
 
 molsim-0.9.5 
 ------------
 
-  * A few bug fixes (thanks to Kai's compiler for pointing out these issues)
-  * Added 'dihedral' specifier for to the calcforce action (alternative to 'torsion')
+  * A few bug fixes - thanks to Kai's compiler for pointing out these issues (seplib)
+  * Added 'dihedral' specifier for to the calcforce action (alternative to but same as 'torsion')
   * Minor update to tutorial
   * Re-arrangement of the test suit and addition of some more tests (still a bit messy)
   * Added a release checklist
@@ -63,14 +61,9 @@ molsim-0.9.5
 molsim-0.11.0
 -------------
 
-  * Added GJF Langevin integrator (seplib)
-  * Added function molslitconf.m to generate molecular fluid config. in a slitpore  
+  * Added GJF Langevin integrator (primarilly seplib thing)
+  * Added function molslitconf.m to generate molecular fluid config in a slitpore  
   * Minor updates to tutorial
   * Documentation of resource files (will later be present in tutorial)
   * Compiler flag "-march=native" default (gcc only) 
-  
-
-  
-  
-  
   

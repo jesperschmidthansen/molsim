@@ -75,8 +75,7 @@ void sep_fp(seppart *ptr, double temp_desired, sepsys *sys, sepret *retval);
  * @param sys Pointer to seplib system structure
  * @param retval Pointer to seplib return structure
  */
-void sep_verlet_dpd(seppart *ptr, double lambda, int stepnow,
-		    sepsys *sys, sepret *retval);
+void sep_verlet_dpd(seppart *ptr, double lambda, int stepnow, sepsys *sys, sepret *retval);
 
 
 #ifndef DOXYGEN_SKIP
