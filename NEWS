@@ -61,9 +61,8 @@ molsim-0.9.5
 molsim-0.11.0
 -------------
 
-  * Added GJF Langevin integrator (primarilly seplib thing)
+  * Added GJF Langevin integrator
   * Added function molslitconf.m to generate molecular fluid config in a slitpore  
   * Minor updates to tutorial
   * Documentation of resource files (will later be present in tutorial)
-  * Compiler flag "-march=native" default (gcc only) 
-  
+  * Only gcc now supported - added flag "-march=native"   
