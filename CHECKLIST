@@ -7,7 +7,8 @@
 4: Update file NEWS 
 5: Update file DESCRIPTION
 6: Make molsim release
-7: Check install release from http address 
+7: Check install release from http address (remove path to local repository first)
 8: Generate sha key
-9: Edit molsim.yaml as necessary and submit to community
+9a: Use gnu-octave/package link and open molsim.yaml
+9b: Edit molsim.yaml as necessary and propose changes + make pull request + merge pull request + merge + confirm merge
 10: Copy tutorial.pdf to the NHSS repository
