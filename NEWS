@@ -66,3 +66,10 @@ molsim-0.11.0
   * Minor updates to tutorial
   * Documentation of resource files (will later be present in tutorial)
   * Only gcc now supported - added flag "-march=native"   
+
+molsim-0.11.1
+-------------
+
+  * Added more specifiers to action 'set': 'mass'
+  * Update to tutorial
+  
