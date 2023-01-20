@@ -16,4 +16,4 @@
 	merge + 
 	confirm merge
 10: Copy tutorial.pdf to the NHSS repository
-11: Check all code in NHSS repository
+11: Check all code runs correctly in the NHSS repository

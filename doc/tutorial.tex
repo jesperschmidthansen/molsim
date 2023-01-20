@@ -36,8 +36,9 @@ simulations. \textsf{molsim} supports simulations of
 \noindent \textsf{molsim} is basically a wrapper for the \textsf{seplib}
 library, which is a light-weight flexible molecular dynamics simulation library
 written in ISO-C99. \textsf{seplib} is CPU-based and offers shared memory
-parallization; this parallizaton is supported by
-\textsf{molsim}. \textsf{seplib} is also developed and maintained by this
+parallelization; this parallelization is supported by
+\textsf{molsim}. \textsf{seplib} is also developed and 
+maintained by this
 author, and the underlying algorithms are based on the books by Allen and
 Tildesley \cite{AllenTildesley}, Frenkel and Smit \cite{FrenkelSmit}, Rapaport
 \cite{Rapaport}, and Sadus \cite{Sadus}.
@@ -115,7 +116,7 @@ directory in your Matlab search path.
 only be tested against very limited Matlab versions.
 
 \section{The interface strategy}
-This tutorial is not meant to introduce molecular dynamics; such introduction
+This tutorial is not meant to introduce molecular dynamics; such introductions
 can be found in the books listed in the reference list. In brief, the basic idea
 is to solve the classical equation of motion of an ensemble of interacting
 particles. In the simplest form this means solving (numerically) Newton's second
@@ -148,7 +149,7 @@ done
 
 \noindent The \textsf{molsim} interface seeks to emulate this, and give the user
 coding flexibility and accessibility to the simulation quantities. In general,
-the \verb!molsim! interface is on the form
+the \verb!molsim! interface is of the form
 \begin{verbatim}
 molsim(<action>, <specifier>, <arguments>);
 \end{verbatim}
@@ -222,7 +223,7 @@ end
 \end{verbatim}
 to print current iteration number, potential energy per particle, kinetic energy
 per particle, total energy per particle, kinetic temperature, and total momentum
-to screen every 100 time step.
+to screen every 100 time steps.
 
 Information can also be stored into variables for further analysis. For example,
 to get the system energies and pressure
@@ -242,7 +243,7 @@ In the reference sheet (see Appendix) you can find the list of specifiers for th
 calculated using the molecular pressure tensor. In general this is different
 from the atomic pressure. The user must enable this calculation using the
 \verb!set! action with specifier \verb!molstresscalc!. For example, to
-calculate the (molecular) pressure every ten time step use
+calculate the (molecular) pressure every ten time steps use
 \begin{verbatim}
 molsim('set', 'molstresscalc', 10);
 \end{verbatim}
@@ -296,8 +297,8 @@ molsim('barostat', 'relax', 0.9, 0.01, 'iso');
 The choice of relaxation parameter, here 0.01, is again a matter of the specific
 system. The last argument tells the barostat to do an isotropic compression. If
 this is left out the barostat works by changing the system box length in the
-$z$-direction only (an-isotropic scaling); this is practical when doing sampling
-as two directions are fixed. You can use the barostate and the thermostat
+$z$-direction only (anisotropic scaling); this is practical when doing sampling
+as two directions are fixed. You can use the barostat and the thermostat
 in the same simulation mimicking an NPT system. For the expert: The barostat is
 based on the atomic pressure, a molecular pressure barostat is planned for
 future releases. 
@@ -313,7 +314,7 @@ future releases.
 \end{equation}
 The first term allows for simulations of fictitious fixed crystal arrangements,
 where the particles/atoms are tethered around a pre-set lattice site. This is
-particular useful for systems with walls. The potential function is a harmonic
+particularly useful for systems with walls. The potential function is a harmonic
 spring type
 \begin{equation}
   U_\mathrm{lattice} =
@@ -330,7 +331,7 @@ molsim('calcforce', 'lattice', <part. type>, <k0>);
 where \verb!<part. type>! is the particle type and \verb!<k0>! is the force
 constant. 
 
-The short ranged van der Waals pair interaction is given via the 12-6 
+The short-range van der Waals pair interaction is given via the 12-6 
 Lennard-Jones potential
 \begin{equation}
   U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}}
@@ -356,7 +357,7 @@ The Coulomb potential is
 \begin{equation}
   U_{\mathrm{coulomb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}} \, .
 \end{equation}
-Currently this long ranged interaction is evaluated using approximate
+Currently this long-range interaction is evaluated using approximate
 shifted-force or Wolf methods; this can be specified. Note: these two
 algorithms do not apply to confined systems. The call is
 \begin{verbatim}
@@ -367,7 +368,7 @@ molsim('calcforce', 'coulomb', <method>, <cutoff>, <optWolf>);
 Wolf method is chosen. Again, the cut-off must be less than or equal to the
 maximum system interaction length.
 
-Bonds are model via the harmonic spring potential
+Bonds are modelled via the harmonic spring potential
 \begin{equation}
   U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2 \, .
 \end{equation}
@@ -422,10 +423,10 @@ To calculate the force from this interaction potential use
 molsim('calcforce', 'torsion', <type>, <RB-coef>);
 \end{verbatim}
 \verb!<RB-coef>! is an array of length six specifying the Ryckert-Belleman
-coefficients. Note, the torsion angle is often referred to as the diheadral angle. 
+coefficients. Note, the torsion angle is often referred to as the dihedral angle. 
 
 \section{Molecular systems: Toluene}
-This example shows how to setup a simulation of model liquid toluene. The model
+This example shows how to setup a simulation of liquid toluene. The model
 of the molecule is a so-called united atomic unit (UAU) model. This means that
 each carbon group is represented by a single Lennard-Jones particle, thus, the
 toluene molecule is composed of seven identical Lennard-Jones particles, six
@@ -445,11 +446,11 @@ Fig. \ref{fig:toluene}.
 
 To define the molecule geometry (or topology) we need different intra-molecular
 interactions, i.e., bond, angle, and torsion angle potentials. Lennard-Jones
-interactions between carbon groups in same molecule are excluded. The model is
+interactions between carbon groups in the same molecule are excluded. The model is
 further simplified by using only two different bond types (with different zero
-force bond length, but same force constant), and one angle type. There are two
+force bond length, but the same force constant), and one angle type. There are two
 different torsion angles, eg., 1-2-3-4 form one type of torsion angle,
-$\phi=\pi$, whereas 7-2-3-4 form torsion angle with $\phi=0$. We define the
+$\phi=\pi$, whereas 7-2-3-4 form a torsion angle with $\phi=0$. We define the
 molecular model in two files; one with extension \verb!.xyz! giving the carbon
 groups' positions for one molecule and one with extension \verb!.top!  defining
 bonds and angles in the molecule. You can find examples of these two files for
@@ -549,23 +550,23 @@ molsim('sample', 'do');
 Typically this call is done just after the integration. Check the reference
 sheet for the list of available samplers. 
 
-\section{Parallization}
-\textsf{molsim} offers two types of sheared memory parallization, namely,
+\section{Parallelization}
+\textsf{molsim} offers two types of shared memory parallelization, namely,
 \begin{itemize}
-\item Loop parallization 
-\item Task-block parallization
+\item Loop parallelization 
+\item Task-block parallelization
 \end{itemize}
 We here only document the first type\footnote{Yep - I'm lazy}; the task-block
 type will be included in later versions of the tutorial. To use loop
-parallization simply call the \verb!set! action with specifier \verb!omp!
+parallelization simply call the \verb!set! action with specifier \verb!omp!
 \begin{verbatim}
 molsim('set', 'omp', <nthreads>);
 \end{verbatim}
 where \verb!nthreads! is the number of threads you wish to use. Typically, do
 not use more threads than the number of cpu-cores\footnote{not even with
   hyper-threading}.  The call is placed anywhere before the main loop. Be aware
-that depending on your hardware and the particular system the parallization
-efficiency quickly drops as function of number of threads. To explore this we
+that depending on your hardware and the particular system the parallelization
+efficiency quickly drops as a function of the number of threads. To explore this we
 define the speed-up and efficiency by
 \begin{equation}
   \mathrm{speedup} = \frac{t_\mathrm{single}}{t_\mathrm{parallel}} \ \
