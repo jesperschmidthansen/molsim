@@ -213,6 +213,12 @@ void action_set(int nrhs, const mxArray* prhs[]){
       for ( int n=0; n<natoms; n++ )
 	atoms[n].f[k] += force[k*natoms + n];
   }
+  else if (strcmp(specifier, "mass")==0 ) {
+    if ( nrhs != 3 ) inputerror(__func__);
+    double *mass = mxGetPr(prhs[2]);      
+    for ( int n=0; n<natoms; n++ )
+		atoms[n].m = mass[n];
+  }
   else if (strcmp(specifier, "compressionfactor")==0 ) {
     if ( nrhs != 3 ) inputerror(__func__);
     compressionfactor = mxGetScalar(prhs[2]);      
