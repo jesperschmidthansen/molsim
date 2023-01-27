@@ -3,7 +3,7 @@
 
 <p>
 <figure>
-  <img src="doc/logo.png" alt="Trulli" style="width:25%">
+  <img src="doc/logo.png" alt="Trulli" style="width:30%">
   molsim is a GNU Octave/Matlab toolbox for molecular dynamics simulations. 
   </figure> 
 </p>
