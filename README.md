@@ -1,7 +1,12 @@
 <html>
 <body>
 
-<p>molsim is a GNU Octave/Matlab toolbox for molecular dynamics simulations. molsim supports simulations of</p>
+<p>
+<figure>
+  <img src="doc/logo.png" alt="Trulli" style="width:20%">
+</figure> 
+molsim is a GNU Octave/Matlab toolbox for molecular dynamics simulations. molsim supports simulations of
+</p>
 
 <ul>
 <li>simple Lennard-Jones systems,</li>
@@ -12,5 +17,6 @@
 <li>different ensembles,</li>
 <li> and more . .</li>
 </ul>
+
 </body>
 </html>
