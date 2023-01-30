@@ -1,4 +1,4 @@
-<html>
+ <html>
 <body>
 <h1> Molsim - Molecular dynamics with GNU Octave </h1>
 <p>
@@ -66,6 +66,7 @@ An example of an NVE water simulation script
 </pre>
 </div>
 
+  <p>For an explanation check out the package tutorial under the project's doc/ folder </p> 
 <h2>Contribution</h2>
 <p>
 I encourage anyone who uses or plan to use molsim to submit problematic issues - this includes issues regarding the documentation. I also welcome contributions to the code for the project, whether it is core features (seplib), post simulation data analysis programs, or extending the molsim wrapper. 
