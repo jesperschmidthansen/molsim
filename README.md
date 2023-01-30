@@ -38,8 +38,8 @@ An example of an NVE water simulation script
 <div class="box">
   <pre>
     
-    nloops = 100000; temp0 = 298.15/78.2;
-    cutoff= 2.5; cutoff_sf = 2.9;
+    nloops = 10000000; temp0 = 298.15/78.2;
+    cutoff= 2.5; sigma=1.0; epsilon=1.0; aw=1.0; cutoff_sf = 2.9;
     lbond = 0.316; kspring = 68421; 
     angle = 1.97; kangle = 490;
   
@@ -54,7 +54,7 @@ An example of an NVE water simulation script
     for n=1:nloops 
       molsim('reset')
       
-      molsim('calcforce', 'lj', 'OO', cutoff, 1.0, 1.0, 1.0);
+      molsim('calcforce', 'lj', 'OO', cutoff, sigma, epsilon, aw);
       molsim('calcforce', 'coulomb', 'sf', cutoff_sf);
       molsim('calcforce', 'bond', 0, lbond, kspring);
       molsim('calcforce', 'angle', 0, angle, kangle);
