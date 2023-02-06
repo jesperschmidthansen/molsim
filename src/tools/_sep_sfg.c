@@ -131,8 +131,7 @@ void sep_sfg(int argc, char **argv){
   
   float dens = atof(argv[argc-2]);
   int seed = atoi(argv[argc-1]);
-  printf("%d %d %f\n", ntypes, seed, dens);
-  
+
   // Set the lattice sites 
   lattice lat = setcubic(nmol_tot, dens);
 

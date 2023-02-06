@@ -226,12 +226,19 @@ void sep_force_pair_neighb(seppart *ptr, const char *types, double cf,
 
 }
 
-void sep_force_pairs(seppart *ptr, const char *types, double cf,
+int sep_force_pairs(seppart *ptr, const char *types, double cf,
 		     double (*fun)(double, char), sepsys *sys, 
 		     sepret *retval, const unsigned opt){
 
-  if ( cf > sys->cf )
-    sep_error("cutoff for an interaction cannot be larger than maximum cutoff");
+	if ( cf > sys->cf ){
+		#ifdef OCTAVE
+			sep_warning("cutoff for an interaction cannot be larger than maximum cutoff");
+			return SEP_FAILURE;
+		#else
+			sep_error("cutoff for an interaction cannot be larger than maximum cutoff");
+		#endif
+	}
+    
   
   if ( sys->neighb_update == SEP_BRUTE ) {
 
@@ -266,6 +273,7 @@ void sep_force_pairs(seppart *ptr, const char *types, double cf,
     
   }
 
+  return SEP_SUCCESS;
 }
 
 

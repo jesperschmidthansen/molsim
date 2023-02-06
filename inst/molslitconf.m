@@ -25,128 +25,135 @@ function molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbon
 	end	
 		
 
-	function [npart str] = readheader(fin, opt)
+	function [read_npart read_str] = readheader(read_fin, read_opt)
 
-		npart = fscanf(fin, "%d\n", "C");
+		read_npart = fscanf(read_fin, "%d\n", "C");
 
-		if strcmp(opt, "string")
-		str = fgets(fin, 1024);
+		if strcmp(read_opt, "string")
+			read_str = fgets(read_fin, 1024);
 		else 
-		str = '\0';
+			read_str = '\0';
 		endif
 
 	endfunction
 
-	function add_wallforce(lbox)
+	function add_wallforce(add_lbox)
 		
-		x = molsim('get', 'positions');
+		add_x = molsim('get', 'positions');
 		
-		f = 1./x(:,3).^12 - 1./(x(:,3)-lbox).^12;
+		add_f = 1./add_x(:,3).^12 - 1./(add_x(:,3)-add_lbox).^12;
 		
-		molsim('add', 'force', f, 3);
+		molsim('add', 'force', add_f, 3);
 		
 	endfunction
 
 
-	function write_config(lbox, boff, bcc)
+	function write_config(w_lbox, w_boff, w_bcc)
 		
-		nxy = int32(lbox(1));
+		w_nxy = int32(w_lbox(1));
 
-		if bcc
-			if ! rem(nxy,2)==0
-				nxy = nxy - 1;
+		if w_bcc
+			if ! rem(w_nxy,2)==0
+				w_nxy = w_nxy - 1;
 			endif
 	
-			str=sprintf("sep_lattice -b -n=%d,%d,4 -l=%f,%f,4.0 -f=wall.xyz", ...
-																nxy, nxy, lbox(1), lbox(2));
+			w_str=sprintf("sep_lattice -b -n=%d,%d,4 -l=%f,%f,4.0 -f=wall.xyz", ...
+																w_nxy, w_nxy, w_lbox(1), w_lbox(2));
 		else
-			str=sprintf("sep_lattice -n=%d,%d,3 -l=%f,%f,3.0 -f=wall.xyz", ...
-																nxy, nxy, lbox(1), lbox(2));
+			w_str=sprintf("sep_lattice -n=%d,%d,3 -l=%f,%f,3.0 -f=wall.xyz", ...
+																w_nxy, w_nxy, w_lbox(1), w_lbox(2));
 		endif
 		
-		[status, output] = system(str);
+		[w_status, w_output] = system(w_str);
 
-		fin_mol = fopen("molecules.xyz", 'r');
-		fin_wall = fopen("wall.xyz", 'r');
+		w_fin_mol = fopen("molecules.xyz", 'r');
+		w_fin_wall = fopen("wall.xyz", 'r');
 
-		npart_wall = readheader(fin_wall, 'string');
-		npart_mol = readheader(fin_mol, 'string');
+		w_npart_wall = readheader(w_fin_wall, 'string');
+		w_npart_mol = readheader(w_fin_mol, 'string');
 
-		fout = fopen("slitpore.xyz", 'w');
+		w_fout = fopen("slitpore.xyz", 'w');
 
-		fprintf(fout, "%d\n", npart_wall*2+npart_mol);
-		fprintf(fout, "%f %f %f\n", lbox(1), lbox(2), lbox(3)*2);
+		fprintf(w_fout, "%d\n", w_npart_wall*2+w_npart_mol);
+		fprintf(w_fout, "%f %f %f\n", w_lbox(1), w_lbox(2), w_lbox(3)*2);
 
-		offset = 3.0 + boff; zmax = 0.0;
-		for n=1:npart_mol
+		w_offset = 3.0 + w_boff; w_zmax = 0.0;
+		for w_n=1:w_npart_mol
 			
-			[t, x, y, z, vx, vy, vz, m, q] = ...
-			fscanf(fin_mol, "%c %f %f %f %f %f %f %f %f\n", "C");
-			fprintf(fout, "%c %f %f %f %f %f %f %f %f\n",t, x, y, z+offset, vx, vy, vz, m, q);
+			[w_t, w_x, w_y, w_z, w_vx, w_vy, w_vz, w_m, w_q] = ...
+			fscanf(w_fin_mol, "%c %f %f %f %f %f %f %f %f\n", "C");
+			fprintf(w_fout, "%c %f %f %f %f %f %f %f %f\n",w_t, w_x, w_y, w_z+w_offset, 
+					w_vx, w_vy, w_vz, w_m, w_q);
 
-			if z > zmax
-				zmax = z;
+			if w_z > w_zmax
+				w_zmax = w_z;
 			end
 
 		endfor
 
-		offset = zmax + 2*boff + 3.0;
+		w_offset = w_zmax + 2*w_boff + 3.0;
 
-		for n=1:npart_wall
-			[t, x, y, z, vx, vy, vz, m, q] = fscanf(fin_wall, "%c %f %f %f %f %f %f %f %f\n", "C");
-			fprintf(fout, "w %f %f %f %f %f %f %f %f\n", x, y, z, vx, vy, vz, m, q);
-			fprintf(fout, "W %f %f %f %f %f %f %f %f\n", x, y, offset+z, vx, vy, vz, m, q)
+		for w_n=1:w_npart_wall
+			[w_t, w_x, w_y, w_z, w_vx, w_vy, w_vz, w_m, w_q] = ...
+			 fscanf(w_fin_wall, "%c %f %f %f %f %f %f %f %f\n", "C");
+			fprintf(w_fout,"w %f %f %f %f %f %f %f %f\n", w_x, w_y, w_z, w_vx, w_vy, w_vz, w_m,w_q);
+			fprintf(w_fout,"W %f %f %f %f %f %f %f %f\n",w_x, w_y,w_offset+w_z,w_vx,w_vy,w_vz,w_m,w_q);
 		endfor
 
-		fclose(fin_mol);fclose(fin_wall);fclose(fout);
+		fclose(w_fin_mol);fclose(w_fin_wall);fclose(w_fout);
 
 		printf("Wrote configuration in slitpore.xyz\n");
 		printf("Topology file is start.top\n");
-		printf("Wall density is set to %.3f\n", nxy^2*4/(lbox(1)^2*4.0));
+		printf("Wall density is set to %.3f\n", w_nxy^2*4/(w_lbox(1)^2*4.0));
 		
 	endfunction
 
 
-	function Lbox = compress(atype, lb, numbermol, dens0, lbox_z, xyzfile, topfile)
+	function c_Lbox = compress(c_atype, c_lb, c_numbermol, c_dens0, c_lbox_z, c_xyzfile, c_topfile)
 
-		temp0 = 4.0; ks = 1000.0;
-		types = [atype, atype];
+		c_temp0 = 4.0; c_ks = 1000.0;
+		c_types = [c_atype, c_atype];
 		
-		molsim('set', 'molconfig', xyzfile, topfile, numbermol, 0.01, int32(rand*100));
+		molsim('set', 'molconfig', c_xyzfile, c_topfile, c_numbermol, 0.01, int32(rand*100));
 		molsim('load', 'xyz', 'start.xyz');
 		molsim('load', 'top', 'start.top');
-
+		printf("1\n"); fflush(stdout);
+		
 		molsim('set','timestep', 0.001);
-		molsim('set', 'temperature', temp0);
+		molsim('set', 'temperature', c_temp0);
 		molsim('set', 'exclusion', 'molecule');
-		molsim('set', 'compressionfactor', 0.99995);
+		molsim('set', 'compressionfactor', 0.99999);
 
-		npart = molsim('get', 'numbpart');
+		c_npart = molsim('get', 'numbpart');
 
-		Lbox = molsim('get', 'box');
-		lbox_xy = sqrt(npart/(lbox_z*dens0)); 
+		c_Lbox = molsim('get', 'box');
+		c_lbox_xy = sqrt(c_npart/(c_lbox_z*c_dens0)); 
 		
-		while ( Lbox(1) > lbox_xy || Lbox(3) > lbox_z )
+		while ( c_Lbox(1) > c_lbox_xy || c_Lbox(3) > c_lbox_z )
 
-		molsim('reset')
+			molsim('reset')
 		
-		molsim('calcforce', 'lj', types, 2.5, 1.0, 1.0, 1.0);
+			molsim('calcforce', 'lj', c_types, 2.5, 1.0, 1.0, 1.0);
 		
-		molsim('calcforce', 'bond', 0, lb, ks);
+			molsim('calcforce', 'bond', 0, c_lb, c_ks);
 		
-		add_wallforce(molsim('get', 'box')(3));
+			add_wallforce(molsim('get', 'box')(3));
 		
-		molsim('integrate', 'leapfrog')
-		molsim('thermostat', 'relax', atype, temp0, 0.01);
+			molsim('integrate', 'leapfrog')
+			molsim('thermostat', 'relax', c_atype, c_temp0, 0.001);
 		
-		molsim('compress', lbox_xy, 1);
-		molsim('compress', lbox_xy, 2);
-		molsim('compress', lbox_z, 3);
+			molsim('compress', c_lbox_xy, 1);
+			molsim('compress', c_lbox_xy, 2);
+			molsim('compress', c_lbox_z, 3);
 
-		Lbox = molsim('get', 'box');
+			Lbox = molsim('get', 'box');
+
+			energies = molsim('get', 'energies');
+
+			%molsim('print');
 		end
 
-		molsim('save', atype, 'molecules.xyz');
+		molsim('save', c_atype, 'molecules.xyz');
 		molsim('clear');
 		
 	end

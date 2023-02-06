@@ -46,7 +46,7 @@
  * SEP_EXCL_SAME_MOL: Exclude interactions between 
  * particles in same molecule    
  */
-void sep_force_pairs(seppart *ptr, const char *types, double cf,
+int sep_force_pairs(seppart *ptr, const char *types, double cf,
 		     double (*fun)(double, char), sepsys *sys, 
 		     sepret *retval, const unsigned opt);
 

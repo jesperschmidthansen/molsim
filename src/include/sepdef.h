@@ -58,6 +58,8 @@
 
 #define SEP_SHAKE_MAXIT 1000
 
+#define SEP_SUCCESS 1
+#define SEP_FAILURE 1
 
 #ifdef COMPLEX
 

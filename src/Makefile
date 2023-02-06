@@ -3,7 +3,7 @@
 # Macros
 
 CC          =  gcc
-CFLAGS      =  -g -Ofast -fgnu89-inline -std=c99 -fPIC -march=native
+CFLAGS      =  -g -Ofast -fgnu89-inline -std=c99 -fPIC
 RANLIB      =  ranlib
 AR          =  ar 
 COMPLEX     =  -DCOMPLEX

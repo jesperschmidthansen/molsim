@@ -9,11 +9,12 @@
 #define MAXNUMBTASK 12
 
 // Globals static variables *sigh* Perhaps a structure in future
-static sepatom *atoms;
-static sepsys sys;
-static sepret ret;
-static sepmol *mols;
-static sepsampler sampler;
+sepatom *atoms;
+sepsys sys;
+sepret ret;
+sepmol *mols;
+sepsampler sampler;
+
 static taskmanager *tasks;
 
 static int natoms;
