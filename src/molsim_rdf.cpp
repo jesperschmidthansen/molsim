@@ -2,7 +2,7 @@
 #include <iostream>
 #include <octave/oct.h>
 
-#define HELP ("--- [rdf, r] = molsim_rdf(rdf pair types, particle positions, particle types, box dimensions) ")
+#define HELP ("--- [rdf, r] = molsim_rdf(rdf pair types, particle positions, particle types, box dimensions, lvec) ")
 
 
 double getDisplacement(double xi, double xj, double lbox){
@@ -18,9 +18,8 @@ double getDisplacement(double xi, double xj, double lbox){
 
 DEFUN_DLD(molsim_rdf, args, , HELP){
 	octave_value_list retval;
-	unsigned lvec = 100;
 	
-	if ( args.length() != 4 ){
+	if ( args.length() != 5 ){
 		print_usage();
 		return retval;
 	}
@@ -29,6 +28,7 @@ DEFUN_DLD(molsim_rdf, args, , HELP){
 	Matrix positions(args(1).matrix_value());
 	charMatrix types(args(2).char_matrix_value());
 	ColumnVector lbox(args(3).vector_value());
+	unsigned int lvec(args(4).scalar_value());
 	
 	double minlbox = 0.5*lbox(0);
 	for ( int k=1; k<3; k++ ) {
