@@ -228,7 +228,7 @@ to screen every 100 time steps.
 Information can also be stored into variables for further analysis. For example,
 to get the system energies and pressure
 \begin{verbatim}
-[ekin, epot] = molsim('get', 'energies');
+energies = molsim('get', 'energies'); # vector with ekin and epot
 press = molsim('get', 'pressure');
 \end{verbatim}
 and particle positions and velocities
