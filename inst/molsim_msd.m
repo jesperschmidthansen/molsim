@@ -1,18 +1,19 @@
 
 
 
-function msd  = molsim_msd(ptype='A')
+function [msd scatt] = molsim_msd(ptype='A', numbwave=10, maxconfidx=10000)
 
 	
 	if ( !exist("molsim_readxyz") )
 		error("molsim_msd dependent on molsim_evcorr and molsim_readxyz");
 	endif
 	
-	indx = 0;
+	indx = 0; 
 	while ( 1 )
+		
 		filename = sprintf("molsim-%05d.xyz", indx);
 		
-		if ( !exist(filename) ) 
+		if ( !exist(filename) || indx > maxconfidx ) 
 			break; 
 		endif
 		
@@ -22,31 +23,44 @@ function msd  = molsim_msd(ptype='A')
 			pidx = find( parttypes==ptype ); nptypes = length(pidx);
 			prevPos = pos0 = pos(pidx,:);
 			crossings = zeros(nptypes, 3);
+			
+			waves = 2*pi.*[1:1:numbwave]./lbox(1);
+			
+			printf("Found %d particles of type %c\n", nptypes, ptype);
+			fflush(stdout);
 		endif
 		
 		dr = pos(pidx,:) - prevPos;
 		
 		for k=1:3
 			indxWrap = find( dr(:,k) > 0.5*lbox(k) );
-			crossings(indxWrap,k) += -1;
+			crossings(indxWrap,k) += 1;
 			
 			indxWrap = find( dr(:,k) < -0.5*lbox(k) );
-			crossings(indxWrap,k) += 1;
+			crossings(indxWrap,k) += -1;
 		endfor
 		prevPos = pos(pidx,:);
 		
 		dr = pos(pidx,:) - crossings.*lbox - pos0;
+				
+		sd = sum(dot(dr', dr'))./nptypes;
 		
-		sd = sum(dot(dr', dr'));
+		## MSD
+		indx++; msd(indx) = sd;
 		
-		indx++;
+		## SCATT
+		for nk=1:numbwave
+			sumsc = 0.0;
+			for np=1:nptypes
+				sumsc = sumsc + real(exp(-I.*waves(nk)*dr(np,1)));
+			end
+			scatt(indx, nk) = sumsc/nptypes;
+		end
 		
-		msd(indx) = sd;
-		
+		printf("\rProcessed %d  ", indx);fflush(stdout);
 	endwhile 
 	
-	msd = msd./nptypes;
-	
+	printf("\n");
 endfunction 
 
 
