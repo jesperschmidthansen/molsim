@@ -9,3 +9,4 @@ This file lists the optimization attempts and implimentatons
 3: Timing using the seplib atom data structure or simple array data structure shows no effect, not
    implimented.
 
+4: GPU support in the making...

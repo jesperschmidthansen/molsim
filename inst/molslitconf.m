@@ -114,21 +114,19 @@ function molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbon
 		c_temp0 = 4.0; c_ks = 1000.0;
 		c_types = [c_atype, c_atype];
 		
-		molsim('set', 'molconfig', c_xyzfile, c_topfile, c_numbermol, 0.01, int32(rand*100));
-		molsim('load', 'xyz', 'start.xyz');
-		molsim('load', 'top', 'start.top');
-		printf("1\n"); fflush(stdout);
-		
 		molsim('set','timestep', 0.001);
 		molsim('set', 'temperature', c_temp0);
 		molsim('set', 'exclusion', 'molecule');
-		molsim('set', 'compressionfactor', 0.99999);
+		molsim('set', 'compressionfactor', 0.99997);
 
-		c_npart = molsim('get', 'numbpart');
-
-		c_Lbox = molsim('get', 'box');
-		c_lbox_xy = sqrt(c_npart/(c_lbox_z*c_dens0)); 
+		molsim('set', 'molconfig', c_xyzfile, c_topfile, c_numbermol, 0.01, int32(rand*100));
+		molsim('load', 'xyz', 'start.xyz');
+		molsim('load', 'top', 'start.top');
 		
+		c_npart = molsim('get', 'numbpart');
+		c_Lbox = molsim('get', 'box');
+		
+		c_lbox_xy = sqrt(c_npart/(c_lbox_z*c_dens0)); 
 		while ( c_Lbox(1) > c_lbox_xy || c_Lbox(3) > c_lbox_z )
 
 			molsim('reset')
@@ -146,11 +144,8 @@ function molslitconf(xyzFile, topFile, densFluid, height, numberMol, atype, lbon
 			molsim('compress', c_lbox_xy, 2);
 			molsim('compress', c_lbox_z, 3);
 
-			Lbox = molsim('get', 'box');
-
-			energies = molsim('get', 'energies');
-
-			%molsim('print');
+			c_Lbox = molsim('get', 'box');
+			
 		end
 
 		molsim('save', c_atype, 'molecules.xyz');
