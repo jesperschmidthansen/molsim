@@ -71,6 +71,6 @@ molsim-0.11.1
 -------------
 
   * Added more specifiers to action 'set': 'mass'
-  * Added auxillary functions: molsim_rdf, molsim_calcrdf, and molsim_readxyz 
+  * Added auxillary functions: molsim_rdf, molsim_calcrdf, and molsim_readxyz, molsim_calccf 
   * Update to tutorial
   
