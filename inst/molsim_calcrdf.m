@@ -1,7 +1,6 @@
 
 ##
-## Usage 
-##  [radius, radial] = molsim_calcrdf(types, npoints)
+## Usage: [radius, radial] = molsim_calcrdf(types, npoints)
 ##
 ##  types defaults to "AA", npoints to 100
 ##
@@ -11,6 +10,7 @@ function [radius, radial] = molsim_calcrdf(types="AA", npoints=100)
 	if ( !exist("molsim_rdf") || !exist("molsim_readxyz") )
 		error("molsim_calcrdf dependent on molsim_rdf and molsim_readxyz");
 	endif
+	
 	
 	counter = 0;
 	while (1)

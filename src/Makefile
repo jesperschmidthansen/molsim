@@ -41,6 +41,9 @@ _sep_sfg.o: tools/_sep_sfg.c
 molsim_rdf.oct:molsim_rdf.cpp
 	mkoctfile molsim_rdf.cpp
 	
+evcorr.oct:evcorr.cpp
+	mkoctfile evcorr.cpp
+	
 # Cleaning up
 clean: 
 	rm -f libsep.a *.o
