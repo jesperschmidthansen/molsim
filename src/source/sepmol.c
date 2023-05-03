@@ -65,8 +65,7 @@ void sep_read_bonds_top(sepatom *aptr, sepmolinfo *ptr,
     if ( line[0] == '[' ){ 
       break;
     }
-    else {
-      
+    else {      
       fsetpos(fptr, &pos_file); 
       
       int sc = fscanf(fptr, "%u%u%u%u\n", &moli, &a, &b, &type);

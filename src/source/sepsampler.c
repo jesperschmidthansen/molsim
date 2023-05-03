@@ -543,8 +543,8 @@ void sep_msd_sample(seppart *atom, sepmsd *sptr, sepsys sys){
   if ( index == 0 ){
     for ( int n=0; n<sys.npart; n++ ){
       for ( int k=0; k<3; k++ ) {
-	sptr->prev_pos[n][k] = sptr->pos0[n][k] = atom[n].x[k];
-	sptr->crossings[n][k] = 0;
+		sptr->prev_pos[n][k] = sptr->pos0[n][k] = atom[n].x[k];
+		sptr->crossings[n][k] = 0;
       }
     }
   }

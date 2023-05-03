@@ -780,6 +780,7 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
   const double eps48 = 48.0*eps;
   const double eps4 = 4.0*eps;
   const double awh = 0.5*aw;
+  const double sigmasqr = sigma*sigma;
   
   if ( parallel ){
 
@@ -813,7 +814,7 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
 	  
 	  if ( r2 < cf2 ){
 
-	    double rri = sigma/r2; double rri3 = rri*rri*rri;
+	    double rri = sigmasqr/r2; double rri3 = rri*rri*rri;
 	    ft = eps48*rri3*(rri3 - awh)*rri;
 	 
 	    for ( k=0; k<3; k++ ){
@@ -873,7 +874,7 @@ void sep_lj_pair_neighb(seppart *ptr, const char *types,
 	  
 	  if ( r2 < cf2 ){
 
-	    double rri = sigma/r2; double rri3 = rri*rri*rri;
+	    double rri = sigmasqr/r2; double rri3 = rri*rri*rri;
 	    ft = eps48*rri3*(rri3 - awh)*rri;
 
 	    for ( k=0; k<3; k++ ){
@@ -944,7 +945,7 @@ void sep_lj_pair_brute(seppart *ptr, const char *types, const double *p,
 	if (r2 < cf2){ 
 
 	  // Force between particles
-	  double rri = sigma/r2; double rri3 = rri*rri*rri;
+	  double rri = sigma*sigma/r2; double rri3 = rri*rri*rri;
 	  ft = 48.0*eps*rri3*(rri3 - 0.5*aw)*rri;
 	 
 	  for (k=0; k<3; k++){

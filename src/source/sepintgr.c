@@ -167,14 +167,15 @@ void sep_nosehoover(sepatom *ptr, double temp0, double *alpha,
       
 } 
 
-void _sep_nosehoover_type(seppart *ptr, char type, double Td, double *alpha, const double Q, sepsys *sys){ 
+void _sep_nosehoover_type(seppart *ptr, char type, double Td, 
+			double *alpha, const double Q, sepsys *sys){ 
 
   int ntype = 0;  double ekin = 0.0;
   for (int n=0; n<sys->npart; n++){
     if ( ptr[n].type == type ){
       ntype++;
       for ( int k=0; k<3; k++ )
-		ekin += sep_Sq(ptr[n].v[k])*ptr[n].m;
+	ekin += sep_Sq(ptr[n].v[k])*ptr[n].m;
     }
   }
 
