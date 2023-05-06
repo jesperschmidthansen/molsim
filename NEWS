@@ -71,6 +71,9 @@ molsim-0.11.1
 -------------
 
   * Added more specifiers to action 'set': 'mass'
-  * Added auxillary functions: molsim_rdf, molsim_calcrdf, and molsim_readxyz, molsim_calccf 
-  * Update to tutorial
-  
+  * Added auxillary functions: molsim_rdf, molsim_calcrdf, molsim_readxyz, molsim_calccf
+  * Critical error in LJ force calculations fixed *sigh*
+  * Small update to tutorial
+  * Note: Last release in 0.X-series. GPU/CUDA support will be focus of 1.X series (seplib).
+
+
