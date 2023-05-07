@@ -1,12 +1,12 @@
 
 
-0: Make seplib release (includes running test and successful building of of molsim in Octave and Matlab)
+0: Make seplib release (includes running test and successful building of molsim in Octave and Matlab)
 1: Import latest seplib revision
 2: Compilation with max. warning level (pass with no warning)
 3: All tests must pass
 4: Update file NEWS 
 5: Update file DESCRIPTION
-6: Make molsim release
+6: Commit and make molsim release
 7: Check install release from http address (remove path to local repository first)
 8: Generate sha key
 9a: Use gnu-octave/package link and open molsim.yaml
