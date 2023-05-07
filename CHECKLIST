@@ -1,5 +1,7 @@
 
 
+NOTE: In case of faulty release, remember to remove the release *tag* as well. 
+
 0: Make seplib release (includes running test and successful building of molsim in Octave and Matlab)
 1: Import latest seplib revision
 2: Compilation with max. warning level (pass with no warning)
@@ -17,3 +19,4 @@
 	confirm merge
 10: Copy tutorial.pdf to the NHSS repository
 11: Check all code runs correctly in the NHSS repository
+
