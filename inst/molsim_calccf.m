@@ -1,11 +1,16 @@
-#
-# Usage: css = molsim_calccf(a, b, nblocks)
-#  
-# Calculates the correlation function between data array a and b
-#  
-# Dependencies evcorr.oct 
-#
-
+##
+## Usage: css = molsim_calccf(a, b, nblocks)
+##  
+## Calculates (directly) the correlation function between data arrays a and b
+##  
+## Arguments: 
+##   - a and b; data arrays
+##   - nblocks; Number of blocks the arrays are divided into (default 1)
+##
+## Output
+##	 - The correlations function
+##
+	
 function css = molsim_calccf(data1, data2, nblocks=1)
 
 	if ( !exist("evcorr.oct") )
