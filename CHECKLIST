@@ -13,7 +13,7 @@ NOTE: In case of faulty release, remember to remove the release *tag* as well.
 8: Generate sha key
 9a: Use gnu-octave/package link and open molsim.yaml
 9b: Edit molsim.yaml as necessary and propose changes + 
-	make pull request + 
+	create pull request + 
 	merge pull request + 
 	merge + 
 	confirm merge
