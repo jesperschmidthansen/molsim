@@ -38,7 +38,7 @@ An example of an NVE water simulation script
 <div class="box">
   <pre>
     
-    nloops = 1000000; temp0 = 298.15/78.2;
+    nloops = 1000; temp0 = 298.15/78.2;
     cutoff= 2.5; sigma=1.0; epsilon=1.0; aw=1.0; cutoff_sf = 2.9;
     lbond = 0.316; kspring = 68421; 
     angle = 1.97; kangle = 490;
@@ -65,7 +65,7 @@ An example of an NVE water simulation script
     molsim('clear');
 </pre>
 </div>
-  <p> IMPORTANT NOTE: The 'sys_water.xyz' configuration file and 'sys_water.top' topology file must be in your
+  <p> <b>IMPORTANT NOTE</b>: The 'sys_water.xyz' configuration file and 'sys_water.top' topology file must be in your
   search path to execute the script. They can be found under the project's resource/ folder </p>
   <p> For further explanation check out the package tutorial under the project's doc/ folder </p> 
 <h2>Contribution</h2>
