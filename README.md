@@ -65,8 +65,8 @@ An example of an NVE water simulation script
     molsim('clear');
 </pre>
 </div>
-  <p> <b>IMPORTANT NOTE</b>: The 'sys_water.xyz' configuration file and 'sys_water.top' topology file must be in your
-  search path to execute the script. They can be found under the project's resource/ folder </p>
+  <p> <b>IMPORTANT NOTE</b>: The 'sys_water.xyz' configuration file and 'sys_water.top' topology file must be in
+   same directory from where you execute the script. They can be found under the project's resource/ folder </p>
   <p> For further explanation check out the package tutorial under the project's doc/ folder </p> 
 <h2>Contribution</h2>
 <p>
