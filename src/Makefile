@@ -13,7 +13,7 @@ OBJECTS     =  sepmisc.o seputil.o separray.o sepinit.o sepprfrc.o sepintgr.o \
 
 
 # Compiling molsim
-molsim.mex: molsim.c libsep.a _sep_lattice.o _sep_sfg.o molsim_rdf.oct 
+molsim.mex: molsim.c libsep.a _sep_lattice.o _sep_sfg.o molsim_rdf.oct evcorr.oct
 	mkoctfile --mex -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude task.c
 	mkoctfile --mex -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude molsim.c
 	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o _sep_sfg.o -o molsim
@@ -21,6 +21,7 @@ molsim.mex: molsim.c libsep.a _sep_lattice.o _sep_sfg.o molsim_rdf.oct
 	cp ../tests/*.xyz ../inst/
 	cp ../tests/*.top ../inst/
 	cp molsim_rdf.oct ../inst/
+	cp evcorr.oct ../inst/
 	
 # Building library
 libsep.a: $(OBJECTS)
@@ -38,10 +39,10 @@ _sep_lattice.o: tools/_sep_lattice.c
 _sep_sfg.o: tools/_sep_sfg.c
 	$(CC) $(CFLAGS) $(OMP) -c tools/_sep_sfg.c
 
-molsim_rdf.oct:molsim_rdf.cpp
+molsim_rdf.oct: molsim_rdf.cpp
 	mkoctfile molsim_rdf.cpp
 	
-evcorr.oct:evcorr.cpp
+evcorr.oct: evcorr.cpp
 	mkoctfile evcorr.cpp
 	
 # Cleaning up
