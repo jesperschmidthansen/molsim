@@ -2,7 +2,7 @@
 function retval = molsim_viscprop(_time, stress, nblocks=10, volume=1, temp=1, ... 
 									_verbose=true, omega=logspace(-2,1))
 
-	if ( !exist("molsim_calccf") || !exist(fltrans) || !exist(hann) )
+	if ( !exist("molsim_calccf") || !exist("fltrans") || !exist("hann") )
 		error(" The functions molsim_calccf, fltrans, and hann are needed, but at least one not found - bailing out");
 	endif
 	
@@ -38,7 +38,7 @@ function retval = molsim_viscprop(_time, stress, nblocks=10, volume=1, temp=1, .
 	retval.eta0_estimate = retval.integrale_css_hann(end)*volume/temp;
 	
 	## Complex viscosity and modulus
-	retval.etaw = fltrans(_time, hann(retval.css_av), omega);
+	retval.etaw = fltrans(retval.time, hann(retval.css_av), omega);
 	retval.modulus = I*omega.*retval.etaw;
 		
 	## Some verbose plots; running integrals, etc

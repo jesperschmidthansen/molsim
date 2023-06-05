@@ -1,10 +1,8 @@
 ##
-## usage:  [msd scatt time] = molsim_msd(ptype, numbwave, haveCrossing (bool), maxconfidx)
+## usage:  [msd scatt time] = molsim_msd(ptype, numbwave, haveCrossing (bool), maximum config file index)
 ##
-## Calculates the mean square distance from configuration 
-## files molsim_%05d.xyz and crossing files
-## crossings-%05d.dat. If the later does not exist an attempt 
-## to estimate the particles' box crossings.
+## Calculates the mean square distance from configuration files molsim_%05d.xyz and crossing files
+## crossings-%05d.dat. If the later does not exist an attempt to estimate the particles' box crossings.
 ## 
 
 
