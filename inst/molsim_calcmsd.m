@@ -6,7 +6,7 @@
 ## 
 
 
-function [msd scatt _time] = molsim_msd(ptype='A', numbwave=10, haveCrossing=true, maxconfidx=10000)
+function [msd scatt _time] = molsim_calcmsd(ptype='A', numbwave=10, haveCrossing=true, maxconfidx=10000)
 
 	
 	if ( !exist("molsim_readxyz") )
@@ -14,7 +14,7 @@ function [msd scatt _time] = molsim_msd(ptype='A', numbwave=10, haveCrossing=tru
 	endif
 	
 	if ( nargin > 4 )
-		error("Usage: molsim_msd(part. type, no. wavevectors, have crossing files, max. configurations)");
+		error("Usage: molsim_calcmsd(part. type, no. wavevectors, have crossing files, max. configurations)");
 	endif
 	
 	_time=[];
