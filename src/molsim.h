@@ -5,10 +5,12 @@
 #include "sep.h"
 #include "task.h"
 #include <string.h>
+#include <stdbool.h>
 
 #define MAXNUMBTASK 12
 
-// Globals static variables *sigh* Perhaps a structure in future
+// Globals static variables *sigh*
+// Perhaps a structure in future
 sepatom *atoms;
 sepsys sys;
 sepret ret;
@@ -40,7 +42,8 @@ static int msacf_int_calc = -1;
 
 static unsigned int ntasks = 0;
 
-// Hard-coded hash values for switch - *I* cannot "optimize" further
+// Hard-coded hash values for switch
+// *I* cannot "optimize" further (Optimization not great anyways)
 // Hash value is simply the string (lower case) character sum
 enum {
   RESET=547, CALCFORCE=930, INTEGRATE=963,
@@ -72,8 +75,9 @@ void action_convert(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs);
 
 // Local helper functions
 double spring_x0(double r2, char opt);
-void inputerror(const char* funstr);
+void inputerror(const char *funstr);
 unsigned hashfun(const char *key);
+bool checkfile(const char *filename);
 
 // Extern
 void sep_lattice(int, char **);

@@ -3,7 +3,7 @@
 # Macros
 
 CC          =  @CC@
-CFLAGS      =  @CFLAGS@ @INLINE@ @C99@ -fPIC -march=native
+CFLAGS      =  @CFLAGS@ @INLINE@ @C99@ -fPIC -march=native -DOCTAVE
 RANLIB      =  @RANLIB@
 AR          =  @AR@ 
 COMPLEX     =  @COMPLEX@
@@ -21,7 +21,7 @@ molsim.mex: molsim.c libsep.a _sep_lattice.o _sep_sfg.o molsim_rdf.oct
 	cp ../tests/*.xyz ../inst/
 	cp ../tests/*.top ../inst/
 	cp molsim_rdf.oct ../inst/
-	
+
 
 # Building library
 libsep.a: $(OBJECTS)
@@ -41,7 +41,7 @@ _sep_sfg.o: tools/_sep_sfg.c
 
 molsim_rdf.oct:molsim_rdf.cpp
 	mkoctfile molsim_rdf.cpp
-	
+
 # Cleaning up
 clean: 
 	rm -f libsep.a *.o

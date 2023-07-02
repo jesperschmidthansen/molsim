@@ -106,7 +106,20 @@ unsigned hashfun(const char *key){
   return sum_char;
 
 }
+	
+bool checkfile(const char *filename){
+  bool retval = false;
+  
+  FILE *fileptr = fopen(filename, "r");
+  if ( fileptr != NULL ){
+    retval = true;
+    fclose(fileptr);
+  }
+  
+  return retval;
+}
 
+// Actions 
 void action_reset(int nrhs){
 
   if ( nrhs != 1 ) inputerror(__func__);
@@ -281,8 +294,9 @@ void action_load(int nrhs, const mxArray **prhs){
     
   if ( strcmp(specifier, "xyz")==0 ){
     
-    if ( nrhs != 3 ) inputerror(__func__);
-    
+    if ( nrhs != 3 )
+      inputerror(__func__);
+
     if ( initflag ){
       mexPrintf("From 'load': One instant of a system already exists");
       mexPrintf(" - clear first. ");
@@ -290,7 +304,8 @@ void action_load(int nrhs, const mxArray **prhs){
     }
     
     char *file = mxArrayToString(prhs[2]);
-    
+    if ( !checkfile(file) ) mexErrMsgTxt("xyz file does not exist");
+      
     atoms = sep_init_xyz(lbox, &natoms, file, 'v');
     sys = sep_sys_setup(lbox[0], lbox[1], lbox[2],maxcutoff, dt, natoms, SEP_LLIST_NEIGHBLIST);
 
@@ -312,6 +327,8 @@ void action_load(int nrhs, const mxArray **prhs){
     }
     
     char *file = mxArrayToString(prhs[2]);
+    if ( !checkfile(file) ) mexErrMsgTxt("top file does not exist");
+  
     sep_read_topology_file(atoms, file, &sys, 'v');
     mols = sep_init_mol(atoms, &sys);
     

@@ -55,9 +55,15 @@ void sep_error(char *str, ...){
   }
 
   printf("\n");
-  printf("BAILING OUT\n");
-  exit(EXIT_FAILURE);
 
+#ifdef OCTAVE
+  fprintf(stdout, "In Octave I will try to continue - not sure what will happen...\n");
+  fflush(stdout);
+#else
+  printf("BAILING OUT\n");	
+  exit(EXIT_FAILURE);
+#endif
+  
 }
 		    
 
