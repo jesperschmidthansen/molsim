@@ -202,7 +202,8 @@ molsim('clear');
 
 \noindent I hope the code is, mostly, clear. Notice, that in action \verb!calcforce! the 
 first argument to the specifier \verb!'lj'!, namely, \verb!'AA'! tells the program that this 
-force acts between particles of type \verb!A!. This type is the default type; a very important point I highlight
+force acts between particles of type \verb!A!. This type is the default type;
+a very important point I highlight
 \begin{center}
 \fbox{\parbox{0.5\textwidth}{
     \begin{center}
@@ -214,7 +215,7 @@ force acts between particles of type \verb!A!. This type is the default type; a 
 
 
 \noindent In Listing 1 no information is printed or saved, and, admitted, not very
-useful. Inside the main loop the user can call the \textsf{print}-action, for
+useful. Inside the main loop the user can call the \textsf{print} action, for
 example, 
 \begin{verbatim}
 if rem(n,100)==0
@@ -239,7 +240,7 @@ v = molsim('get', 'velocities');
 In the reference sheet (see Appendix) you can find the list of specifiers for the \verb!get! action.
 
 
-\textit{Note} For molecular systems the pressure is
+\textit{Important note} For molecular systems the pressure is
 calculated using the molecular pressure tensor. In general this is different
 from the atomic pressure. The user must enable this calculation using the
 \verb!set! action with specifier \verb!molstresscalc!. For example, to
@@ -247,7 +248,7 @@ calculate the (molecular) pressure every ten time steps use
 \begin{verbatim}
 molsim('set', 'molstresscalc', 10);
 \end{verbatim}
-Then in the main loop retrieve the pressure
+before the main loop. Then in the main loop retrieve the pressure by
 \begin{verbatim}
 if rem(n,10)==0
   [press_atomic, press_mol]=molsim('get', 'pressure');
@@ -255,14 +256,12 @@ end
 \end{verbatim}
 
 \subsection{NVT and NPT simulations}
-Often you will not perform simulations in the micro-canonical ensemble, but
-under a desired temperature and/or pressure. One way to achieve this with
-\verb!molsim! is to use simple relaxation algorithms. 
-
-To perform simulations under specific temperatures you can choose one of three 
+Often you will not perform simulations in the micro-canonical
+ensemble, but under a desired temperature and/or pressure. To perform
+simulations under specific temperatures you can choose one of three
 different methods:
 \begin{description}
-	\item{Relaxation} 
+	\item{Relaxation:} 
 		Using this method call the action \verb!'thermostat'! with specifier
 		\verb!'relax'! \emph{after} the integration step, for example, to thermostat particles of type 
 		\verb!A! such that their kinetic temperature is 2.2 use 
@@ -272,7 +271,7 @@ different methods:
 		The last argument is the relaxation parameter; the higher value the faster
 		relaxation. Notice that too large values make the system unrealistically
 		stiff; the best value is optimized via trail-and-error. 
-	\item{Nos\'{e}-Hoover} 
+	\item{Nos\'{e}-Hoover:} 
 		There is also a Nos\'{e}-Hoover thermostat available. This 
 		is called by 
 		\begin{verbatim}
@@ -280,7 +279,7 @@ different methods:
 		\end{verbatim}
 		The last argument is here the inverse thermostat mass. Again, you should choose this parameter with care.
 		Impotantly, this thermostat is called \emph{before} the leap-frog integrator call.
-	\item{GJF-Langevin integrator}
+	\item{GJF-Langevin integrator:}
 		This method \emph{replaces} the leap-frog integrator, by 
 		\begin{verbatim}
 		molsim('integrate', 'langevin', 2.2, 0.5);
@@ -509,7 +508,7 @@ for n=1:nloops
   molsim(’calcforce’, ’torsion’, 0, torsionparam_0);
   molsim(’calcforce’, ’torsion’, 1, torsionparam_1);
   
-  molsim('thermostate', 'nosehoover', 'C', temp0, 10.0);
+  molsim('thermostate', 'nosehoover', 'C', temp0, 0.01);
   molsim('integrate', 'leapfrog');
 
   molsim('compress', dens0);
@@ -521,12 +520,12 @@ end
 
 \noindent Notice that
 \begin{itemize}
-\item \verb!molsim('set', 'exclusion', 'molecule');! ensures that van der Waals
-  (and in general also the Coulomb) interactions are excluded if the particles
-  are in same molecule. Exclusion can also be set for bonded particles using the
-  'bond' argument.
+\item \verb!molsim('set', 'exclusion', 'molecule');! ensures that van
+  der Waals and the Coulomb interactions are excluded if the particles
+  are in same molecule. Exclusion can also be set for only bonded particles
+  using the 'bond' argument.
 \item For the \verb!bond!, \verb!angle!, and \verb!torsion! specifiers the first
-  argument pertains to the type.  
+  argument pertains to the bond/angle/torsion type.  
 \end{itemize}
 
 \section{Sampling}
@@ -595,6 +594,33 @@ cores) is not always optimal. In the \verb!tests!-directory you can find
 size, density and number of threads; use the \verb!help! command for its usage.
 
 \section{Analysis tools} 
+\verb!molsim! ships with a series of m-functions that can be used
+for further system analysis after the simulation. Some of the functions depend on the
+system's configuration at different times; in order to store these configurations the user can
+use the \verb!save! action
+\begin{verbatim}
+molsim('save', <types>, <filename>); 
+\end{verbatim}
+\verb!<types>! enables one to specify the type of particles for which the configuration
+should be stored, and \verb!<filename>! the filename where the
+configuration is stored (typically with suffix \verb!xyz!). 
+
+\begin{verbatim}
+fileid = 0;
+
+for n=1:nloops
+   ...
+
+   if rem(n,100)==0
+      molsim('save', 'AB', sprintf('molsim-%d.xyz', fileid));
+      fileid++;
+   end
+
+   ...
+end
+\end{verbatim}
+
+\textit{Important note} The analysis tools are only supported by GNU Octave
 
 \noindent \verb!molsim_readxyz!
 
