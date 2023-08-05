@@ -1,6 +1,6 @@
  <html>
 <body>
-<h1> Molsim - Molecular dynamics with GNU Octave </h1>
+<h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
 <figure>
   <img src="doc/logo.png" alt="Trulli" style="width:30%">
@@ -37,7 +37,7 @@ An example of an NVE water simulation script
 
 <div class="box">
   <pre>
-    
+    <kbd>
     nloops = 1000; temp0 = 298.15/78.2;
     cutoff= 2.5; sigma=1.0; epsilon=1.0; aw=1.0; cutoff_sf = 2.9;
     lbond = 0.316; kspring = 68421; 
@@ -63,6 +63,7 @@ An example of an NVE water simulation script
     endfor
     
     molsim('clear');
+    </kbd>
 </pre>
 </div>
   <p> <b>IMPORTANT NOTE</b>: The 'sys_water.xyz' configuration file and 'sys_water.top' topology file must be in
@@ -70,7 +71,7 @@ An example of an NVE water simulation script
   <p> For further explanation check out the package tutorial under the project's doc/ folder </p> 
 <h2>Contribution</h2>
 <p>
-I encourage anyone who uses or plan to use molsim to submit problematic issues - this includes issues regarding the documentation. I also welcome contributions to the code for the project, whether it is core features (seplib), post simulation data analysis programs, or extending the molsim wrapper. 
+I encourage anyone who uses or plans to use molsim to submit problematic issues - this includes issues regarding the documentation. I also welcome contributions to the code for the project, whether it is core features (seplib), post simulation data analysis programs, or extending the molsim wrapper. 
 </p>
 </body>
 </html>
