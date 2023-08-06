@@ -3,7 +3,7 @@
 # Macros
 
 CC          =  gcc
-CFLAGS      =  -g -O2 -fgnu89-inline -std=c99 -fPIC -march=native -DOCTAVE
+CFLAGS      =  -g -O2 -fgnu89-inline -std=c99 -fPIC -Ofast -march=native -DOCTAVE
 RANLIB      =  ranlib
 AR          =  ar 
 COMPLEX     =  -DCOMPLEX
@@ -17,8 +17,6 @@ molsim.mex: molsim.c libsep.a _sep_lattice.o _sep_sfg.o molsim_rdf.oct evcorr.oc
 	mkoctfile --mex -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude task.c
 	mkoctfile --mex -DOCTAVE -Ofast -W -pedantic -c -v -Iinclude molsim.c
 	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o _sep_sfg.o -o molsim
-	mkoctfile --mex libsep.a task.o molsim.o _sep_lattice.o _sep_sfg.o -o molsim
-	
 	mv molsim.mex ../inst/
 	mv molsim_rdf.oct ../inst/
 	mv evcorr.oct ../inst/
