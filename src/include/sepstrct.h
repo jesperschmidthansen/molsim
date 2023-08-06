@@ -111,18 +111,22 @@ typedef struct {
   unsigned ndof;        /**< Number of degrees of freedom */
   double max_dist2;     /**< Maximum distance calculate in time step */
   
-  // Force stuff
+  // For the force calculations
   double cf;               /**< Maximum particle cut-off */  
   double lsubbox[3];       /**< Length of subboxes */ 
   int nsubbox[3];          /**< Number of subboxes */
   double skin;             /**< Skin...! */
-  unsigned neighb_update;  /**<  Neighbourlist update */
+  unsigned neighb_update;  /**< Neighbourlist update */
   unsigned neighb_flag;    /**< Flag for neighblist update */
   unsigned nupdate_neighb; /**< Number of nieghbourlist updates */  
   
+  // Shared memory optimizations
   bool omp_flag;           /**< Whether we do parallel sims or not */
   unsigned int nthreads;   /**< Number of threads */
   
+  // Function call state 
+  int fun_cstate;          /**< Negative values indicates fail */
+
   // Molecular info - intra mol. forces
   sepmolinfo *molptr;      /**< In order to access the mol. information */ 
 

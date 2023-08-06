@@ -578,7 +578,7 @@ void action_save(int nrhs, const mxArray **prhs){
     char *types =  mxArrayToString(prhs[1]);
     char *file =  mxArrayToString(prhs[2]);
     
-    sep_save_xyz(atoms, types, file, "w", sys);
+    sep_save_xyz(atoms, types, file, "w", &sys);
 #ifdef OCTAVE
     free(types);  free(file);
 #endif

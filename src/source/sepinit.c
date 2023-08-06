@@ -295,6 +295,8 @@ sepsys sep_sys_setup(double lengthx, double lengthy, double lengthz,
   sys.molptr->flag_Fij = false;
   sys.omp_flag = false;
   
+  sys.fun_cstate = 0;
+  
   omp_set_num_threads(1);
 
   return sys;

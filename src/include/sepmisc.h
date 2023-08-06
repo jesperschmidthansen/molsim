@@ -162,7 +162,7 @@ void sep_load(seppart *ptr, int nneighb, size_t npart, const char *file);
  * @param sys sepsys structure
  */
 void sep_save_xyz(seppart *ptr, const char *partnames, 
-		  const char *file, char *mode, sepsys sys);
+		  const char *file, char *mode, sepsys *sys);
 
 /** 
  * Relax/thermostat temperature of specific particle type
@@ -290,8 +290,9 @@ int sep_count_type(seppart *ptr,  char type, int npart);
  * @param type Type to be set eg. 'B'
  * @param numb Number of particles to label (must be smaller than npart)
  * @param npart Number of particles in the system (ie. sys.npart)
+ * @param sys Pointer to seplib system structure
  */
-void sep_set_type(seppart *ptr,  char type, int numb, int npart);
+void sep_set_type(seppart *ptr,  char type, int numb, sepsys *sys);
 
 /**
  * Sets the seplib omp parallisation flag to 'on' and specifies the number
