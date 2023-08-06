@@ -37,10 +37,12 @@ An example of an NVE water simulation script
 
 <div class="box">
   <pre>
+   
     nloops = 1000; temp0 = 298.15/78.2;
     cutoff= 2.5; sigma=1.0; epsilon=1.0; aw=1.0; cutoff_sf = 2.9;
     lbond = 0.316; kspring = 68421; 
     angle = 1.97; kangle = 490;
+   
     molsim('set', 'cutoff', cutoff_sf);
     molsim('set', 'timestep', 0.0005);
     molsim('set', 'exclusion', 'molecule'); 
