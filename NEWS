@@ -76,4 +76,9 @@ molsim-0.11.1
   * Small update to tutorial
   * Note: Last release in 0.X-series. GPU/CUDA support will be focus of 1.X series (seplib).
 
+molsim-1.0.0
+------------
+
+  * Improved error handlig (ongoing issue).
+  
 
