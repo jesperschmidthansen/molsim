@@ -10,7 +10,7 @@
   mathescape
 }
 
-\title{\textsf{molsim} tutorial \\ \bigskip \tiny{for the v. 0.11 series}}
+\title{\textsf{molsim} tutorial \\ \bigskip \tiny{for the 1.x.x series}}
 \author{J.S. Hansen}
 \date{January 2023}
   
@@ -35,11 +35,10 @@ simulations. \textsf{molsim} supports simulations of
 \bigskip
 \noindent \textsf{molsim} is basically a wrapper for the \textsf{seplib}
 library, which is a light-weight flexible molecular dynamics simulation library
-written in ISO-C99. \textsf{seplib} is CPU-based and offers shared memory
-parallelization; this parallelization is supported by
-\textsf{molsim}. \textsf{seplib} is also developed and 
-maintained by this
-author, and the underlying algorithms are based on the books by Allen and
+mainly written in ISO-C99. With version series 1.x.x. \textsf{seplib} offers both 
+shared memory parallelization for CPUs and GPU simulations using Nvidia's CUDA toolkit; 
+this is supported by \textsf{molsim}. \textsf{seplib} is also developed and 
+maintained by this author, and the underlying algorithms are based on the books by Allen and
 Tildesley \cite{AllenTildesley}, Frenkel and Smit \cite{FrenkelSmit}, Rapaport
 \cite{Rapaport}, and Sadus \cite{Sadus}.
 
@@ -593,6 +592,9 @@ cores) is not always optimal. In the \verb!tests!-directory you can find
 \verb!molsim_runparallel.m! that times the execution time for a given system
 size, density and number of threads; use the \verb!help! command for its usage.
 
+\section{CUDA support}
+At the moment the 
+
 \section{Analysis tools} 
 \verb!molsim! ships with a series of m-functions that can be used
 for further system analysis after the simulation. Some of the functions depend on the
@@ -670,42 +672,42 @@ end
 
   \bigskip
   
-  \begin{tabular}{cclclcccc}
-    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
-                                   && && && \\
+  \begin{tabular}{cclclcccccc}
+	  {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output && \rotatebox{90}{CUDA}\\
+		&& && && && && \\
     \hline
-                                   && && && \\
-    \verb!load! && \verb!xyz! && file name && \\
-    $\mbox{}$ && \verb!top! && file name && \\
-                                   && && && \\
+		&& && && && \\
+	  \verb!load! && \verb!xyz! && file name &&  && X \\
+	  $\mbox{}$ && \verb!top! && file name &&  && X \\
+								   && && &&  && && \\
     \hline
-    && && && \\
-    \verb!save! &&  && 1: type names && \\
-                &&  && 2: file name && \\
-                                   && && && \\
+	  && && && && && \\
+	  \verb!save! &&  && 1: type names && && X \\
+				&&  && 2: file name &&  && \\
+				&& && && && \\
     \hline
-                                   && && && \\
-    \verb!set! && \verb!timestep! && time step (0.005) && \\
-    $\mbox{}$  && \verb!temperature! && temperature (1.0) && \\
-    $\mbox{}$  && \verb!cutoff! && Max. cut-off (2.5) && \\
-    $\mbox{}$  && \verb!omp! && No. of threads && \\
-    $\mbox{}$ && \verb!exclusion! && 'bond' or 'molecule' && \\
-    $\mbox{}$ && \verb!temperaturerelax! && relaxation time (0.01) && \\
-    $\mbox{}$ && \verb!compressionfactor! && compress factor (0.9999) && \\
-    $\mbox{}$ && \verb!types! && particle types (vector string) && \\
-    $\mbox{}$ && \verb!mass! && particle mass (vector) && \\
-    $\mbox{}$ && \verb!skin! && buffer-skin neighblist && \\
-    $\mbox{}$ && \verb!charges! && atom charges (vector) && \\
-    $\mbox{}$ && \verb!lattice! && 1: array [$N_x , N_y , N_z$] && \\
-    $\mbox{}$ && $\mbox{}$      && 2: array [$L_x, L_y, L_z$] && \\
-    $\mbox{}$ && \verb!molconfig!&& 1: \textsf{xyz} file && \\
-              &&                 && 2: \textsf{top} file && \\
-              &&                 && 3: No. molecules && \\
-              &&                 && 4: Crystal density && \\
-              &&                 && 5: Random seed && \\
-              &&\verb!virtualsites!&& && \\
-    $\mbox{}$ &&\verb!molstresscalc! && iterations between calculation && \\ 
-    && && && \\
+	  && && && && \\
+	  \verb!set! && \verb!timestep! && time step (0.005) && && X \\
+	  $\mbox{}$  && \verb!temperature! && temperature (1.0) && && X\\
+	  $\mbox{}$  && \verb!cutoff! && Max. cut-off (2.5) && && X \\
+	  $\mbox{}$  && \verb!omp! && No. of threads && && \\
+	  $\mbox{}$ && \verb!exclusion! && 'bond' or 'molecule' && && X \\
+	  $\mbox{}$ && \verb!temperaturerelax! && relaxation time (0.01) && && \\
+	  $\mbox{}$ && \verb!compressionfactor! && compress factor (0.9999) && && \\
+	  $\mbox{}$ && \verb!types! && particle types (vector string) && && \\
+	  $\mbox{}$ && \verb!mass! && particle mass (vector) && && \\
+	  $\mbox{}$ && \verb!skin! && buffer-skin neighblist && && X \\
+	  $\mbox{}$ && \verb!charges! && atom charges (vector) && && \\
+	  $\mbox{}$ && \verb!lattice! && 1: array [$N_x , N_y , N_z$] && && \\
+	  $\mbox{}$ && $\mbox{}$      && 2: array [$L_x, L_y, L_z$] && && \\
+	  $\mbox{}$ && \verb!molconfig!&& 1: \textsf{xyz} file && && \\
+			  &&                 && 2: \textsf{top} file && && \\
+			  &&                 && 3: No. molecules && && \\
+			  &&                 && 4: Crystal density && && \\
+			  &&                 && 5: Random seed && && \\
+			  &&\verb!virtualsites!&& && && \\
+	  $\mbox{}$ &&\verb!molstresscalc! && iterations between calculation && && \\ 
+	  && && && && \\
     \hline                                           
   \end{tabular}
 
@@ -713,65 +715,66 @@ end
 
 \begin{center}
   
-  \begin{tabular}{cclclclll}
-    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
-                                   && && && \\
+  \begin{tabular}{cclclclllcc}
+	  {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output && \rotatebox{90}{CUDA}\\
+								   && && && && \\
     \hline
-                                   && && && \\
-    \verb!get! && \verb!numbpart!&& && scalar\\
-    $\mbox{}$  && \verb!box! && && 3-vector \\
-    $\mbox{}$  && \verb!energies! && && 2-vector (kin, pot)\\
-    $\mbox{}$  && \verb!pressure! && && scalar(s) (p, pmol) \\
-    $\mbox{}$  && \verb!velocities! && && $N_\mathrm{part.}\times 3$-matrix \\
-    $\mbox{}$  && \verb!positions! && &&  $N_\mathrm{part.}\times 3$-matrix \\
-    $\mbox{}$  && \verb!forces! && &&  $N_\mathrm{part.}\times 3$-matrix \\
-    $\mbox{}$  && \verb!types! && && $N_\mathrm{part.}$-string \\
-    $\mbox{}$  && \verb!mass! && && $N_\mathrm{part.}$-vector \\
-    $\mbox{}$  && \verb!charges! && && $N_\mathrm{part.}$-vector \\
-    $\mbox{}$  && \verb!molpositions! && && $N_\mathrm{mol}\times 3$-matrix \\
-    $\mbox{}$  && \verb!molvelocities! && && $N_\mathrm{mol}\times 3$-matrix \\
-    $\mbox{}$ && \verb!indices! && 1: mol. index && $N_\mathrm{uau}$-vector \\
-    $\mbox{}$ && \verb!bondlengths! && && $N_\mathrm{nbonds}$-vector \\
-    $\mbox{}$ && \verb!angles! && && $N_\mathrm{nangles}$-vector \\
-    $\mbox{}$ && \verb!torsions! && && $N_\mathrm{ntorsion}$-vector \\
-    $\mbox{}$ && && && \\
+								   && && && && \\
+	  \verb!get! && \verb!numbpart!&& && scalar && X\\
+	  $\mbox{}$  && \verb!box! && && 3-vector && \\
+	  $\mbox{}$  && \verb!energies! && && 2-vector (kin, pot) && X \\
+	  $\mbox{}$  && \verb!pressure! && && scalar(s) (p, pmol) && X$^*$\\
+	  $\mbox{}$  && \verb!velocities! && && $N_\mathrm{part.}\times 3$-matrix && X\\
+	  $\mbox{}$  && \verb!positions! && &&  $N_\mathrm{part.}\times 3$-matrix && X\\
+	  $\mbox{}$  && \verb!forces! && &&  $N_\mathrm{part.}\times 3$-matrix && \\
+	  $\mbox{}$  && \verb!types! && && $N_\mathrm{part.}$-string && X\\
+	  $\mbox{}$  && \verb!mass! && && $N_\mathrm{part.}$-vector && X \\
+	  $\mbox{}$  && \verb!charges! && && $N_\mathrm{part.}$-vector && X \\
+	  $\mbox{}$  && \verb!molpositions! && && $N_\mathrm{mol}\times 3$-matrix && \\
+	  $\mbox{}$  && \verb!molvelocities! && && $N_\mathrm{mol}\times 3$-matrix && \\
+	  $\mbox{}$ && \verb!indices! && 1: mol. index && $N_\mathrm{uau}$-vector && \\
+	  $\mbox{}$ && \verb!bondlengths! && && $N_\mathrm{nbonds}$-vector && \\
+	  $\mbox{}$ && \verb!angles! && && $N_\mathrm{nangles}$-vector && \\
+	  $\mbox{}$ && \verb!torsions! && && $N_\mathrm{ntorsion}$-vector && \\
+	  $\mbox{}$ && && && && \\
     \hline
-                                   && && && \\
+								  && && && && \\
   \end{tabular}
 
 \end{center}
     
 \begin{center}
   
-  \begin{tabular}{cclclclll}
-    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
-                                   && && && \\
+  \begin{tabular}{cclclclllcc}
+	  {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output && \rotatebox{90}{CUDA}\\
+								   && && && && \\
     \hline
-    \verb!calcforce! && \verb!lj! && 1: part. types && \\
-                                   && && 2: cutoff&& \\
-                                   && && 3: $\sigma$ && \\
-                                   && && 4: $\epsilon$ && \\
-                                   && && 5: $a_w$ && \\
-                   &&\verb!coulomb!&& 1: method && \\
-                                   && && 2: cutoff && \\
-                                   && && 3: opt. Wolf param.\\
-                    && \verb!bond! && 1: type && \\  
-                    &&             && 2: bond length && \\
-                    &&             && 3: spring constant && \\
-                    && \verb!angle!&& 1: type && \\  
-                    &&             && 2: zero angle force && \\
-                    &&             && 3: force constant && \\            
-                    && \verb!torsion! && 1: type && \\  
-                    &&             && 2: tors. param && \\
-                    && \verb!lattice! && 1: part. type && \\
-                    &&               && 2: spring constant && \\   
-                    && \verb!dpd! && 1: part. types && \\
-                    &&            && 2: cutoff && \\  
-                    &&            && 3: rep. parameter && \\ 
-                    &&            && 4: $\sigma$ && \\
-                                   && && && \\
+	  && && && && \\
+	  \verb!calcforce! && \verb!lj! && 1: part. types && && X\\
+								   && && 2: cutoff&& && \\
+								   && && 3: $\sigma$ && && \\
+								   && && 4: $\epsilon$ && && \\
+								   && && 5: $a_w$ && && \\
+				   &&\verb!coulomb!&& 1: method && && X \\
+				   &&              && 2: cutoff && &&  \\
+					&&             && 3: opt. Wolf param. && && \\
+					&& \verb!bond! && 1: type && && X \\  
+					&&             && 2: bond length && && \\
+					&&             && 3: spring constant && && \\
+					&& \verb!angle!&& 1: type && && X\\  
+					&&             && 2: zero angle force && && \\
+					&&             && 3: force constant && && \\            
+					&& \verb!torsion! && 1: type && && X \\  
+					&&             && 2: tors. param && && \\
+					&& \verb!lattice! && 1: part. type && && \\
+					&&               && 2: spring constant && && \\   
+					&& \verb!dpd! && 1: part. types && && \\
+					&&            && 2: cutoff && && \\  
+					&&            && 3: rep. parameter && && \\ 
+					&&            && 4: $\sigma$ && && \\
+								   && && && && \\
     \hline
-    && && && 
+	  && && && &&
   \end{tabular}
 
 \end{center}
@@ -780,50 +783,50 @@ end
 \clearpage
 \begin{center}
   
-  \begin{tabular}{cclclclll}
-    {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output \\
-                                   && && && \\
+  \begin{tabular}{cclclclllcc}
+	  {\color{red}{\textbf{Action}}} && {\color{blue}{Specifier}} && Arguments && Output && \rotatebox{90}{CUDA}\\
+								   && && && && \\
     \hline
-                                   && && && \\
-    \verb!integrate! && \verb!leapfrog! && && \\
-    $\mbox{}$ && \verb!dpd!      && $\lambda$ && \\
-    $\mbox{}$ && \verb!langevin! && 1:target temperature && \\ 
-    $\mbox{}$ &&                 && 2:$\alpha$ (0.01-1.0)&& \\
-                                   && && && \\
+								   && && && && \\
+	  \verb!integrate! && \verb!leapfrog! && && && X \\
+	  $\mbox{}$ && \verb!dpd!      && $\lambda$ && && \\
+	  $\mbox{}$ && \verb!langevin! && 1:target temperature && && \\ 
+	  $\mbox{}$ &&                 && 2:$\alpha$ (0.01-1.0)&& &&\\
+								   && && && && \\
     \hline
-                                   && && && \\
-    \verb!thermostat! && \verb!relax! && 1: type && \\
-    $\mbox{}$   &&       && 2: target temperature && \\
-    $\mbox{}$  &&        && 3: relax time && \\
-    $\mbox{}$  && \verb!nosehoover! && 1: type (optional) && \\
-    $\mbox{}$  &&            && 2: target temperature && \\
-    $\mbox{}$  &&            && 3: thermostate mass (10-50)&& \\
-                                   && && && \\
+								   && && && && \\
+	  \verb!thermostat! && \verb!relax! && 1: type && && \\
+		$\mbox{}$  &&       && 2: target temperature && && \\
+		$\mbox{}$  &&        && 3: relax time && && \\
+	  $\mbox{}$  && \verb!nosehoover! && 1: type (optional) && && X\\
+	  $\mbox{}$  &&            && 2: target temperature && && \\
+	  $\mbox{}$  &&            && 3: thermostate mass (10-50)&& && \\
+								   && && && && \\
     \hline
-                                   && && && \\
-    \verb!barostat! && \verb!relax! && 1: target pressure && \\
-    $\mbox{}$   &&       && 2: relax time && \\
-    $\mbox{}$  &&        && 3: \verb!'iso'! (optional) && \\
-                                   && && && \\
+								   && && && && \\
+	  \verb!barostat! && \verb!relax! && 1: target pressure && && \\
+	  $\mbox{}$   &&       && 2: relax time && && \\
+	  $\mbox{}$  &&        && 3: \verb!'iso'! (optional) && && \\
+								   && && && && \\
     \hline
-                                   && && && \\
-    \verb!compress! && && 1: target density/length && \\
-    $\mbox{}$ &&       && 2: opt for length compression, the direction \\
-                                   && && && \\
+								   && && && && \\
+	  \verb!compress! && && 1: target density/length && && \\
+	  $\mbox{}$ &&       && 2: opt for length compression, the direction && \\
+								   && && && && \\
     \hline
-                                   && && && \\
-    \verb!add! && \verb!force! && 1: force vector && \\
-    $\mbox{}$   &&             && 2: direction (0,1,2) && \\
-    $\mbox{}$   && \verb!tolattice! && 1: dx (scalar) && \\
-    $\mbox{}$   &&             && 2: direction (0,1,2) && \\
-                                   && && && \\
+								   && && && && \\
+	  \verb!add! && \verb!force! && 1: force vector && && \\
+	  $\mbox{}$   &&             && 2: direction (0,1,2) && &&\\
+	  $\mbox{}$   && \verb!tolattice! && 1: dx (scalar) && && \\
+	  $\mbox{}$   &&             && 2: direction (0,1,2) && && \\
+								   && && && && \\
     \hline
-                                   && && && \\
-    \verb!clear! & & && && \\
-                                   && && && \\
+								   && && && && \\
+	  \verb!clear! & & && && &&  \\
+								   && && && && \\
     \hline
  
-                                   && && && \\
+								   && && && && \\
  
   \end{tabular}
 
