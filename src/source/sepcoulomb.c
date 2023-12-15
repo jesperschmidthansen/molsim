@@ -90,8 +90,7 @@ void sep_coulomb_sf_brute(seppart *ptr,  double cf, sepsys *sys,
       } 
     }
   }
-  
-  
+
 }
 		    
 void sep_coulomb_sf_neighb(seppart *ptr, double cf, sepsys *sys, sepret *retval) {

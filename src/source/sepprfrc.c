@@ -76,7 +76,6 @@ void sep_force_pair_brute(seppart *ptr, const char *types, double cf,
 		// pressure tensor	
 		sys->molptr->Fij[i][j][k] += f[k];
 		sys->molptr->Fij[j][i][k] -= f[k];
-
 #ifdef COUPLE_TENSOR
 		sys->molptr->Fiajb[n][j][k] += f[k];
 		sys->molptr->Fiajb[m][i][k] -= f[k];
@@ -89,8 +88,6 @@ void sep_force_pair_brute(seppart *ptr, const char *types, double cf,
       }
     }
   }
-
-
 }
 	
 

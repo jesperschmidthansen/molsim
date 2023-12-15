@@ -283,7 +283,7 @@ different methods:
 		\begin{verbatim}
 		molsim('integrate', 'langevin', 2.2, 0.5);
 		\end{verbatim}
-		The last argument is the thermostate coupling parameter, $\alpha$. Typically $0.01 \leq \alpha \leq 1.0$ 
+		The last argument is the thermostat coupling parameter, $\alpha$. Typically $0.01 \leq \alpha \leq 1.0$ 
 		See Ref. \cite{gjf}.
 \end{description}
 
@@ -507,7 +507,7 @@ for n=1:nloops
   molsim(’calcforce’, ’torsion’, 0, torsionparam_0);
   molsim(’calcforce’, ’torsion’, 1, torsionparam_1);
   
-  molsim('thermostate', 'nosehoover', 'C', temp0, 0.01);
+  molsim('thermostat', 'nosehoover', 'C', temp0, 0.1);
   molsim('integrate', 'leapfrog');
 
   molsim('compress', dens0);
@@ -758,7 +758,7 @@ end
 				   &&\verb!coulomb!&& 1: method && && X \\
 				   &&              && 2: cutoff && &&  \\
 					&&             && 3: opt. Wolf param. && && \\
-					&& \verb!bond! && 1: type && && X \\  
+					&& \verb!bonded! && 1: type && && X \\  
 					&&             && 2: bond length && && \\
 					&&             && 3: spring constant && && \\
 					&& \verb!angle!&& 1: type && && X\\  
@@ -800,7 +800,7 @@ end
 		$\mbox{}$  &&        && 3: relax time && && \\
 	  $\mbox{}$  && \verb!nosehoover! && 1: type (optional) && && X\\
 	  $\mbox{}$  &&            && 2: target temperature && && \\
-	  $\mbox{}$  &&            && 3: thermostate mass (10-50)&& && \\
+	  $\mbox{}$  &&            && 3: thermostat mass (10-50)&& && \\
 								   && && && && \\
     \hline
 								   && && && && \\
@@ -896,7 +896,7 @@ end
                                    && && 4: $\epsilon$ && \\
                                    && && 5: $a_w$ && \\
                                    && && 6: block id \\ 
-                    && \verb!bond! && 1: type && \\  
+                    && \verb!bonded! && 1: type && \\  
                     &&             && 2: bond length && \\
                                    &&             && 3: spring constant && \\
                                    && && 4: block id \\

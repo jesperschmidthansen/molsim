@@ -671,8 +671,8 @@ void sep_mol_cm(seppart *ptr, sepmol *mol, sepsys *sys){
       x[m] = x[m-1] + r[0];
       y[m] = y[m-1] + r[1];
       z[m] = z[m-1] + r[2];
-    }   
-      
+    } 
+
     for ( k=0; k<3; k++ ) cm[k] = 0.0;
     
     for ( m=0; m<mol[n].nuau; m++ ){
