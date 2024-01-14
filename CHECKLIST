@@ -8,15 +8,16 @@ NOTE: In case of faulty release, remember to remove the release *tag* as well.
 3: All tests must pass
 4: Update file NEWS 
 5: Update file DESCRIPTION
-6: Commit and make molsim release
-7: Check install release from http address (remove path to local repository first)
-8: Generate sha key
-9a: Use gnu-octave/package link and open molsim.yaml
-9b: Edit molsim.yaml as necessary and propose changes + 
+6: Update and check directory examples/ - use shell script chk_examples.sh  
+7: Commit and make molsim release
+8: Check install release from http address (remove path to local repository first)
+9: Generate sha key
+10a: Use gnu-octave/package link and open molsim.yaml
+10b: Edit molsim.yaml as necessary and propose changes + 
 	create pull request + 
 	merge pull request + 
 	merge + 
 	confirm merge
-10: Copy tutorial.pdf to the NHSS repository
-11: Check all code runs correctly in the NHSS repository
+11: Copy tutorial.pdf to the NHSS repository
+12: Check all code runs correctly in the NHSS repository
 

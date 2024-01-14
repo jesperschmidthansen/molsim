@@ -12,7 +12,7 @@
 
 \title{\textsf{molsim} tutorial \\ \bigskip \tiny{for the 1.x.x series}}
 \author{J.S. Hansen}
-\date{January 2023}
+\date{January 2024}
   
 \begin{document}
 
@@ -29,11 +29,12 @@ simulations. \textsf{molsim} supports simulations of
 \item charged systems using shifted force and Wolf methods,
 \item dissipative particle dynamics systems,
 \item different ensembles, 
+\item GPU/CUDA support,
 \item and more \ldots
 \end{itemize}
 
 \bigskip
-\noindent \textsf{molsim} is basically a wrapper for the \textsf{seplib}
+\noindent \textsf{molsim} is a wrapper for the \textsf{seplib}
 library, which is a light-weight flexible molecular dynamics simulation library
 mainly written in ISO-C99. With version series 1.x.x. \textsf{seplib} offers both 
 shared memory parallelization for CPUs and GPU simulations using Nvidia's CUDA toolkit; 
@@ -55,7 +56,7 @@ symbolizes the shell prompt.
 
 \bigskip
 \noindent Example scripts and functions to simulate different systems can be
-found under the package \textsf{tests} directory. It is highly recommended that
+found under the package \textsf{examples} directory. It is highly recommended that
 the user's project starts from one of these \textsf{.m}-files, and the user
 then makes the necessary changes.  
 
