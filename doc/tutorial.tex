@@ -60,7 +60,7 @@ found under the package \textsf{examples} directory. It is highly recommended th
 the user's project starts from one of these \textsf{.m}-files, and the user
 then makes the necessary changes.  
 
-\section{Installation}
+\section{Installation}\label{sec:install}
 \subsection{GNU Octave}
 GNU Octave's package manager offers a very easy installation. From the command
 prompt type (one single line)
@@ -115,6 +115,31 @@ directory in your Matlab search path.
 \noindent Note: Matlab compatibility is not guarantied. \textsf{molsim} will
 only be tested against very limited Matlab versions.
 
+\subsection{GPU/CUDA support}
+You must install this manually and currently the build is very primitive. 
+Download the \verb!tar.gz! file from
+\begin{verbatim}
+https://github.com/jesperschmidthansen/molsim
+\end{verbatim}
+and save it in some directory of your choice. Unpack the file and build 
+\begin{verbatim}
+$ tar zxvf molsim-<version>.tar.gz
+$ cd molsim/cuda
+$ make
+\end{verbatim}
+This should build the file \verb!cmolsim.oct!.
+In the unlikely event this works, please test the build using the command
+\begin{verbatim}
+$ octave -q tgpu_1.m	
+\end{verbatim}
+before popping the champaign. (This should give six columns with readable numbers.)
+Add the directory to your \verb!octave! path. If things does not work 
+try to hack the \verb!Makefile!. 
+
+\bigskip 
+
+\noindent Note: Tests have only been done for compute compatibility 7.5   
+
 \section{The interface strategy}
 This tutorial is not meant to introduce molecular dynamics; such introductions
 can be found in the books listed in the reference list. In brief, the basic idea
@@ -132,8 +157,6 @@ evaluating the forces acting on the particles, and (ii) from this integrate
 forward in time. The following pseudo code lists the basic idea
 
 \bigskip
-
-\clearpage
 
 \noindent \textbf{Listing 0}
 \begin{lstlisting}
@@ -549,7 +572,7 @@ molsim('sample', 'do');
 Typically this call is done just after the integration. Check the reference
 sheet for the list of available samplers. 
 
-\section{Parallelization}
+\section{Parallelization on the CPU}
 \textsf{molsim} offers two types of shared memory parallelization, namely,
 \begin{itemize}
 \item Loop parallelization 
@@ -594,8 +617,27 @@ cores) is not always optimal. In the \verb!tests!-directory you can find
 size, density and number of threads; use the \verb!help! command for its usage.
 
 \section{CUDA support}
-At the moment the 
+Version series \verb!1.x.x! focus on including CUDA support; see section \ref{sec:install} for installation. 
+The implementation is done as a stand-alone module/function which is independent of the CPU-based part 
+of the toolbox. To high-light this the function is named \verb!cmolsim!; note the post-fix \verb!c!. The interface 
+is, as for as possible, the same as for the CPU version. For example, to calculate the pair Lennard-Jones 
+force acting between two particles one uses the function call
+\begin{verbatim}
+cmolsim(’calcforce’, ’lj’, ’AA’, 2.5, 1.0, 1.0, 1.0);
+\end{verbatim}
+and to integrate forward in time using the leap-frog algorithm 
+\begin{verbatim}
+cmolsim('integrate', 'leapfrog');
+\end{verbatim}
+The reference sheet lists the functionality supported by \verb!cmolsim!. Be aware, there may be small differences in 
+output and arguments. You can find example programs in the \verb!cuda! directory. 
+\bigskip
 
+\noindent Using the CUDA support module you can often experience a speed up of a \emph{factor} 5-20! This will depend
+on the specific problem and how much the user writes out informations; the latter requires time consuming data 
+transferal between GPU and CPU. 
+
+\iffalse
 \section{Analysis tools} 
 \verb!molsim! ships with a series of m-functions that can be used
 for further system analysis after the simulation. Some of the functions depend on the
@@ -625,6 +667,7 @@ end
 
 \textit{Important note} The analysis tools are only supported by GNU Octave
 
+
 \noindent \verb!molsim_readxyz!
 
 \noindent \verb!molsim_calcrdf!
@@ -633,7 +676,7 @@ end
 
 \noindent 
 
-
+\fi
 
 \clearpage
 
@@ -724,7 +767,7 @@ end
 	  \verb!get! && \verb!numbpart!&& && scalar && X\\
 	  $\mbox{}$  && \verb!box! && && 3-vector && \\
 	  $\mbox{}$  && \verb!energies! && && 2-vector (kin, pot) && X \\
-	  $\mbox{}$  && \verb!pressure! && && scalar(s) (p, pmol) && X$^*$\\
+	  $\mbox{}$  && \verb!pressure! && && scalar(s) (p, pmol) &&  \\
 	  $\mbox{}$  && \verb!velocities! && && $N_\mathrm{part.}\times 3$-matrix && X\\
 	  $\mbox{}$  && \verb!positions! && &&  $N_\mathrm{part.}\times 3$-matrix && X\\
 	  $\mbox{}$  && \verb!forces! && &&  $N_\mathrm{part.}\times 3$-matrix && \\
