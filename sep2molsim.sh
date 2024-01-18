@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SEPLIB_PATH=/net/dirac/jschmid/software/seplib/
+SEPLIB_PATH=/net/dirac/jschmidt/software/seplib
 
 cp -r $SEPLIB_PATH/include/* src/include/
 cp -r $SEPLIB_PATH/source/* src/source/

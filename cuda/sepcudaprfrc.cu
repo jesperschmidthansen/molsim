@@ -213,7 +213,7 @@ __global__ void sep_cuda_build_neighblist(int *neighlist, float *dist, float4 *p
 				int idxj = tile*blockDim.x + j;
 				
 				if ( idxj >= npart )  break;
-				
+		
 				if ( moli == molindex[idxj] ) continue;
 	
 				float dx = mpx - p[idxj].x; dx = sep_cuda_wrap(dx, lbox.x);
@@ -223,7 +223,7 @@ __global__ void sep_cuda_build_neighblist(int *neighlist, float *dist, float4 *p
 				float distSqr = dx*dx + dy*dy + dz*dz;
 
 				if ( distSqr < 2.0*FLT_EPSILON ) continue; // Self contribution
-				
+	
 				if ( distSqr < cfsqr ) {
 						
 					if ( shift < nneighmax )

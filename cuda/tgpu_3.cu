@@ -22,7 +22,9 @@ int main(void){
 		
 		sep_cuda_thermostat_nh(ptr, 1.0, 0.1);
 		sep_cuda_integrate_leapfrog(ptr);
-		
+	
+		if ( n%2==0 ) sep_cuda_check_neighblist(ptr, sptr->skin);
+	
 		n++;
 	}
 	

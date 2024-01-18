@@ -80,5 +80,8 @@ molsim-1.0.0
 ------------
 
   * Improved error handlig (ongoing issue).
-  
+  * Sparse CUDA support (checkout *.m files under the examples/ directory)
+  * Update to documentation
+
+
 

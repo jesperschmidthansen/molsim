@@ -5,10 +5,10 @@ NOTE: In case of faulty release, remember to remove the release *tag* as well.
 0: Make seplib release (includes running test and successful building of molsim in Octave and Matlab)
 1: Import latest seplib revision
 2: Compilation with max. warning level (pass with no warning)
-3: All tests must pass
+3: All tests must pass (also under cuda/)
 4: Update file NEWS 
 5: Update file DESCRIPTION
-6: Update and check directory examples/ - use shell script chk_examples.sh  
+6: Check scripts/functions in directory examples/  
 7: Commit and make molsim release
 8: Check install release from http address (remove path to local repository first)
 9: Generate sha key
