@@ -1,4 +1,6 @@
-
+##
+## This is molsim_xyzsingle
+##
 function molsim_xyzsingle(idx1, idx2)	
 
 	npartSingle = idx2-idx1+1;
