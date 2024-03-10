@@ -55,7 +55,7 @@ enum {
 };
 
 // Wrapper functions for actions
-void action_reset(int nrhs);
+void action_reset(int nrhs, const mxArray **prhs);
 void action_set(int nrhs, const mxArray **prhs);
 void action_load(int nrhs, const mxArray **prhs);
 void action_calcforce(int nrhs, const mxArray **prhs);

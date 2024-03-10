@@ -19,7 +19,7 @@ void mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
     
   case LOAD: action_load(nrhs, prhs); break; 
    
-  case RESET: action_reset(nrhs); break;
+  case RESET: action_reset(nrhs, prhs); break;
 
   case CALCFORCE: action_calcforce(nrhs, prhs); break;
 
@@ -120,22 +120,48 @@ bool checkfile(const char *filename){
 }
 
 // Actions 
-void action_reset(int nrhs){
+void action_reset(int nrhs, const mxArray **prhs){
 
-  if ( nrhs != 1 ) inputerror(__func__);
+  if ( nrhs>3  ) inputerror(__func__);
   
-  sep_reset_retval(&ret);
-  sep_reset_force(atoms, &sys);
+  if ( nrhs == 1 ){
+  	sep_reset_retval(&ret);
+  	sep_reset_force(atoms, &sys);
 
-  // Resetting the Fijmol arrays is slow - therefore only when necessary
-   if ( initmol ){
-    if ( msacf_int_sample > 0 && iterationNumber%msacf_int_sample == 0 )
-      sep_reset_force_mol(&sys);
-    else if ( msacf_int_calc > 0 && (iterationNumber+1)%msacf_int_calc == 0 )
-      sep_reset_force_mol(&sys);
-   }
-   
+  	// Resetting the Fijmol arrays is slow - therefore only when necessary
+   	if ( initmol ){
+    	if ( msacf_int_sample > 0 && iterationNumber%msacf_int_sample == 0 )
+      		sep_reset_force_mol(&sys);
+    	else if ( msacf_int_calc > 0 && (iterationNumber+1)%msacf_int_calc == 0 )
+      	sep_reset_force_mol(&sys);
+   	}
+  }
+  else {
+  	char *specifier = mxArrayToString(prhs[1]);
 
+ 	if ( strcmp(specifier, "momentum")==0 ){ 
+		char *types = mxArrayToString(prhs[2]);      
+		 sep_reset_momentum(atoms, types[0], &sys);
+#ifdef OCTAVE
+		 free(types);
+#endif
+   	}
+	else if ( strcmp(specifier, "integration")==0 ){
+		sep_reset_retval(&ret);
+		sep_reset_force(atoms, &sys);
+
+		// Resetting the Fijmol arrays is slow - therefore only when necessary
+		if ( initmol ){
+			if ( msacf_int_sample > 0 && iterationNumber%msacf_int_sample == 0 )
+				sep_reset_force_mol(&sys);
+			else if ( msacf_int_calc > 0 && (iterationNumber+1)%msacf_int_calc == 0 )
+			sep_reset_force_mol(&sys);
+		}
+	}	
+#ifdef OCTAVE
+	free(specifier);
+#endif
+  }	
 }
 
 void action_set(int nrhs, const mxArray* prhs[]){
@@ -1121,18 +1147,24 @@ void action_add(int nrhs, const mxArray **prhs){
     char *specifier =  mxArrayToString(prhs[1]);
 
     if ( strcmp(specifier, "force")==0 ){
-
-      if ( nrhs != 4 ) inputerror(__func__);
-    
-      double *force = mxGetPr(prhs[3]);
-	  char *type = mxArrayToString(prhs[2]);	
+		
+		if ( nrhs != 4 && nrhs != 3 ) inputerror(__func__);
+   
+	 	if ( nrhs == 4 ){	 
+      		double *force = mxGetPr(prhs[3]);
+	  		char *type = mxArrayToString(prhs[2]);	
       
-	  for ( int n=0; n<natoms; n++ )
-		if ( atoms[n].type == type[0] )	  
-		  for ( int k=0; k<3; k++ ) atoms[n].f[k] += force[k];
-#ifdef OCTAVE
-	free(type);
-#endif
+	  		for ( int n=0; n<natoms; n++ )
+				if ( atoms[n].type == type[0] )	  
+		  			for ( int k=0; k<3; k++ ) atoms[n].f[k] += force[k];
+			#ifdef OCTAVE
+			free(type);
+			#endif
+		}
+		else if ( nrhs == 3 ) {
+			double *force = mxGetPr(prhs[2]);
+			for ( int n=0; n<natoms; n++ ) 	atoms[n].f[0] += force[n];	
+		}
 	}
     else if ( strcmp(specifier, "tolattice")==0 ) {
 
