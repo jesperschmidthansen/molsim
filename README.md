@@ -23,21 +23,18 @@ molsim supports simulations of
 
 <h2>Installation </h2>
 <p>At the Octave prompt simply use the command </p>
-<p> 
-<div class="box">
 <pre>
+ <code>
   >> pkg install "https://github.com/jesperschmidthansen/molsim/archive/refs/tags/v&lt;version&gt;.tar.gz"
+ </code> 
 </pre>
-</div>
-</p>
 <p>where &lt;version&gt; is the version number.
 
 <h2>An example</h2>
 An example of an NVE water simulation script
 
-<div class="box">
-  <pre>
-   
+<pre>
+<code>   
     nloops = 1000; temp0 = 298.15/78.2;
     cutoff= 2.5; sigma=1.0; epsilon=1.0; aw=1.0; cutoff_sf = 2.9;
     lbond = 0.316; kspring = 68421; 
@@ -63,8 +60,9 @@ An example of an NVE water simulation script
     endfor
     
     molsim('clear');
+</code>
 </pre>
-</div>
+
   <p> <b>IMPORTANT NOTE</b>: The 'sys_water.xyz' configuration file and 'sys_water.top' topology file must be in
    same directory from where you execute the script. They can be found under the project's resource/ folder </p>
   <p> For further explanation check out the package tutorial under the project's doc/ folder </p> 
