@@ -94,7 +94,7 @@ void sep_langevinGJF(sepatom *ptr, double temp0, double alpha, sepsys *sys, sepr
   const double cc  = exp(-alpha*dt);
   
   double sum_ekin = 0.0;
-  for ( unsigned n=0; n<sys->npart; n++ ){
+  for ( long int n=0; n<sys->npart; n++ ){
     
     double mass = ptr[n].m;
 	double imass = 1.0/mass;
