@@ -40,13 +40,16 @@ function [radius, radial] = molsim_calcrdf(types="AA", npoints=100)
 		endif
 		
 		counter++;
+
+		printf("\r Did %d  ", counter); fflush(stdout);
 	endwhile
 	
 	if ( counter == 0 )
 		warning("No files found");
 		radial = radius = 0;
 	else 
-		radial = rdfsum./counter; 
+		radial = rdfsum./counter;
+		printf("\n"); 
 	endif
 	
 endfunction
