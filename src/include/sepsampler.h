@@ -191,6 +191,20 @@ typedef struct {
 
 } sepmprofs;
 
+// scatt (coherent partial scattering function)
+typedef struct{
+	bool init;
+	int index, nsample, isample, lvec, nwave, ncomb;
+
+	double tspan;
+
+	complex double **scatt_p_1, **scatt_m_2;
+	complex double **scatt;
+
+	char intropt, types[2]; 
+	char outfile[256];
+} sepscatt;
+
 
 
 /***************************
@@ -210,6 +224,7 @@ typedef struct {
   int flag_profs; sepprofs *profs;
   int flag_radial; sepradial *radial;
   int flag_msd; sepmsd *msd;
+  int flag_scatt; sepscatt **scatt;
 
   // Molecular samplers
   int flag_msacf; sepmsacf *msacf;
@@ -254,6 +269,8 @@ sepsampler sep_init_sampler(void);
  * (i) Particle type [type char] (ii) Iteration steps between sampling [type int] \n
  * (10) "mprofs" (molecular hydrodynamic profiler). Additional argument(s): 
  * (i) Molecule type [type char] (ii) Iteration steps between sampling [type int] \n
+ * (11) "scatt" (All atoms partial coherent scattering function). Additional arguments
+ * (i) atom types (ii) Number of wavevector, (iii) sample time span
  */
 void sep_add_sampler(sepsampler *sptr, const char *sampler, sepsys sys, int lvec, ...);
 
@@ -355,6 +372,15 @@ void sep_mavacf_close(sepmavacf *ptr);
 sepmmsd *sep_mol_msd_init(int lvec, double tsample, int nk, char type, sepsys sys);
 void sep_mol_msd_sample(seppart *atom, sepmol *mol, sepmmsd *sptr, sepsys sys);
 void sep_mol_msd_close(sepmmsd *ptr);
+
+// Partial coherent scattering function
+sepscatt** sep_init_scatt(const char types[], int lvec, int nwave, double tspan, double dt);
+sepscatt* sep_init_sscatt(const char types[], int lvec, int nwave, double tspan, const char file[]);
+void sep_sscatt_sample(sepscatt *scatt, sepatom *atoms, char opt, sepsys *sys);
+void sep_scatt_sample(sepscatt** scattarray, sepatom *atoms, char opt, sepsys *sys);
+void sep_free_sscatt(sepscatt *scatt);
+void sep_scatt_close(sepscatt** scattarray);
+void sep_set_inter_scatt(sepsampler *sampler);
 
 #endif
 

@@ -132,6 +132,15 @@ void sep_add_sampler(sepsampler *sptr, const char *sampler,
       sptr->flag_mmsd = 1;
     }
   }
+  else if ( strcmp(sampler, "scatt")==0 ){
+	  if ( sptr->flag_scatt != 1 ){
+		  char *t = va_arg(args, char *);
+	      int nwave = va_arg(args, int);
+		  double tsample  = va_arg(args, double);
+		  sptr->scatt = sep_init_scatt(t, lvec, nwave, tsample, sys.dt);
+		 sptr->flag_scatt = 1; 
+	  }
+  }
   else {
     sep_error("%s and at line %d: Sampler %s is not recognized", 
 	      __func__, __LINE__, sampler);
@@ -161,6 +170,7 @@ void sep_close_sampler(sepsampler *ptr){
   if ( ptr->flag_radial == 1 )  sep_radial_close(ptr->radial);
   if ( ptr->flag_msd == 1 )     sep_msd_close(ptr->msd);
   if ( ptr->flag_mmsd == 1 )    sep_mol_msd_close(ptr->mmsd);
+  if ( ptr->flag_scatt == 1 )   sep_scatt_close(ptr->scatt);
 
 }
 
@@ -224,6 +234,9 @@ void sep_sample(seppart *pptr, sepsampler *sptr, sepret *ret, sepsys sys,
   if ( sptr->flag_mmsd==1 && n%sptr->mmsd->isample == 0 )
     sep_mol_msd_sample(pptr, sptr->molptr, sptr->mmsd, sys);
 
+  if ( sptr->flag_scatt==1 && n%sptr->scatt[0]->isample == 0 )
+		sep_scatt_sample(sptr->scatt, pptr, 'a', &sys);
+
 }
 
 sepsampler sep_init_sampler(void){
@@ -252,6 +265,7 @@ sepsampler sep_init_sampler(void){
   a.flag_msd = 0; a.msd = NULL;
   a.flag_mmsd = 0; a.mmsd = NULL;
 
+  a.flag_scatt = 0; a.scatt = NULL;
   a.msd_counter = 1;
   return a;
 }
@@ -2036,3 +2050,165 @@ void sep_mol_msd_close(sepmmsd *ptr){
   free(ptr);
 
 }
+
+
+sepscatt* sep_init_sscatt(const char types[], int lvec, int nwave, double tspan, const char file[]){
+	
+	sepscatt *scatt = malloc(sizeof(sepscatt));	
+	if ( scatt==NULL )
+	    sep_error("%s at line %d: Couldn't allocate memory", __func__, __LINE__);
+
+	scatt->init = true; scatt->index = 0; scatt->nsample = 0;
+	scatt->nwave = nwave; scatt->lvec = lvec; scatt->tspan = tspan;  
+
+	scatt->scatt_p_1 = sep_complex_matrix(lvec, nwave);
+	scatt->scatt_m_2 = sep_complex_matrix(lvec, nwave);
+
+	scatt->scatt = sep_complex_matrix(lvec, nwave);
+
+	scatt->types[0] = types[0]; scatt->types[1]=types[1];
+	strcpy(scatt->outfile, file);
+
+	return scatt;
+}
+
+
+sepscatt** sep_init_scatt(const char types[], int lvec, int nwave, double tspan, double dt){
+	
+	int ntypes = strlen(types);
+	int ncomb = ntypes;
+	for ( int n=1; n<=ntypes-1; n++ ) ncomb += ntypes-n;  
+
+	sepscatt **scattarray = malloc(sizeof(sepscatt*)*ncomb);	
+	if ( scattarray == NULL )
+		sep_error("%s at line %d: Couldn't allocate memory", __func__, __LINE__);
+
+	int id = 0;	char ptypes[2]; char filestr[256];
+	for ( int n=0; n<ntypes; n++){
+		ptypes[0] = types[n];
+		for ( int m=n; m<ntypes; m++ ){ 
+			ptypes[1] = types[m];
+			sprintf(filestr, "scatt-%c%c.dat", ptypes[0], ptypes[1]);
+			scattarray[id] = sep_init_sscatt(ptypes, lvec, nwave, tspan, filestr);
+			// Some global settings given to all partial scatt samplers
+			scattarray[id]->ncomb = ncomb;
+			scattarray[id]->isample = tspan/(lvec*dt);
+			scattarray[id]->intropt = 'a';
+			id++;
+		}
+	}
+	
+	return scattarray;
+}
+
+void sep_set_inter_scatt(sepsampler *sampler){
+
+	if ( sampler->flag_scatt == 1 )
+		sampler->scatt[0]->intropt = 'i';
+	else
+		sep_error("%s at line %d: Couldn't set option since scatt in not initialized", 
+				__func__, __LINE__);	
+}
+
+void sep_free_sscatt(sepscatt *scatt){
+
+	int lvec = scatt->lvec;
+	if ( scatt->init == true ){
+		sep_free_complex_matrix(scatt->scatt_p_1, lvec);			
+		sep_free_complex_matrix(scatt->scatt_m_2, lvec);			
+		sep_free_complex_matrix(scatt->scatt, lvec);			
+	}
+
+	scatt->init = false;
+}
+
+void sep_scatt_close(sepscatt** scattarray){
+	
+	int ncomb = scattarray[0]->ncomb;
+	for ( int n=0; n<ncomb; n++ )
+		sep_free_sscatt(scattarray[n]);
+
+}
+
+void sep_sscatt_sample(sepscatt *scatt, sepatom *atoms, char opt, sepsys *sys){
+
+	int n, m;
+	double mass, kwave;
+	complex double kfac_p, kfac_m;
+	const int lvec = scatt->lvec; int nwave = scatt->nwave;
+	const char type1 = scatt->types[0]; const char type2 = scatt->types[1];
+
+	sep_eval_xtrue(atoms, sys);
+	int hnmol = sys->molptr->num_mols/2;
+
+	//#pragma omp parallel for private(kwave, m, mass, kfac_p, kfac_m)
+	for ( n=0; n<nwave; n++ ){
+		int index = scatt->index;
+		scatt->scatt_p_1[index][n] = scatt->scatt_m_2[index][n] = 0.0 + 0.0*I;
+
+		kwave = 2.0*SEP_PI*(n+1)/sys->length[0];
+		for ( m=0; m<sys->npart; m++ ){
+			mass = atoms[m].m;
+
+			kfac_p = cexp(I*kwave*atoms[m].xtrue[0]);
+			kfac_m = cexp(-I*kwave*atoms[m].xtrue[0]);
+
+			if ( opt=='a' ){	
+				if ( atoms[m].type == type1 ) 
+					scatt->scatt_p_1[index][n] += mass*kfac_p;
+				if ( atoms[m].type == type2 ) 
+					scatt->scatt_m_2[index][n] += mass*kfac_m;
+			}
+			else if ( opt=='i' ) {
+				if ( atoms[m].type == type1 && atoms[m].molindex < hnmol ) 
+					scatt->scatt_p_1[index][n] += mass*kfac_p;
+				if ( atoms[m].type == type2 && atoms[m].molindex >= hnmol ) 
+					scatt->scatt_m_2[index][n] += mass*kfac_m;
+			}
+		}
+
+	}	
+
+	scatt->index = scatt->index + 1;
+
+	if ( scatt->index == lvec ){
+
+		scatt->index = 0;	scatt->nsample = scatt->nsample + 1;
+
+		for ( int k=0; k<nwave; k++ )
+			for ( int n=0; n<lvec; n++ )
+				for ( int nn=0; nn<lvec-n; nn++ )
+					scatt->scatt[n][k] += scatt->scatt_p_1[nn][k]*scatt->scatt_m_2[n+nn][k];
+
+
+		FILE *fout = fopen(scatt->outfile, "w");
+		if ( fout == NULL ) sep_error("Couldn't open file");
+
+		double dt = scatt->tspan/lvec;
+		for ( int n=0; n<lvec; n++ ){
+			fprintf(fout, "%f ", n*dt);
+
+			double fac = 1.0/(scatt->nsample*sys->volume*(lvec-n));
+			for ( int k=0; k<nwave; k++ ){
+				fprintf(fout, "%f ", creal(scatt->scatt[n][k]*fac));
+			}
+			fprintf(fout, "\n");
+		}
+
+		fclose(fout);
+	}
+
+}
+
+
+
+void sep_scatt_sample(sepscatt** scattarray, sepatom *atoms, char opt, sepsys *sys){
+	
+	int ncomb = scattarray[0]->ncomb;
+	for ( int n=0; n<ncomb; n++ )
+		sep_sscatt_sample(scattarray[n], atoms, opt, sys);
+
+}
+
+
+

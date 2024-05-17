@@ -769,8 +769,8 @@ void action_get(int nlhs, mxArray **plhs, int nrhs, const mxArray **prhs){
 	if ( molindex > 0 && molindex-1 > sys.molptr->num_mols )
       mexErrMsgTxt("Molecular index larger than number of molecules \n");    
 
-    const long nuau = (long unsigned)mols[molindex].nuau;
-    plhs[0] = mxCreateNumericArray(1, &nuau, mxINT32_CLASS, mxREAL);
+    const long nuau = (long)mols[molindex].nuau;
+	plhs[0] = mxCreateNumericArray(1, &nuau, mxINT32_CLASS, mxREAL);
     int *ptr = (int *)mxGetPr(plhs[0]);
 
     for ( unsigned n=0; n<mols[molindex].nuau; n++ )
@@ -979,6 +979,18 @@ void action_sample(int nrhs, const mxArray **prhs){
       free(type);
 #endif    
     }
+	else if ( strcmp(specifier, "scatt")==0 ){
+	  if ( nrhs != 6 ) inputerror(__func__);
+		char *types =  mxArrayToString(prhs[2]);
+		int lvec = (int)mxGetScalar(prhs[3]);
+	  	int nwave = (int)mxGetScalar(prhs[4]);
+		double tsample = mxGetScalar(prhs[5]);
+		sep_add_sampler(&sampler, "scatt", sys, lvec, types, nwave, tsample);
+#ifdef OCTAVE
+	  	free(types);
+#endif
+	}
+
 
     else {
       mexErrMsgTxt("Activator 'sample' -> not valid specifier\n");
