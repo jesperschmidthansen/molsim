@@ -3,7 +3,7 @@
 ## Usage: [radius, radial] = molsim_calcrdf(ptypes, npoints)
 ##
 ## Calculates the radial distribution function from configuration 
-## files molsim_%05d.xyz.  
+## files molsim-%05d.xyz.  
 ##
 ##   Arguments: 
 ##      - ptypes; pair particle types (default 'AA');
