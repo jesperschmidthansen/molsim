@@ -88,8 +88,9 @@ molsim-1.0.1
 
   * Changed UI for action 'add', specifier 'force'
   * Some added documentation for windows installation (thanks to robertf)	
-  * A few type inconsistencies raising warnings on some compilers (seplib issue - again thanks to robertf) 	
+  * A few type inconsistencies raising warnings on some compilers 
+	(seplib issue - again thanks to robertf) 	
   * Added slitpore simulation to the example buffet
   * Added new sampler: scatt
-
+  * Bug-fix in optimization for very small systems (seplib issue)	
 
