@@ -235,7 +235,7 @@ void sep_sample(seppart *pptr, sepsampler *sptr, sepret *ret, sepsys sys,
     sep_mol_msd_sample(pptr, sptr->molptr, sptr->mmsd, sys);
 
   if ( sptr->flag_scatt==1 && n%sptr->scatt[0]->isample == 0 )
-		sep_scatt_sample(sptr->scatt, pptr, 'a', &sys);
+		sep_scatt_sample(sptr->scatt, pptr, sptr->scatt[0]->intropt, &sys);
 
 }
 
@@ -2139,7 +2139,6 @@ void sep_sscatt_sample(sepscatt *scatt, sepatom *atoms, char opt, sepsys *sys){
 	const char type1 = scatt->types[0]; const char type2 = scatt->types[1];
 
 	sep_eval_xtrue(atoms, sys);
-	int hnmol = sys->molptr->num_mols/2;
 
 	//#pragma omp parallel for private(kwave, m, mass, kfac_p, kfac_m)
 	for ( n=0; n<nwave; n++ ){
@@ -2160,9 +2159,9 @@ void sep_sscatt_sample(sepscatt *scatt, sepatom *atoms, char opt, sepsys *sys){
 					scatt->scatt_m_2[index][n] += mass*kfac_m;
 			}
 			else if ( opt=='i' ) {
-				if ( atoms[m].type == type1 && atoms[m].molindex < hnmol ) 
+				if ( atoms[m].type == type1 && atoms[m].molindex%2==0  ) 
 					scatt->scatt_p_1[index][n] += mass*kfac_p;
-				if ( atoms[m].type == type2 && atoms[m].molindex >= hnmol ) 
+				if ( atoms[m].type == type2 && (atoms[m].molindex+1)%2==0 ) 
 					scatt->scatt_m_2[index][n] += mass*kfac_m;
 			}
 		}

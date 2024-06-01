@@ -1,7 +1,10 @@
 #!/bin/bash
 
-#SEPLIB_PATH=/net/dirac/jschmidt/software/seplib
-SEPLIB_PATH=/home/jschmidt/software/seplib
+if [[ $1 == "dirac" ]]; then
+	SEPLIB_PATH=/net/dirac/jschmidt/software/seplib
+else
+	SEPLIB_PATH=/home/jschmidt/software/seplib
+fi
 
 cp -r $SEPLIB_PATH/include/* src/include/
 cp -r $SEPLIB_PATH/source/* src/source/

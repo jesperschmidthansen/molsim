@@ -128,8 +128,11 @@ void sep_make_neighblist_from_llist_excl_same_mol(seppart *ptr, int nneighb,
 
 int *sep_allocate_celllist(sepsys *sys);
 void sep_make_celllist(seppart *ptr, int *list, sepsys *sys);
-unsigned int sep_bonded_direct(seppart *ptr, int j1, int j2);
 
+unsigned int sep_bond_share(seppart *ptr, int j1, int j2);
+unsigned int sep_angle_share(seppart *ptr, int j1, int j2); 
+unsigned int sep_dihed_share(seppart *ptr, int j1, int j2); 
+unsigned int sep_bonded(seppart *ptr, int i, int j);
 
 // Lennard-Jones specific systems - a bit faster
 void sep_lj_pair_brute(seppart *ptr, const char *types, 
