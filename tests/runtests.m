@@ -1,12 +1,8 @@
 
-dotests = [true,  
-	   true,
-	   true,
-	   true,
-	   true];
+dotests = [true,true,true,true,true,true];
 
 itest = 1;
-tests=["_test01.m"; "_test02.m"; "_test03.m"; "_test04.m" ; "_test05.m"];
+tests=["_test01.m"; "_test02.m"; "_test03.m"; "_test04.m" ; "_test05.m"; "_test06.m"];
 
 save test.mat itest dotests tests;
 

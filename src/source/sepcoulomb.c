@@ -34,7 +34,7 @@ void sep_coulomb_sf_brute(seppart *ptr,  double cf, sepsys *sys,
     
     for ( m=n+1; m<sys->npart; m++ ){
       
-      if ( opt == SEP_NEIGHB_EXCL_BONDED && sep_bonded_direct(ptr, n, m) == 1 ){
+      if ( opt == SEP_NEIGHB_EXCL_BONDED && sep_bonded(ptr, n, m) == 1 ){
 	continue;	
       }
       else if ( opt == SEP_NEIGHB_EXCL_SAME_MOL && 
@@ -263,7 +263,7 @@ void sep_coulomb_wolf_brute(seppart *ptr, double alpha, double rcf, sepsys *sys,
     
     for ( int m=n+1; m<sys->npart; m++ ){
       
-      if ( opt == SEP_NEIGHB_EXCL_BONDED && sep_bonded_direct(ptr, n, m) == 1 )
+      if ( opt == SEP_NEIGHB_EXCL_BONDED && sep_bonded(ptr, n, m) == 1 )
 	continue;	
       else if ( opt == SEP_NEIGHB_EXCL_SAME_MOL && 
 		ptr[n].molindex == ptr[m].molindex && ptr[n].molindex != -1 )

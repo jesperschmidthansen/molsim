@@ -397,7 +397,7 @@ void action_calcforce(int nrhs, const mxArray **prhs){
 				sys.omp_flag = false;
 		}
 
-	//	sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
+		sep_force_lj(atoms, types, param, &sys, &ret, exclusionflag);
 
 		sys.omp_flag = tmp;
 

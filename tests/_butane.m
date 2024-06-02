@@ -24,7 +24,7 @@ function _butane(opt)
 	if opt==1
 		molsim('set', 'exclusion', 'molecule');
 	else
-		molsim('set', 'exlusion', 'bonded');
+		molsim('set', 'exclusion', 'bonded');
 		molsim('set', 'omp', 2);
 	end	
 	
