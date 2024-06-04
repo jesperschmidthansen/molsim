@@ -1160,24 +1160,13 @@ void action_add(int nrhs, const mxArray **prhs){
 	char *specifier =  mxArrayToString(prhs[1]);
 
 	if ( strcmp(specifier, "force")==0 ){
+		if ( nrhs != 4 ) inputerror(__func__);
+	
+		double *force = mxGetPr(prhs[2]);
+		int dir = (int)mxGetScalar(prhs[3])-1;
+		if ( dir < 0 || dir > 3 ) inputerror(__func__);
 
-		if ( nrhs != 4 && nrhs != 3 ) inputerror(__func__);
-
-		if ( nrhs == 4 ){	 
-			double *force = mxGetPr(prhs[3]);
-			char *type = mxArrayToString(prhs[2]);	
-
-			for ( int n=0; n<natoms; n++ )
-				if ( atoms[n].type == type[0] )	  
-					for ( int k=0; k<3; k++ ) atoms[n].f[k] += force[k];
-#ifdef OCTAVE
-			free(type);
-#endif
-		}
-		else if ( nrhs == 3 ) {
-			double *force = mxGetPr(prhs[2]);
-			for ( int n=0; n<natoms; n++ ) 	atoms[n].f[0] += force[n];	
-		}
+		for ( int n=0; n<natoms; n++ ) atoms[n].f[dir] += force[n];
 	}
 	else if ( strcmp(specifier, "tolattice")==0 ) {
 
