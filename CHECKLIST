@@ -2,7 +2,7 @@
 
 NOTE: In case of faulty release, remember to remove the release *tag* as well. 
 
-0: Make seplib release (includes running test and successful building of molsim in Octave and Matlab)
+0: Make seplib release (includes running test and successful building of molsim in Octave and Matlab with 'buildmex.m')
 1: Import latest seplib revision
 2: Compilation with max. warning level (pass with no warning)
 3: All tests must pass (also under cuda/)
