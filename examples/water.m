@@ -44,4 +44,4 @@ for n=1:nloops
 
 endfor
 
-mosim('clear');
+molsim('clear');

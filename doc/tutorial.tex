@@ -735,7 +735,7 @@ end
 	  $\mbox{}$  && \verb!temperature! && temperature (1.0) && && X\\
 	  $\mbox{}$  && \verb!cutoff! && Max. cut-off (2.5) && && X \\
 	  $\mbox{}$  && \verb!omp! && No. of threads && && \\
-	  $\mbox{}$ && \verb!exclusion! && 'bonded' or 'molecule' && && X \\
+	  $\mbox{}$ && \verb!exclusion! && 'bonded' or 'molecule' && && X  bonded only\\
 	  $\mbox{}$ && \verb!temperaturerelax! && relaxation time (0.01) && && \\
 	  $\mbox{}$ && \verb!compressionfactor! && compress factor (0.9999) && && \\
 	  $\mbox{}$ && \verb!types! && particle types (vector string) && && \\
@@ -859,8 +859,8 @@ end
 								   && && && && \\
     \hline
 								   && && && && \\
-	  \verb!add! && \verb!force! && 1: to type && && \\
-	  $\mbox{}$   &&             && 2: force (3-vector) && &&\\
+	  \verb!add! && \verb!force! && 1: force vector (length of numb part) && && \\
+	  $\mbox{}$   &&             && 2: direction (1,2,3) && &&\\
 	  $\mbox{}$   && \verb!tolattice! && 1: dx (scalar) && && \\
 	  $\mbox{}$   &&             && 2: direction (0,1,2) && && \\
 								   && && && && \\

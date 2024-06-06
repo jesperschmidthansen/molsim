@@ -10,6 +10,9 @@ molsim('set', 'virtualsites');
 
 molsim('sample', 'profiles', 'F', 200, 50);
 
+force = zeros(molsim('get', 'numbpart'), 1);
+force(find(molsim('get', 'types')=='F')) = 0.01;
+
 for n=1:nloops
 	% Reset forces etc
 	molsim('reset');
@@ -20,7 +23,7 @@ for n=1:nloops
 
 	molsim('calcforce', 'lattice', 'W', 250);
 
-	molsim('add', 'force', 'F', [0.01, 0.0, 0.0]);
+	molsim('add', 'force', force, 1);
 
 	% Integrate forward in time - use leapfrog alogrithm
 	molsim('integrate', 'leapfrog');

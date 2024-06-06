@@ -1,6 +1,6 @@
 name: molsim 
-version: 1.0.0
-date: 2023-01-18
+version: 1.0.1
+date: 2024-06-05
 author: Jesper Schmidt Hansen <jesperschmidthansen@gmail.com>
 maintainer: Jesper Schmidt Hansen <jesperschmidthansen@gmail.com>
 title: molsim - a GNU Octave molecular dynamics package
