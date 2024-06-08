@@ -28,7 +28,13 @@ molsim supports simulations of
   >> pkg install "https://github.com/jesperschmidthansen/molsim/archive/refs/tags/v&lt;version&gt;.tar.gz"
  </code> 
 </pre>
-<p>where &lt;version&gt; is the version number.
+<p>where &lt;version&gt; is the version number. NOTE: Depdending on your system you may recieve warnings like
+<pre>
+ <code>
+  note: expected 'const mwSize *' {aka 'const long long int *'} but argument is of type 'const long int *'
+ </code> 
+</pre>
+These warnings are not always harmful and not a molsim issue. Proceed with care.
 
 <h2>An example</h2>
 An example of an NVE water simulation script
