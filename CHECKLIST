@@ -11,7 +11,9 @@ NOTE: In case of faulty release, remember to remove the release *tag* as well.
 6: Check scripts/functions in directory examples/  
 7: Commit and make molsim release
 8: Check install release from http address (remove path to local repository first)
-9: Generate sha key
+9: Generate sha 
+  - >> urlwrite ("https://github.com/jesperschmidthansen/molsim/archive/refs/tags/v<version>.tar.gz", "molsim-<version>.tar.gz");
+  - >> hash ("sha256", fileread ("molsim-<version>.tar.gz"))
 10a: Use gnu-octave/package link and open molsim.yaml
 10b: Edit molsim.yaml as necessary and propose changes + 
 	create pull request + 
