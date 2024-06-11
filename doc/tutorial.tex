@@ -626,7 +626,7 @@ size, density and number of threads; use the \verb!help! command for its usage.
 Version series \verb!1.x.x! focus on including CUDA support; see section \ref{sec:install} for installation. 
 The implementation is done as a stand-alone module/function which is independent of the CPU-based part 
 of the toolbox. To high-light this the function is named \verb!cmolsim!; note the post-fix \verb!c!. The interface 
-is, as for as possible, the same as for the CPU version. For example, to calculate the pair Lennard-Jones 
+is, as far as possible, the same as for the CPU version. For example, to calculate the pair Lennard-Jones 
 force acting between two particles one uses the function call
 \begin{verbatim}
 cmolsim(’calcforce’, ’lj’, ’AA’, 2.5, 1.0, 1.0, 1.0);
@@ -643,35 +643,30 @@ output and arguments. You can find example programs in the \verb!cuda! directory
 on the specific problem and how much the user writes out informations; the latter requires time consuming data 
 transferal between GPU and CPU. 
 
-\iffalse
+
 \section{Analysis tools} 
-\verb!molsim! ships with a series of m-functions that can be used
-for further system analysis after the simulation. Some of the functions depend on the
-system's configuration at different times; in order to store these configurations the user can
-use the \verb!save! action
+
+\textit{Important note} The analysis tools are only supported by GNU Octave
+
+\bigskip
+
+\noindent \verb!molsim! ships with a series of m-functions that can be used for further system analysis after the 
+simulation. Many of the functions will read system time series configuration files (in \verb!xyz!-format). 
+By default the configuration file names are on the format \verb!molsim-%05d.xyz!, that is, 
 \begin{verbatim}
-molsim('save', <types>, <filename>); 
+molsim-00000.xyz, molsim-00001.xyz, molsim-00002.xyz, ...
 \end{verbatim}
-\verb!<types>! enables one to specify the type of particles for which the configuration
-should be stored, and \verb!<filename>! the filename where the
-configuration is stored (typically with suffix \verb!xyz!). 
-
+To generate the configuration time series you can use for example
 \begin{verbatim}
-fileid = 0;
-
+# main loop
 for n=1:nloops
    ...
-
    if rem(n,100)==0
-      molsim('save', 'AB', sprintf('molsim-%d.xyz', fileid));
-      fileid++;
+      molsim('save', 'AB');
    end
-
    ...
 end
 \end{verbatim}
-
-\textit{Important note} The analysis tools are only supported by GNU Octave
 
 
 \noindent \verb!molsim_readxyz!
@@ -682,7 +677,7 @@ end
 
 \noindent 
 
-\fi
+
 
 \clearpage
 
@@ -733,7 +728,7 @@ end
     \hline
 	  && && && && && \\
 	  \verb!save! &&  && 1: type names && && X \\
-				&&  && 2: file name &&  && \\
+				&&  && 2: file name (optional)&&  && \\
 				&& && && && \\
     \hline
 	  && && && && \\

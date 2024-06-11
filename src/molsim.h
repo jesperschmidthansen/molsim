@@ -40,7 +40,12 @@ static double lbox[3], dt=0.005, maxcutoff=2.5, temperature=1.0,
 static int msacf_int_sample = -1;
 static int msacf_int_calc = -1;
 
+// Task-optimization - number of tasks
 static unsigned int ntasks = 0;
+
+
+// Configuration saving - file number
+static unsigned int idxfile = 0;
 
 // Hard-coded hash values for switch
 // *I* cannot "optimize" further (Optimization not great anyways)

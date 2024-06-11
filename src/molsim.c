@@ -600,14 +600,24 @@ void action_barostate(int nrhs, const mxArray **prhs){
 
 void action_save(int nrhs, const mxArray **prhs){
 
-	if ( nrhs != 3 ) inputerror(__func__);
-
+	if ( nrhs < 2 ) inputerror(__func__);
+	
 	char *types =  mxArrayToString(prhs[1]);
-	char *file =  mxArrayToString(prhs[2]);
 
-	sep_save_xyz(atoms, types, file, "w", &sys);
+	if ( nrhs == 3 ){
+		char *file =  mxArrayToString(prhs[2]);
+		sep_save_xyz(atoms, types, file, "w", &sys);
 #ifdef OCTAVE
-	free(types);  free(file);
+		free(file);
+#endif
+	}
+	else {	
+		char file[256]; sprintf(file, "molsim-%05d.xyz",   idxfile); 
+		idxfile++;
+		sep_save_xyz(atoms, types, file, "w", &sys);
+	}
+#ifdef OCTAVE
+	free(types);  
 #endif
 }
 
