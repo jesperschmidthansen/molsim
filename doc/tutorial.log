@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2023.9.21)  11 JUN 2024 20:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2023.9.21)  11 JUN 2024 20:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -446,7 +446,7 @@ File: speedup-eps-converted-to.pdf Graphic file (type pdf)
 <use speedup-eps-converted-to.pdf>
 Package pdftex.def Info: speedup-eps-converted-to.pdf  used on input line 611.
 (pdftex.def)             Requested size: 262.57634pt x 149.35535pt.
- [14 <./speedup-eps-converted-to.pdf>] [15] [16
+ [14 <./speedup-eps-converted-to.pdf>] [15] [16] [17
 
 ]
 Overfull \hbox (155.4316pt too wide) in paragraph at lines 720--758
@@ -458,9 +458,9 @@ Overfull \hbox (21.50589pt too wide) in paragraph at lines 763--788
  [] 
  []
 
-[17
+[18
 
-] [18] [19]
+] [19] [20]
 Overfull \hbox (115.03706pt too wide) in paragraph at lines 831--877
  [] 
  []
@@ -470,9 +470,9 @@ Overfull \hbox (95.42984pt too wide) in paragraph at lines 882--929
  [] 
  []
 
-[20
+[21
 
-] [21] [22
+] [22] [23
 
 ] (./tutorial.aux) ) 
 Here is how much of TeX's memory you used:
@@ -501,10 +501,10 @@ texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf/fonts/type1/
 public/cm-super/sfrm1095.pfb>
-Output written on tutorial.pdf (22 pages, 281277 bytes).
+Output written on tutorial.pdf (23 pages, 281642 bytes).
 PDF statistics:
- 199 PDF objects out of 1000 (max. 8388607)
- 124 compressed objects within 2 object streams
+ 202 PDF objects out of 1000 (max. 8388607)
+ 126 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
