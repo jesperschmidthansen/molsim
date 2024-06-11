@@ -93,4 +93,7 @@ molsim-1.0.1
   * Bug-fix in optimization for very small systems (seplib issue)	
   * Changed definition of bonded exclusion to include angles and torsions as well
 
+molsim-1.0.2
+------------
 
+  * Fix to action 'add', specifier 'tolattice'

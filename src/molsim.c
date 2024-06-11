@@ -1173,7 +1173,7 @@ void action_add(int nrhs, const mxArray **prhs){
 		if ( nrhs != 4 ) inputerror(__func__);
 
 		double *dx = mxGetPr(prhs[2]);
-		int dir = (int)mxGetScalar(prhs[3]);
+		int dir = (int)mxGetScalar(prhs[3])-1;
 
 		for ( int n=0; n<natoms; n++ ){
 			atoms[n].x0[dir] += dx[n];
