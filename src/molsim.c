@@ -614,7 +614,8 @@ void action_save(int nrhs, const mxArray **prhs){
 	else {	
 		char file[256]; sprintf(file, "molsim-%05d.xyz",   idxfile); 
 		idxfile++;
-		sep_save_xyz(atoms, types, file, "w", &sys);
+		if ( idxfile <1000000 )
+			sep_save_xyz(atoms, types, file, "w", &sys);
 	}
 #ifdef OCTAVE
 	free(types);  
