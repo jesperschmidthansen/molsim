@@ -9,6 +9,9 @@ lj.mex: lj.c
 leapfrog.mex: leapfrog.c
 	mkoctfile --mex leapfrog.c
 
+neighblist.mex: neighblist.c
+	mkoctfile --mex neighblist.c
+
 clean:
 	rm -f *.mex
 	touch *.c
