@@ -21,6 +21,10 @@ void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
+	// Input check
+	if ( nrhs != 6 )
+		mexErrMsgTxt ("Input wrong");
+
 	// Get the input variables	
 	int *neighb_list = (int *)mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
@@ -45,7 +49,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		exit(EXIT_FAILURE);
 	}
 
-	 _build_cell_list(cell_list, r, lbox, ncells, lcells, npart);
+	_build_cell_list(cell_list, r, lbox, ncells, lcells, npart);
 	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, MAX_NNEIGHB);
 
 
