@@ -51,7 +51,7 @@ classdef atoms < handle
 			save(filename, "r", "v", "f", "m", "q", "t");	
 			
 		end	
-	
+
 	end
 
 end

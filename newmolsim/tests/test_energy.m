@@ -2,9 +2,13 @@ clear all;
 
 addpath("../mfiles/"); addpath("../mex/");
 
+niter = 1e4;
+
 p = atoms("start.xyz"); 
 intgr = integrator(); 
 inter = interactions();
+
+ekin = zeros(1, niter); epot = zeros(1, niter);
 
 tic();
 for n=1:10000
@@ -14,10 +18,11 @@ for n=1:10000
 		neighblist(p.nblist, p.r, p.lbox, 2.5, 0.5, p.natoms);
 	end
 
-	epot(n) = lj(p.f, "AA", [2.5, 1.0, 1.0, 1.0], p.r, p.t, p.nblist, p.lbox, p.natoms);   
+	epot(n) = inter.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
 	ekin(n) = intgr.step(p);
 
 end
+
 t = toc(); sps = n/t;
 printf("%f\n", sps);
 
