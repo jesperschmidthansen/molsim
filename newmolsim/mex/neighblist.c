@@ -34,7 +34,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	unsigned int npart = (unsigned int)mxGetScalar(prhs[5]);
 
 	// Calculate the cell grid
-	int ncells[3]; double lcells[3];
+unsigned int ncells[3]; double lcells[3];
 	for ( int k=0; k<3; k++ ){
   		ncells[k] = (int)(lbox[k]/(cf + skin));
 		if ( ncells[k] < 3 )
@@ -103,7 +103,7 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 
 	memset(neighb_list, -1, sizeof(int)*(npart*max_nneighb));
 
-	int j1, j2;
+	int j1;
 	for ( unsigned m1Z = 0; m1Z < nsubbox[2]; m1Z++ ){
 		for ( unsigned m1Y = 0; m1Y < nsubbox[1]; m1Y++ ) {
 			for ( unsigned m1X = 0; m1X < nsubbox[0]; m1X++ )  {
