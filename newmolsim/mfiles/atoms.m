@@ -6,6 +6,7 @@ classdef atoms < handle
 		m, q, t; 
 		nblist, max_nnb; 
 		natoms,	lbox;
+		boxcross, r0;
 	end
 
 	methods
@@ -34,9 +35,10 @@ classdef atoms < handle
 				this.t = t'; this.m = m'; this.q = q';
 				this.r = [x', y', z']; this.v = [vx', vy', vz']; this.f = zeros(natoms, 3);
 				this.lbox = [Lx, Ly, Lz]; 
-				this.natoms = natoms;
+				this.natoms = natoms; 
+				this.boxcross = int32(zeros(natoms, 3));
 
-				this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb));
+				this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
 
 
       		endif
