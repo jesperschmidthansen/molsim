@@ -4,9 +4,10 @@ classdef atoms < handle
 	properties (Access=public)
 		r, v, f;
 		m, q, t; 
-		nblist, max_nnb; 
-		natoms,	lbox;
+		nblist, max_nnb, update_nblist;
 		boxcross, r0;
+		
+		natoms,	lbox;
 	end
 
 	methods
@@ -37,6 +38,7 @@ classdef atoms < handle
 				this.lbox = [Lx, Ly, Lz]; 
 				this.natoms = natoms; 
 				this.boxcross = int32(zeros(natoms, 3));
+				this.update_nblist = true;
 
 				this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
 
