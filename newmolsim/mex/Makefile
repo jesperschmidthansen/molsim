@@ -1,7 +1,10 @@
 
-all=lj.mex leapfrog.mex neighblist.mex
+all=lj.mex leapfrog.mex neighblist.mex calcdr2.mex
 
 all: $(all)
+
+calcdr2.mex: calcdr2.c
+	mkoctfile -Wall --mex calcdr2.c
 
 lj.mex: lj.c
 	mkoctfile -Wall --mex lj.c 

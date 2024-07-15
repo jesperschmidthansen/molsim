@@ -22,19 +22,20 @@ void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 	// Input check
-	if ( nrhs != 6 )
+	if ( nrhs != 7 )
 		mexErrMsgTxt ("Input wrong");
 
 	// Get the input variables	
 	int *neighb_list = (int *)mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
-	double *lbox = mxGetPr(prhs[2]);
-	double cf = mxGetScalar(prhs[3]);
-	double skin = mxGetScalar(prhs[4]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[5]);
+	double *r0 = mxGetPr(prhs[2]);
+	double *lbox = mxGetPr(prhs[3]);
+	double cf = mxGetScalar(prhs[4]);
+	double skin = mxGetScalar(prhs[5]);
+	unsigned int npart = (unsigned int)mxGetScalar(prhs[6]);
 
 	// Calculate the cell grid
-unsigned int ncells[3]; double lcells[3];
+	unsigned int ncells[3]; double lcells[3];
 	for ( int k=0; k<3; k++ ){
   		ncells[k] = (int)(lbox[k]/(cf + skin));
 		if ( ncells[k] < 3 )
@@ -52,6 +53,12 @@ unsigned int ncells[3]; double lcells[3];
 	_build_cell_list(cell_list, r, lbox, ncells, lcells, npart);
 	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, MAX_NNEIGHB);
 
+	for ( unsigned n=0; n<npart; n++ ){
+		for ( unsigned k=0; k<3; k++ ){
+			unsigned idx = k*npart + n;  
+			r0[idx] = r[idx];
+		}
+	}
 
 	free(cell_list);
 }

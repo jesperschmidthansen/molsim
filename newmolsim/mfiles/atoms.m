@@ -37,11 +37,11 @@ classdef atoms < handle
 				this.r = [x', y', z']; this.v = [vx', vy', vz']; this.f = zeros(natoms, 3);
 				this.lbox = [Lx, Ly, Lz]; 
 				this.natoms = natoms; 
+				
 				this.boxcross = int32(zeros(natoms, 3));
 				this.update_nblist = true;
-
+				this.r0 = [x', y', z'];
 				this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
-
 
       		endif
 
@@ -56,7 +56,17 @@ classdef atoms < handle
 			
 		end	
 
-	end
+		function maxdr2 = calcdr2(this)
+			
+			for k=1:3
+				rtrue(:,k) = this.r(:,k) + this.lbox(k).*this.boxcross(:,k);
+				dr2(:,k) = (rtrue(:,k)-this.r0(:,k)).^2;
+			end 
+
+			maxdr2 = max( sum(dr2') );	
+		end
+
+	endmethods
 
 end
 
