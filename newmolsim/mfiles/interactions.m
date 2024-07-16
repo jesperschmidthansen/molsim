@@ -16,9 +16,8 @@ classdef interactions < handle
 			this.neighb_updates = 0;
 		end
 
-
-		function epot = lj(this, atoms, ptypes, ljparams)
-			
+		function iteration_start(this, atoms)
+	
 			if this.first_call
 				atoms.f = zeros(atoms.natoms, 3);
 				dr2 = calcdr2(atoms.r, atoms.r0, atoms.boxcross, atoms.lbox, atoms.natoms);
@@ -29,6 +28,11 @@ classdef interactions < handle
 				this.first_call = false;
 				this.first_call_simulation = false;
 			end
+		end
+	
+		function epot = lj(this, atoms, ptypes, ljparams)
+					
+			this.iteration_start(atoms);
 
 			epot = lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
 
