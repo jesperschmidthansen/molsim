@@ -13,10 +13,10 @@ classdef integrator < handle
 
 		end
 
-		function ekin = step(this, atoms)
+		function ekin = step(this, atoms, interactions)
 							
 			ekin = leapfrog(atoms.v, atoms.r, atoms.f, atoms.boxcross, atoms.lbox, atoms.natoms, this.dt);					
-	
+			interactions.first_call = true;	
 		end
 
 	end
