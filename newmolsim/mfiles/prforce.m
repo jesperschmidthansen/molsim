@@ -1,5 +1,5 @@
 
-classdef interactions < handle
+classdef prforce < handle
 
 	properties 
 		first_call, first_call_simulation;
@@ -9,7 +9,7 @@ classdef interactions < handle
 
 	methods
 
-		function this = interactions(max_cutoff=2.5, skin=0.5)
+		function this = prforce(max_cutoff=2.5, skin=0.5)
 			this.first_call = true;
 			this.first_call_simulation = true; 
 			this.max_cutoff = max_cutoff; this.skin = skin;

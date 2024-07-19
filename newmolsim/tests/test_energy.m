@@ -7,15 +7,15 @@ niter = 1e4;
 
 p = atoms("start.xyz"); 
 intgr = integrator(); 
-inter = interactions();
+prfrc = prforce();
 
 ekin = zeros(1, niter); epot = zeros(1, niter);
 
 tic();
 for n=1:niter
 
-	epot(n) = inter.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
-	ekin(n) = intgr.step(p, inter);
+	epot(n) = prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
+	ekin(n) = intgr.step(p, prfrc);
 
 end
 
