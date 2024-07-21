@@ -10,6 +10,7 @@ intgr = integrator();
 prfrc = prforce();
 
 ekin = zeros(1, niter); epot = zeros(1, niter);
+p.m(1:2:end)=1.32;
 
 tic();
 for n=1:niter

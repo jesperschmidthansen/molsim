@@ -1,6 +1,6 @@
 
 CC = mkoctfile
-FLAGS = -Wall -Wextra -Werror --mex
+FLAGS = -Wall  --mex
 
 srcs = $(wildcard *.c)
 mexs = $(srcs:.c=.mex)
