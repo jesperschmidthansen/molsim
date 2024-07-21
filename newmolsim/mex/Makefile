@@ -1,19 +1,14 @@
 
-all=relaxtemp.mex lj.mex leapfrog.mex neighblist.mex calcdr2.mex
+CC = mkoctfile
+FLAGS = -Wall -Wextra -Werror --mex
 
-all: $(all)
+srcs = $(wildcard *.c)
+mexs = $(srcs:.c=.mex)
 
-calcdr2.mex: calcdr2.c
-	mkoctfile -Wall --mex calcdr2.c
+all: $(mexs)
 
-lj.mex: lj.c
-	mkoctfile -Wall --mex lj.c 
-
-leapfrog.mex: leapfrog.c
-	mkoctfile -Wall --mex leapfrog.c
-
-neighblist.mex: neighblist.c
-	mkoctfile -Wall --mex neighblist.c
+%.mex: %.c
+	$(CC) $(FLAGS) $< -o $@
 
 clean:
 	rm -f *.mex
