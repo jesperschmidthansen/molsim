@@ -1,5 +1,5 @@
 
-all=lj.mex leapfrog.mex neighblist.mex calcdr2.mex
+all=relaxtemp.mex lj.mex leapfrog.mex neighblist.mex calcdr2.mex
 
 all: $(all)
 
