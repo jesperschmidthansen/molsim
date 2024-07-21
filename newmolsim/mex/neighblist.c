@@ -14,7 +14,7 @@ else if  ( x < -0.5*y ) x += y;                  \
 }
 
 
-void _build_cell_list(int *list, double *pos, double *lbox, unsigned *nsubbox, double *lsubbox, unsigned npart);
+void _build_cell_list(int *list, double *pos, unsigned *nsubbox, double *lsubbox, unsigned npart);
 void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *nsubbox, double cf, double *lbox,  
 											double skin, unsigned npart, unsigned max_nneighb);
 
@@ -22,8 +22,10 @@ void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 	// Input check
-	if ( nrhs != 7 )
-		mexErrMsgTxt ("Input wrong");
+	if ( nlhs > 0 || nrhs != 7 ){
+		mexErrMsgTxt("Input error for neighblist");
+		plhs[0] = mxCreateDoubleScalar(0.0);
+	}
 
 	// Get the input variables	
 	int *neighb_list = (int *)mxGetPr(prhs[0]);
@@ -50,7 +52,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		exit(EXIT_FAILURE);
 	}
 
-	_build_cell_list(cell_list, r, lbox, ncells, lcells, npart);
+	_build_cell_list(cell_list, r, ncells, lcells, npart);
 	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, MAX_NNEIGHB);
 
 	for ( unsigned n=0; n<npart; n++ ){
@@ -64,7 +66,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 }
 
 
-void _build_cell_list(int *cell_list, double *pos, double *lbox, unsigned *nsubbox, double *lsubbox, unsigned npart){
+void _build_cell_list(int *cell_list, double *pos, unsigned *nsubbox, double *lsubbox, unsigned npart){
 
 	const unsigned nsubbox2 = nsubbox[0]*nsubbox[1]; 
 	const unsigned nsubbox3 = nsubbox2*nsubbox[2];
@@ -138,18 +140,18 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 					for ( unsigned offset = 0; offset < 14; offset++ ) { 
 
 						int m2X = m1X + iofX[offset];    
-						if ( m2X == nsubbox[0] ) m2X = 0;    
+						if ( m2X == (int)nsubbox[0] ) m2X = 0;    
 						else if ( m2X == -1 ) m2X = nsubbox[0]-1;    
 
 						int m2Y = m1Y + iofY[offset];    
-						if ( m2Y == nsubbox[1] )  m2Y = 0;    
+						if ( m2Y == (int)nsubbox[1] )  m2Y = 0;    
 						else if ( m2Y == -1 ) m2Y = nsubbox[1]-1;    
 
 						int m2Z = m1Z + iofZ[offset];    
-						if ( m2Z == nsubbox[2] ) m2Z = 0;    
+						if ( m2Z == (int)nsubbox[2] ) m2Z = 0;    
 
 						// Neighb. cell index
-						int m2 = m2Z*nsubbox2 + m2Y*nsubbox[0] + m2X;
+						unsigned m2 = m2Z*nsubbox2 + m2Y*nsubbox[0] + m2X;
 
 						// Head-index for nieghb. cell
 						int j2 = cell_list[m2];
@@ -170,7 +172,7 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 									index[j1]++;
 								}	  
 
-								if ( index[j1] == max_nneighb ){
+								if ( index[j1] == (int)max_nneighb ){
 									fprintf(stderr, "Found too many neighbours - Bailing out!");
 									exit(EXIT_FAILURE);
 								}

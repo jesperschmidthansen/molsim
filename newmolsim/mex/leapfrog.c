@@ -14,6 +14,10 @@ void _leapfrog(double *ekin, double *v, double *r, double *f, double *mass,
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	
+	if ( nlhs > 1 || nrhs != 8 )
+		mexErrMsgTxt("Input error for leapfleapfrog");
+
+
 	double *v = mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
 	double *f = mxGetPr(prhs[2]);

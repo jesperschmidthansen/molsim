@@ -1,9 +1,13 @@
 #include "mex.h"
 #include <math.h>
-#include <stdio.h>
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	
+	if ( nlhs > 0 || nrhs != 7 ){
+		mexErrMsgTxt("Input error for relaxtemp");
+		plhs[0] = mxCreateDoubleScalar(0.0);
+	}
+
 	double *v = mxGetPr(prhs[0]);
 	char ptype = (char)mxGetScalar(prhs[1]);
 	unsigned npart = (unsigned)mxGetScalar(prhs[2]); 

@@ -8,6 +8,12 @@ else if  ( x < -0.5*y ) x += y;                  \
 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
+
+		
+	if ( nlhs > 1 || nrhs != 5 ){
+		mexErrMsgTxt("Input error for calcdr2");
+	}
+
 	
 	double *r = mxGetPr(prhs[0]);
 	double *r0 = mxGetPr(prhs[1]);

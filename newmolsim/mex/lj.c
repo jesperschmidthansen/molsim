@@ -19,6 +19,9 @@ void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
+	if ( nlhs > 1 || (nrhs != 8 && nrhs != 4) )
+		mexErrMsgTxt("Input error for lj");
+
 	double epot = 0.0f;
 	
 	if ( nrhs == 8 ){
