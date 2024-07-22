@@ -2,7 +2,6 @@
 #include "mex.h"
 #include <math.h>
 #include <omp.h>
-#include <stdio.h>
 
 #define _Wrap( x, y )                          \
 {                                                \

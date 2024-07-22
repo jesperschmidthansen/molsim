@@ -5,15 +5,24 @@ classdef prforce < handle
 		first_call, first_call_simulation;
 		max_cutoff, skin;
 		neighb_updates;
+		nthreads;
 	endproperties
 
 	methods
 
-		function this = prforce(max_cutoff=2.5, skin=0.5)
+		function this = prforce(max_cutoff=2.5, skin=0.5, nthreads=4)
 			this.first_call = true;
 			this.first_call_simulation = true; 
 			this.max_cutoff = max_cutoff; this.skin = skin;
 			this.neighb_updates = 0;
+			this.nthreads = nthreads;
+		
+			setomp(this.ntreads);
+		end
+
+		function setomp(this, ntreads)
+			this.nthreads = nthreads;
+			setomp(this.nthreads);
 		end
 
 		function iteration_start(this, atoms)
