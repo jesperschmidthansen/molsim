@@ -1,30 +1,34 @@
 
-clear all;
+function test_1()
+	 
+	addpath("../mfiles/"); addpath("../mex/");
 
-addpath("../mfiles/"); addpath("../mex/");
+	T0 = 1.42;
+	niter = 2e3;
 
-niter = 1e3;
+	p = atoms("start.xyz"); 
+	intgr = integrator(); 
+	prfrc = prforce();
+	thmstat = thermostat(p, T0);
 
-p = atoms("start.xyz"); 
-intgr = integrator(); 
-prfrc = prforce();
-thmstat = thermostat(p, 1.0, 'A', 1e-2);
- 
-ekin = zeros(1, niter); epot = zeros(1, niter);
-tic();
-for n=1:niter
+	p.m(1:2:end)=2.0;
 
-	epot(n) = prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
-	thmstat.relaxtemp(p);
-	ekin(n) = intgr.step(p, prfrc);
+	ekin = zeros(niter,1); 
+	for n=1:niter
+
+		prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
+		thmstat.relaxtemp(p);
+		ekin(n) = intgr.step(p, prfrc);
+
+	end
+
+	T = 2/3*mean(ekin(end-100:end))./p.natoms; 
+
+	index = [1:n];
+	plot(index, ekin./p.natoms, ";ekin;")
+	print("test_1.pdf", '-dpdf');
+
+	printf("test_1 output:\n");
+	printf("Ekin: %.3f +/- %.3f  Norm. mean temperature %f\n", mean(ekin)./p.natoms, std(ekin)./p.natoms, T/T0);
 
 end
-
-
-t = toc(); sps = n/t;
-printf("%f\n", sps);
-
-ekin = ekin./p.natoms; epot = epot./p.natoms;
-index = [1:n];
-plot(index, ekin, ";ekin;", index, epot, ";epot;", index, epot+ekin, ";etot;")
-
