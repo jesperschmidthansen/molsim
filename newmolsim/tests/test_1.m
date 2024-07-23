@@ -15,11 +15,9 @@ function test_1()
 
 	ekin = zeros(niter,1); 
 	for n=1:niter
-
 		prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
 		thmstat.relaxtemp(p);
 		ekin(n) = intgr.step(p, prfrc);
-
 	end
 
 	T = 2/3*mean(ekin(end-100:end))./p.natoms; 

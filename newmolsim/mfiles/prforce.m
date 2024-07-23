@@ -17,7 +17,7 @@ classdef prforce < handle
 			this.neighb_updates = 0;
 			this.nthreads = nthreads;
 		
-			setomp(this.ntreads);
+			setomp(this.nthreads);
 		end
 
 		function setomp(this, ntreads)
