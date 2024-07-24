@@ -44,7 +44,7 @@ classdef atoms < handle
 					
 					this.boxcross = int32(zeros(natoms, 3));
 					this.update_nblist = true;
-					this.r0 = [x', y', z'];
+					this.r0 = [x', y', z']; this.rl = [x', y', z'];
 					this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
 				elseif strcmp(format, "mat")
 					load(filename);					
@@ -91,6 +91,12 @@ classdef atoms < handle
 				error("Format not supported");
 			end
 				
+		endfunction
+
+		function tether(this, ptype, kspring)
+				
+			tether(this.f, this.r, this.rl, ptype, this.t, kspring, this.lbox, this.natoms);
+			
 		endfunction
 
 	endmethods
