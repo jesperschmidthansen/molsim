@@ -26,5 +26,12 @@ function test_3()
 	end
 
 	p.save("tether.xyz");
-	
+
+	plot3(p.r(1:500,1), p.r(1:500,2), p.r(1:500,3), 'o', 'markerfacecolor', 'red');
+	hold on
+	plot3(p.r(501:end,1), p.r(501:end,2), p.r(501:end,3), 'o', 'markerfacecolor', 'blue');
+	hold off
+	view([0,0,0]);
+	print("test_3.pdf", '-dpdf');
+
 end
