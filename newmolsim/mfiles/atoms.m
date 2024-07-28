@@ -99,6 +99,12 @@ classdef atoms < handle
 			
 		endfunction
 
+		function mvlattice(this, ptype, dr)
+			
+			mvlattice(this.rl, ptype, dr, this.t, this.lbox, this.natoms); 
+			
+		endfunction
+
 	endmethods
 
 end

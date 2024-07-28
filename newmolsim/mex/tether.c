@@ -21,15 +21,15 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	double *f = mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
 	double *rl = mxGetPr(prhs[2]);
-	char *ptypes = (char *)mxGetData(prhs[3]);
-	char *type = (char*)mxGetData(prhs[4]);
+	char *ptype = (char *)mxGetData(prhs[3]);
+	char *types = (char*)mxGetData(prhs[4]);
 	double kspring = mxGetScalar(prhs[5]);
 	double *lbox = mxGetPr(prhs[6]);
 	unsigned int npart = (unsigned int)mxGetScalar(prhs[7]);
 
 	double dr[3];	
 	for ( unsigned n=0; n<npart; n++ ){
-		if ( type[n] == ptypes[0] ){
+		if ( types[n] == ptype[0] ){
       		for ( unsigned k=0; k<3; k++ ){
 				unsigned idx = k*npart + n;
 				dr[k] = rl[idx] - r[idx];
