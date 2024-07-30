@@ -95,13 +95,13 @@ classdef atoms < handle
 
 		function tether(this, ptype, kspring)
 				
-			tether(this.f, this.r, this.rl, ptype, this.t, kspring, this.lbox, this.natoms);
+			ms_tether(this.f, this.r, this.rl, ptype, this.t, kspring, this.lbox, this.natoms);
 			
 		endfunction
 
 		function mvlattice(this, ptype, dr)
 			
-			mvlattice(this.rl, ptype, dr, this.t, this.lbox, this.natoms); 
+			ms_mvlattice(this.rl, ptype, dr, this.t, this.lbox, this.natoms); 
 			
 		endfunction
 

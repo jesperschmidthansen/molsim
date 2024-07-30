@@ -23,7 +23,7 @@ classdef thermostat < handle
 		end
 
 		function relaxtemp(this, atoms)
-			relaxtemp(atoms.v, this.ptype, atoms.natoms, atoms.t, atoms.m, this.tau, this.temperature);
+			ms_relaxtemp(atoms.v, this.ptype, atoms.natoms, atoms.t, atoms.m, this.tau, this.temperature);
 		end
 
 	end

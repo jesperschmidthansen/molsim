@@ -11,7 +11,7 @@ function test_2()
 		intgr = integrator(); 
 		prfrc = prforce(); 
 		 
-		setomp(nthreads);
+		ms_setomp(nthreads);
 
 		tic();
 		for n=1:niter

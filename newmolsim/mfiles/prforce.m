@@ -17,21 +17,21 @@ classdef prforce < handle
 			this.neighb_updates = 0;
 			this.nthreads = nthreads;
 		
-			setomp(this.nthreads);
+			ms_setomp(this.nthreads);
 		end
 
 		function setomp(this, ntreads)
 			this.nthreads = nthreads;
-			setomp(this.nthreads);
+			ms_setomp(this.nthreads);
 		end
 
 		function iteration_start(this, atoms)
 	
 			if this.first_call
 				atoms.f = zeros(atoms.natoms, 3);
-				dr2 = calcdr2(atoms.r, atoms.r0, atoms.boxcross, atoms.lbox, atoms.natoms);
+				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.boxcross, atoms.lbox, atoms.natoms);
 				if this.first_call_simulation || dr2 > this.skin*this.skin 
-					neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, this.skin, atoms.natoms);
+					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, this.skin, atoms.natoms);
 					this.neighb_updates ++;
 				end
 				this.first_call = false;
@@ -43,7 +43,7 @@ classdef prforce < handle
 					
 			this.iteration_start(atoms);
 
-			epot = lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
+			epot = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
 
 		end	
 
