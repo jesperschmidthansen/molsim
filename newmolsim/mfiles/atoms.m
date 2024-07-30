@@ -105,6 +105,30 @@ classdef atoms < handle
 			
 		endfunction
 
+		function mom = momentum(this)
+			for k=1:3; mom(k) = sum(this.v(:,k).*this.m); endfor 
+		endfunction
+	
+		function setvelocities(this, temperature)
+			
+			this.v = randn(this.natoms, 3);
+		
+			ekin = 0.0;
+			for k=1:3
+				ekin = ekin + 0.5*(this.m'.*this.v(:,k)')*this.v(:,k);
+			end
+
+			temp = 2/3*ekin/this.natoms;			
+			scale = sqrt(temperature/temp); 
+			this.v = this.v*scale;
+			
+			mom = this.momentum();
+			for k=1:3
+				this.v(:,k) = this.v(:,k) - mom(k);
+			end
+	
+		end
+
 	endmethods
 
 end
