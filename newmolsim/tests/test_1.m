@@ -12,14 +12,14 @@ function test_1()
 	thmstat = thermostat(p, T0);
 
 	p.m(1:2:end)=2.0;
-	p.setvelocities(T0);
+	p.setvels(T0);
 
 	ekin = zeros(niter,1); momentum = zeros(niter, 3); 
 	for n=1:niter
 		prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
 		thmstat.relaxtemp(p);
 		ekin(n) = intgr.step(p, prfrc);
-		momentum(n, :) = p.momentum();
+		momentum(n,:) = p.getmom();
 	end
 
 	T = 2/3*mean(ekin(end-100:end))./p.natoms; 

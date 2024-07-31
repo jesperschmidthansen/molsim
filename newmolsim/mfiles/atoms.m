@@ -11,7 +11,7 @@ classdef atoms < handle
 	end
 
 	methods
-		
+	
 		function this = atoms(filename)
 
 			if ( nargin == 0 )
@@ -58,6 +58,8 @@ classdef atoms < handle
 				else
 					error("Format not supported");
 				end
+
+				this.resetmom();
       		endif
 
 		endfunction	
@@ -104,12 +106,21 @@ classdef atoms < handle
 			ms_mvlattice(this.rl, ptype, dr, this.t, this.lbox, this.natoms); 
 			
 		endfunction
-
-		function mom = momentum(this)
-			for k=1:3; mom(k) = sum(this.v(:,k).*this.m); endfor 
+	
+		function mom = getmom(this)
+			
+			for k=1:3; mom(k) = sum(this.v(:,k).*this.m); end
+		
 		endfunction
 	
-		function setvelocities(this, temperature)
+		function resetmom(this)
+
+			mom = this.getmom()./sum(this.m);
+			for k=1:3; this.v(:,k) = this.v(:,k) - mom(k); end
+
+		endfunction
+
+		function setvels(this, temperature)
 			
 			this.v = randn(this.natoms, 3);
 		
@@ -122,10 +133,7 @@ classdef atoms < handle
 			scale = sqrt(temperature/temp); 
 			this.v = this.v*scale;
 			
-			mom = this.momentum();
-			for k=1:3
-				this.v(:,k) = this.v(:,k) - mom(k);
-			end
+			this.resetmom();
 	
 		end
 
