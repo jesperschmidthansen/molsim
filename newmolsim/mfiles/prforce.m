@@ -39,11 +39,11 @@ classdef prforce < handle
 			end
 		end
 	
-		function epot = lj(this, atoms, ptypes, ljparams)
+		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
 					
 			this.iteration_start(atoms);
 
-			epot = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
+			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
 
 		end	
 

@@ -8,15 +8,14 @@
  }
 
 
-void _leapfrog(double *ekin, double *v, double *r, double *f, double *mass, 
+void _leapfrog(double *ekin, double *Pkin, double *v, double *r, double *f, double *mass, 
 		int *cross, const double lbox[3], const unsigned npart, const double dt);
 	
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	
-	if ( nlhs > 1 || nrhs != 8 )
-		mexErrMsgTxt("Input error for leapfleapfrog");
-
+	if ( nlhs > 2 || nrhs != 8 )
+		mexErrMsgTxt("Input error for leapfrog");
 
 	double *v = mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
@@ -28,17 +27,20 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	double dt = mxGetScalar(prhs[7]);
 
 	double ekin = 0.0f;
+	plhs[1] = mxCreateDoubleMatrix(3,3, mxREAL);
+	double *ptr = (double *)mxGetPr(plhs[1]);
 
-	_leapfrog(&ekin, v, r, f, m, cross, lbox, npart, dt);
+	_leapfrog(&ekin, ptr, v, r, f, m, cross, lbox, npart, dt);
 
 	plhs[0] = mxCreateDoubleScalar(ekin);
+	
 }
 
 
-void _leapfrog(double *ekin, double *v, double *r, double *f, double *mass, 
+void _leapfrog(double *ekin, double *Pkin, double *v, double *r, double *f, double *mass, 
 		int *cross, const double lbox[3], const unsigned npart, const double dt){
 	
-	int cross_idx[3];
+	int cross_idx[3]; double vhalf[3];
 	for ( unsigned n=0; n<npart; n++ ){
 		double invmass = 1.0/mass[n];
 		for ( int k=0; k<3; k++ ){
@@ -49,9 +51,14 @@ void _leapfrog(double *ekin, double *v, double *r, double *f, double *mass,
 		   	_Periodic(cross_idx[k], r[idx], lbox[k]); 
 			cross[idx] += cross_idx[k];
 
-     	 	double vhalf = v[idx] - 0.5*f[idx]*dt;
-      		*ekin = *ekin + 0.5*vhalf*vhalf*mass[n];
+     	 	vhalf[k] = v[idx] - 0.5*f[idx]*dt;
+      		*ekin = *ekin + 0.5*vhalf[k]*vhalf[k]*mass[n];
     	}
+		
+		for ( int k=0; k<3; k++ )
+		for ( int kk=0; kk<3; kk++ ) 
+			Pkin[3*k+kk] += vhalf[k]*vhalf[kk]*mass[n];
+
 	}
 
 }

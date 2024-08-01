@@ -18,7 +18,7 @@ void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 1 || (nrhs != 8 && nrhs != 4) )
+	if ( nlhs > 2 || (nrhs != 8 && nrhs != 4) )
 		mexErrMsgTxt("Input error for lj");
 
 	double epot = 0.0f;
@@ -32,10 +32,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		int *neighb_list = (int*)mxGetData(prhs[5]);
 		double *lbox = mxGetPr(prhs[6]);
 		unsigned int npart = (unsigned int)mxGetScalar(prhs[7]);
-
-		double pressure[9] = {0.0f};
 		
-		_lj_neighb(&epot, f, pressure, r, ptypes, params, lbox, types, neighb_list, npart);
+		plhs[1] = mxCreateDoubleMatrix(3,3, mxREAL);
+		double *ptr = (double *)mxGetPr(plhs[1]);
+		_lj_neighb(&epot, f, ptr, r, ptypes, params, lbox, types, neighb_list, npart);
+		plhs[0] = mxCreateDoubleScalar(epot);
 	}
 	else if ( nrhs == 4 ){
 		double *f = mxGetPr(prhs[0]);
@@ -44,9 +45,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		unsigned int npart = (unsigned int)mxGetScalar(prhs[3]);
 
 		_lj_brute(&epot, f, r, 2.5, lbox, npart);
+		plhs[0] = mxCreateDoubleScalar(epot);
 	}
 
-	plhs[0] = mxCreateDoubleScalar(epot);
 }
 
 
