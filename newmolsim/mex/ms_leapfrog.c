@@ -29,6 +29,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	double ekin = 0.0f;
 	plhs[1] = mxCreateDoubleMatrix(3,3, mxREAL);
 	double *ptr = (double *)mxGetPr(plhs[1]);
+	for ( int k=0; k<3; k++)
+			for ( int kk=0; kk<3; kk++ ) ptr[k*3+kk] = 0.0; 
 
 	_leapfrog(&ekin, ptr, v, r, f, m, cross, lbox, npart, dt);
 
@@ -56,8 +58,8 @@ void _leapfrog(double *ekin, double *Pkin, double *v, double *r, double *f, doub
     	}
 		
 		for ( int k=0; k<3; k++ )
-		for ( int kk=0; kk<3; kk++ ) 
-			Pkin[3*k+kk] += vhalf[k]*vhalf[kk]*mass[n];
+			for ( int kk=0; kk<3; kk++ ) 
+				Pkin[3*k+kk] += vhalf[k]*vhalf[kk]*mass[n];
 
 	}
 

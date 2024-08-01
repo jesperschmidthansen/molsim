@@ -13,7 +13,7 @@ classdef integrator < handle
 
 		end
 
-		function ekin = step(this, atoms, interactions)
+		function [ekin Pkin]= step(this, atoms, interactions)
 							
 			[ekin Pkin] = ms_leapfrog(atoms.v, atoms.r, atoms.f, atoms.m, atoms.boxcross, atoms.lbox, atoms.natoms, this.dt);					
 			interactions.first_call = true;	

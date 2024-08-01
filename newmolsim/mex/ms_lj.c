@@ -35,7 +35,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		
 		plhs[1] = mxCreateDoubleMatrix(3,3, mxREAL);
 		double *ptr = (double *)mxGetPr(plhs[1]);
+		for ( int k=0; k<3; k++)
+			for ( int kk=0; kk<3; kk++ ) ptr[k*3+kk]=0.0; 
 		_lj_neighb(&epot, f, ptr, r, ptypes, params, lbox, types, neighb_list, npart);
+
 		plhs[0] = mxCreateDoubleScalar(epot);
 	}
 	else if ( nrhs == 4 ){

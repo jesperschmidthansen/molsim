@@ -134,8 +134,11 @@ classdef atoms < handle
 			this.v = this.v*scale;
 			
 			this.resetmom();
-	
-		end
+		endfunction
+		
+		function vol = volume(this)
+			vol = this.lbox(1)*this.lbox(2)*this.lbox(3);
+		endfunction
 
 	endmethods
 
