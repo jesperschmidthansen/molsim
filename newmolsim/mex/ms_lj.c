@@ -39,6 +39,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 			for ( int kk=0; kk<3; kk++ ) ptr[k*3+kk]=0.0; 
 		_lj_neighb(&epot, f, ptr, r, ptypes, params, lbox, types, neighb_list, npart);
 
+		const double ivol = 1.0/(lbox[0]*lbox[1]*lbox[2]);
+		for ( int k=0; k<3; k++)
+			for ( int kk=0; kk<3; kk++ ) ptr[k*3+kk] = ptr[k*3+kk]*ivol; 
+
 		plhs[0] = mxCreateDoubleScalar(epot);
 	}
 	else if ( nrhs == 4 ){
