@@ -28,6 +28,6 @@ function test_2()
 		printf("Num threads: %d -> Steps per second: %.0f  \n", n, sps(n));
 	end
 
-	plot(1:8, sps, '-o;sps;');
-	print("test_2.pdf", '-dpdf');
+	plot(1:8, sps, '-o;sps;');	print("test_2.pdf", '-dpdf');
+
 endfunction

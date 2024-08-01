@@ -36,5 +36,4 @@ function test_1()
 	printf("Ekin: %.3f +/- %.3f  Norm. mean temperature %f\n", mean(ekin)./p.natoms, std(ekin)./p.natoms, T/T0);
 	printf("Av. normal press: %.3f  \n", (P(1,1)+P(2,2)+P(3,3))/3);
 
-
 end
