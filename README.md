@@ -62,7 +62,7 @@ for n=1:nloops
   molsim('calcforce', 'angle', 0, angle, kangle);
   
   molsim('integrate', 'leapfrog');
-endfor
+end
 
 molsim('clear');
 ```
