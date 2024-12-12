@@ -140,6 +140,24 @@ classdef atoms < handle
 			vol = this.lbox(1)*this.lbox(2)*this.lbox(3);
 		endfunction
 
+		function lbox = getlbox(this)
+			lbox = this.lbox;
+		end
+
+		function dist = getdist(this, i, j)
+			
+			dr = this.r(i,:)-this.r(j,:);
+			for k=1:3
+				if dr(k) > 0.5*this.lbox(k)
+					dr(k) = dr(k) - this.lbox(k);
+				elseif dr(k) < -0.5*this.lbox(k)
+					dr(k) = dr(k) + this.lbox(k);
+ 				end
+			end
+
+			dist = sqrt(dot(dr,dr));
+		end
+
 	endmethods
 
 end
