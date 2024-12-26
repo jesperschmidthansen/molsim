@@ -77,13 +77,14 @@ I encourage anyone who uses or plans to use molsim to submit problematic issues 
 
 <h2>To-do</h2>
 Octave now supports object oriented programming. molsim is under complete reconstructed to benefit from this, see folder newmolsim. Matlab compability
-might be relaxed.
+is relaxed.
 
 - [ ] Feature: Molecular force fields
 - [ ] Feature: Barostate
 - [ ] Feature: Standard run time sample classes
-- [ ] Revision: endX -> end
-- [ ] Revision: Class access. Should these be different from public?
+- [ ] Feature: Electrostatics
+- [X] Revision: endX -> end
+- [ ] Revision: Class properties access. Should these be different from public?
 - [ ] Test/examples: Example folder with different scripts
 
 
