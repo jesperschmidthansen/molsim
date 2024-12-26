@@ -31,4 +31,4 @@ function test_0()
 	printf("Momentum: %e %e %e\n", mom(1), mom(2), mom(3));
 	printf("Steps per build  %.3f\n", spnb);
 
-endfunction
+end

@@ -6,7 +6,7 @@ classdef prforce < handle
 		max_cutoff, skin;
 		neighb_updates;
 		nthreads;
-	endproperties
+	end
 
 	methods
 
@@ -47,7 +47,7 @@ classdef prforce < handle
 
 		end	
 
-	endmethods 
+	end 
 
 
 end

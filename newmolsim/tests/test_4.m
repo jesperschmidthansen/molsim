@@ -32,4 +32,4 @@ function test_4()
 	loglog(natoms, sps, '-o', 'linewidth', 2);
 	print("test_4.pdf", '-dpdf');
 
-endfunction
+end

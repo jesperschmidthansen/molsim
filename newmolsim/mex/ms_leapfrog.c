@@ -1,12 +1,5 @@
 #include "mex.h"
-
-#define _Periodic( cross, x, y )                  \
- {                                                \
- 	cross = 0;                                    \
-	if ( x > y ) { x -= y; cross = 1; }           \
- 	else if  ( x < 0.0f ) { x += y; cross = -1;}  \
- }
-
+#include "ms_misc.h"
 
 void _leapfrog(double *ekin, double *Pkin, double *v, double *r, double *f, double *mass, 
 		int *cross, const double lbox[3], const unsigned npart, const double dt);

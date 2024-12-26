@@ -36,6 +36,6 @@ function dist = test_5()
 	printf("Etot: %1.3e +/- %1.3e   ", mean(etot), std(etot));
 	printf("Momentum: %e %e %e\n", mom(1), mom(2), mom(3));
 	printf("Steps per build  %.3f\n", spnb);
-	printf("Av. bond length %.3f\n", mean(dist));
+	printf("Av. bond length %.3f, eq. bond length set to %.3f \n", mean(dist), b.l0(1));
 
-endfunction
+end

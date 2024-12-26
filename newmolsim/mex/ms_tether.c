@@ -2,13 +2,7 @@
 #include "mex.h"
 #include <math.h>
 
-#define _Wrap( x, y )                          \
-{                                                \
-if ( x > 0.5*y ) x -= y;                         \
-else if  ( x < -0.5*y ) x += y;                  \
-}
-
-
+#include "ms_misc.h"
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 

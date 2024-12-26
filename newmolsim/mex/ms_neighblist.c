@@ -5,14 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_NNEIGHB 500
-
-#define _Wrap( x, y )                          \
-{                                                \
-if ( x > 0.5*y ) x -= y;                         \
-else if  ( x < -0.5*y ) x += y;                  \
-}
-
+#include "ms_misc.h"
 
 void _build_cell_list(int *list, double *pos, unsigned *nsubbox, double *lsubbox, unsigned npart);
 void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *nsubbox, double cf, double *lbox,  

@@ -33,7 +33,7 @@ classdef atoms < handle
 					for n=1:natoms
 						[t(n), x(n), y(n), z(n), vx(n), vy(n), vz(n), m(n), q(n)] = ...
 													  fscanf(fptr, "%c %f %f %f %f %f %f %f %f\n", "C");
-					endfor 	
+					end 	
 		
 					fclose(fptr);
 				
@@ -60,9 +60,9 @@ classdef atoms < handle
 				end
 
 				this.resetmom();
-      		endif
+      		end
 
-		endfunction	
+		end	
 	
 		function save(this, filename, write_opt="w")
 	
@@ -81,7 +81,7 @@ classdef atoms < handle
 					fprintf(fptr, "%c %f %f %f %f %f %f %f %f\n", ...
 							this.t(n), this.r(n,1), this.r(n,2), this.r(n,3), ... 
 							this.v(n,1), this.v(n,2), this.v(n,3), this.m(n), this.q(n));
-				endfor 	
+				end 	
 	
 				fclose(fptr);
 			elseif strcmp(format, "mat")		
@@ -93,32 +93,32 @@ classdef atoms < handle
 				error("Format not supported");
 			end
 				
-		endfunction
+		end
 
 		function tether(this, ptype, kspring)
 				
 			ms_tether(this.f, this.r, this.rl, ptype, this.t, kspring, this.lbox, this.natoms);
 			
-		endfunction
+		end
 
 		function mvlattice(this, ptype, dr)
 			
 			ms_mvlattice(this.rl, ptype, dr, this.t, this.lbox, this.natoms); 
 			
-		endfunction
+		end
 	
 		function mom = getmom(this)
 			
 			for k=1:3; mom(k) = sum(this.v(:,k).*this.m); end
 		
-		endfunction
+		end
 	
 		function resetmom(this)
 
 			mom = this.getmom()./sum(this.m);
 			for k=1:3; this.v(:,k) = this.v(:,k) - mom(k); end
 
-		endfunction
+		end
 
 		function setvels(this, temperature)
 			
@@ -134,11 +134,11 @@ classdef atoms < handle
 			this.v = this.v*scale;
 			
 			this.resetmom();
-		endfunction
+		end
 		
 		function vol = volume(this)
 			vol = this.lbox(1)*this.lbox(2)*this.lbox(3);
-		endfunction
+		end
 
 		function lbox = getlbox(this)
 			lbox = this.lbox;
@@ -158,7 +158,7 @@ classdef atoms < handle
 			dist = sqrt(dot(dr,dr));
 		end
 
-	endmethods
+	end
 
 end
 

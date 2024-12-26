@@ -2,15 +2,7 @@
 #include "mex.h"
 #include <math.h>
 
-
-#define _Periodic( x, y )              \
- {                                     \
-	if ( x > y ) { x -= y; }           \
- 	else if  ( x < 0.0f ) { x += y; }  \
- }
-
-
-
+#include "ms_misc.h"
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
@@ -31,7 +23,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
       		for ( unsigned k=0; k<3; k++ ){
 				unsigned idx = k*npart + n;
 				rl[idx] = rl[idx] + dr[k];
-				_Periodic( rl[idx], lbox[k] );
+				_Periodic0( rl[idx], lbox[k] );
       		}
     	}
 	}

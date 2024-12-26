@@ -3,13 +3,7 @@
 #include <math.h>
 #include <omp.h>
 
-#define _Wrap( x, y )                          \
-{                                                \
-if ( x > 0.5*y ) x -= y;                         \
-else if  ( x < -0.5*y ) x += y;                  \
-}
-
-
+#include "ms_misc.h"
 
 void _lj_brute(double *epot, double *f, double *r, const double cf, const double lbox[3], const unsigned npart);
 void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, const char *ptypes, const double *param, 
@@ -37,7 +31,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		double *ptr = (double *)mxGetPr(plhs[1]);
 		for ( int k=0; k<3; k++)
 			for ( int kk=0; kk<3; kk++ ) ptr[k*3+kk]=0.0; 
-		_lj_neighb(&epot, f, ptr, r, ptypes, params, lbox, types, neighb_list, npart);
+				_lj_neighb(&epot, f, ptr, r, ptypes, params, lbox, types, neighb_list, npart);
 
 		const double ivol = 1.0/(lbox[0]*lbox[1]*lbox[2]);
 		for ( int k=0; k<3; k++)

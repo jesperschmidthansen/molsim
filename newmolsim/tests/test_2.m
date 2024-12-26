@@ -30,4 +30,4 @@ function test_2()
 
 	plot(1:8, sps, '-o;sps;');	print("test_2.pdf", '-dpdf');
 
-endfunction
+end
