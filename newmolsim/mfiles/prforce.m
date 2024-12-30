@@ -31,7 +31,8 @@ classdef prforce < handle
 				atoms.f = zeros(atoms.natoms, 3);
 				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.boxcross, atoms.lbox, atoms.natoms);
 				if this.first_call_simulation || dr2 > this.skin*this.skin 
-					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, this.skin, atoms.natoms);
+					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, 
+										this.skin, atoms.natoms, atoms.exclude);
 					this.neighb_updates ++;
 				end
 				this.first_call = false;

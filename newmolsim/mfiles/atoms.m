@@ -2,11 +2,18 @@
 classdef atoms < handle
 
 	properties (Access=public)
+		# Atom properties
 		r, v, f;
 		m, q, t; 
+		# Neighbourlist etc
 		nblist, max_nnb, update_nblist;
-		boxcross, r0;
-		rl;
+		# Simulation box crossing
+		boxcross;
+		# Initial and last positions
+		r0; rl;
+		# Pair interaction exclusion list
+		exclude, max_exclude;
+		# Number of atoms and simulation box length 
 		natoms,	lbox;
 	end
 
@@ -45,7 +52,10 @@ classdef atoms < handle
 					this.boxcross = int32(zeros(natoms, 3));
 					this.update_nblist = true;
 					this.r0 = [x', y', z']; this.rl = [x', y', z'];
+
 					this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
+					this.max_exclude = 5; this.exclude = -1*int32(ones(natoms, this.max_exclude));
+
 				elseif strcmp(format, "mat")
 					load(filename);					
 					this.r=r; this.v=v; this.f=f; this.m=m; this.q=q; this.t=t; 
@@ -54,7 +64,9 @@ classdef atoms < handle
 					this.boxcross = int32(zeros(natoms, 3));
 					this.update_nblist = true;
 					this.r0 = r; #[x', y', z'];
+				
 					this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
+					this.max_exclude = 5; this.exclude = -1*int32(ones(natoms, this.max_exclude));
 				else
 					error("Format not supported");
 				end
@@ -85,8 +97,8 @@ classdef atoms < handle
 	
 				fclose(fptr);
 			elseif strcmp(format, "mat")		
-				r=this.r; v=this.v; f=this.f; m=this.m; q=this.q; t=this.t; 
-				rl = this.rl; natoms=this.natoms;	lbox=this.lbox;
+				r = this.r; v = this.v; f = this.f; m = this.m; q = this.q; t = this.t; 
+				rl = this.rl; natoms=this.natoms; lbox=this.lbox;
 				
 				save(filename, "r", "v", "f", "m", "q", "t", "rl", "natoms", "lbox");	
 			else

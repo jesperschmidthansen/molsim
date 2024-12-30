@@ -3,19 +3,21 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "ms_misc.h"
 
 void _build_cell_list(int *list, double *pos, unsigned *nsubbox, double *lsubbox, unsigned npart);
 void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *nsubbox, double cf, double *lbox,  
-											double skin, unsigned npart, unsigned max_nneighb);
+											double skin, unsigned npart, unsigned max_nneighb, int *exclusion_list, unsigned max_exclusion);
+bool _check_exclusion(int *exclusion_list, int idx_0, int idx_1, unsigned npart, unsigned max_exclusion);
 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 	// Input check
-	if ( nlhs > 0 || nrhs != 7 ){
+	if ( nlhs > 0 || nrhs != 8 ){
 		mexErrMsgTxt("Input error for neighblist");
 		plhs[0] = mxCreateDoubleScalar(0.0);
 	}
@@ -28,6 +30,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	double cf = mxGetScalar(prhs[4]);
 	double skin = mxGetScalar(prhs[5]);
 	unsigned int npart = (unsigned int)mxGetScalar(prhs[6]);
+	int *exclusion_list = (int *)mxGetPr(prhs[7]);
 
 	// Calculate the cell grid
 	unsigned int ncells[3]; double lcells[3];
@@ -46,7 +49,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	}
 
 	_build_cell_list(cell_list, r, ncells, lcells, npart);
-	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, MAX_NNEIGHB);
+	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, MAX_NNEIGHB, exclusion_list, MAX_EXCLUSIONS);
 
 	for ( unsigned n=0; n<npart; n++ ){
 		for ( unsigned k=0; k<3; k++ ){
@@ -84,7 +87,7 @@ void _build_cell_list(int *cell_list, double *pos, unsigned *nsubbox, double *ls
 
 
 void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned *nsubbox, double cf, double *lbox,  
-											double skin, unsigned npart, unsigned max_nneighb){
+											double skin, unsigned npart, unsigned max_nneighb, int *exclusion_list, unsigned max_exclusion){
 	
 	const int iofX[] = {0,1,1,0,-1,0,1,1,0,-1,-1,-1, 0, 1}; 
 	const int iofY[] = {0,0,1,1, 1,0,0,1,1, 1, 0,-1,-1,-1};
@@ -148,29 +151,30 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 
 						// Head-index for nieghb. cell
 						int j2 = cell_list[m2];
-
+					
 						// Loop over particles in neighb. cell
 						while ( j2 != -1 ) {
 
-							if ( m1 != m2 || j2 > j1 ) {
-								double dr2 = 0.0f;
-								for ( int k = 0; k<3; k++ ){
-									double dr = pos[k*npart + j1] - pos[k*npart + j2];
-									_Wrap( dr, lbox[k] );
-									dr2 += dr*dr;
-								}
+							if ( !_check_exclusion(exclusion_list, j1, j2, npart, max_exclusion) ){
+								if ( m1 != m2 || j2 > j1 ) {
+									double dr2 = 0.0f;
+									for ( int k = 0; k<3; k++ ){
+										double dr = pos[k*npart + j1] - pos[k*npart + j2];
+										_Wrap( dr, lbox[k] );
+										dr2 += dr*dr;
+									}
 
-								if ( dr2 < cf2 ) {
-									neighb_list[index[j1]*npart + j1] = j2;
-									index[j1]++;
-								}	  
+									if ( dr2 < cf2 ) {
+										neighb_list[index[j1]*npart + j1] = j2;
+										index[j1]++;
+									}	  
 
-								if ( index[j1] == (int)max_nneighb ){
-									fprintf(stderr, "Found too many neighbours - Bailing out!");
-									exit(EXIT_FAILURE);
+									if ( index[j1] == (int)max_nneighb ){
+										fprintf(stderr, "Found too many neighbours - Bailing out!");
+										exit(EXIT_FAILURE);
+									}
 								}
-							}
-							
+							}		
 							// Get next particle in list for cell m2 
 							j2 =cell_list[j2+nsubbox3]; 
 						}
@@ -180,6 +184,21 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 
 	free(index);
 	free(icc);
+}
+
+bool _check_exclusion(int *exclusion_list, int idx_0, int idx_1, unsigned npart, unsigned max_exclusion){
+	
+	bool retval = false;
+	for ( unsigned n=0; n<max_exclusion; n++ ){ 
+
+		if ( exclusion_list[idx_0 + n*npart] == -1 ) 
+			break;	
+		else if ( exclusion_list[idx_0 + n*npart] == idx_1 + 1 ){
+			retval = true;  break;
+		}
+	}
+
+	return retval;
 }
 
 

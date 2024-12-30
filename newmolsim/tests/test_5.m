@@ -1,5 +1,5 @@
 
-function dist = test_5()
+function test_5()
 
 	addpath("../mfiles/"); addpath("../mex/");
 
@@ -14,8 +14,13 @@ function dist = test_5()
 	for n=1:nbonds
 		b.pidx(n, :) = [2*n-1, 2*n]; 
 	end
-	b.springs = 500*ones(nbonds,1); b.l0 = 1.3*ones(nbonds,1); 
-
+	b.springs = 500*ones(nbonds,1); b.l0 = 1.1*ones(nbonds,1); 
+	
+	for n=1:2:p.natoms-1
+		p.exclude(n,1) = n+1; 
+		p.exclude(n+1, 1) = n;
+	end	
+	
 	ekin = zeros(1, niter); epot = zeros(1, niter); dist = zeros(1, niter);
 	
 	p.resetmom();

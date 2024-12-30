@@ -2,6 +2,8 @@
 #define __MISC__
 
 #define MAX_NNEIGHB 500
+#define MAX_EXCLUSIONS 5
+
 
 
 #define _Wrap( x, y )	               \
