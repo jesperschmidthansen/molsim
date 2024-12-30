@@ -80,9 +80,9 @@ Octave now supports object oriented programming. molsim is under complete recons
 is relaxed.
 
 - [X] Feature: Bond potential
-- [ ] Feature: Angle potential
+- [X] Feature: Angle potential
 - [ ] Feature: Dihedral potential
-- [ ] Feature: Pair interaction exclusion list 
+- [X] Feature: Pair interaction exclusion list 
 - [ ] Feature: Barostate
 - [ ] Feature: Standard run time sample classes
 - [ ] Feature: Electrostatic interactions

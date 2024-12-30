@@ -159,15 +159,20 @@ classdef atoms < handle
 		function dist = getdist(this, i, j)
 			
 			dr = this.r(i,:)-this.r(j,:);
-			for k=1:3
-				if dr(k) > 0.5*this.lbox(k)
-					dr(k) = dr(k) - this.lbox(k);
-				elseif dr(k) < -0.5*this.lbox(k)
-					dr(k) = dr(k) + this.lbox(k);
- 				end
-			end
+			dr = wrap(dr, this.lbox);
 
 			dist = sqrt(dot(dr,dr));
+		end
+
+		function _angle = getangle(this, a, b, c)
+			
+			dr1 = wrap(this.r(b,:) - this.r(a,:), this.lbox);
+			dr2 = wrap(this.r(c,:) - this.r(b,:), this.lbox);			
+
+			c11 = dot(dr1, dr1); c12 = dot(dr1, dr2); c22 = dot(dr2, dr2);
+
+			_angle = pi - acos(c12/sqrt(c11*c22)); 
+
 		end
 
 	end

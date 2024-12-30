@@ -26,6 +26,7 @@
  	else if  ( x < 0.0f ) { x += y; cross = -1;}  \
 }
 
-
+#define _Dot3( c, a, b )  \
+	c = a[0]*b[0] + a[1]*b[1] + a[2]*b[2] 
 
 #endif
