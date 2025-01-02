@@ -2,8 +2,8 @@
 classdef angles < handle
 
 	properties (Access=public)
-		pidx;   # Array with particle indices
- 		atypes;  # Bond type 
+		pidx;        # Array with particle indices
+ 		atypes;      # Angle types 
 		springs, a0; # Spring constant and zero force lengtih
 		nangles; 
 	end

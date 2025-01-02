@@ -3,7 +3,7 @@
 
 #define MAX_NNEIGHB 500
 #define MAX_EXCLUSIONS 5
-
+#define DIHEDRAL_THRESHOLD 1.0e-4
 
 
 #define _Wrap( x, y )	               \

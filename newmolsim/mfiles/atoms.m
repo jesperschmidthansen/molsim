@@ -175,6 +175,22 @@ classdef atoms < handle
 
 		end
 
+		function dihedral = getdihedral(this, a, b, c, d)
+			dr1 = wrap(this.r(b,:) - this.r(a,:), this.lbox);
+			dr2 = wrap(this.r(c,:) - this.r(b,:), this.lbox);			
+			dr3 = wrap(this.r(d,:) - this.r(c,:), this.lbox);
+
+			c11 = dot(dr1, dr1); c12 = dot(dr1, dr2); c13 = dot(dr1, dr3);
+			c22 = dot(dr2, dr2); c23 = dot(dr2, dr3); c33 = dot(dr3, dr3);
+
+			cA = c13*c22 - c12*c23;
+			cB1 = c11*c22 - c12*c12;
+			cB2 = c22*c33 - c23*c23;
+				
+			cD = sqrt(cB1*cB2); cc = cA/cD;
+			
+			dihedral = pi - acos(cc);	
+		end
 	end
 
 end
