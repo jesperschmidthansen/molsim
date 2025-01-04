@@ -5,10 +5,11 @@ function test_4()
 
 	nthreads = 4;
 	niter = 1e3;
-	natoms = [10, 13, 15, 20, 25].^3;
+	ndims = [10, 13, 15, 20, 25, 30];
+	lbox = (ndims.^3./0.8).^(1/3);
 
-	for m=1:length(natoms)
-		p = atoms(sprintf("start_%d.xyz", m)); 
+	for m=1:length(ndims)
+		p = atoms(ndims(m).*[1, 1, 1], lbox(m)*[1,1,1], 2.0); 
 		intgr = integrator(); 
 		prfrc = prforce(); 
 		 
@@ -24,6 +25,7 @@ function test_4()
 		sps(m) = n/t; 
 	end
 
+	natoms = ndims.^3;
 	printf("test_4 output:\n");
 	for n=1:length(natoms)
 		printf("N. atoms: %d -> Steps per second: %.0f  \n", natoms(n), sps(n));

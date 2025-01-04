@@ -19,20 +19,23 @@ classdef atoms < handle
 
 	methods
 	
-		function this = atoms(filename)
+		function this = atoms(fnameOrSize, boxLengths, temperature)
 
-			if ( nargin == 0 )
-				this;
-			elseif ( nargin==1 )
-				if !exist(filename)
+			if nargin == 0 
+
+				this; return;
+
+			elseif nargin == 1 
+
+				if !exist(fnameOrSize)
 					error("Configuration file does not exists");
 				end	
 				
-				format = filename(end-2:end);
+				format = fnameOrSize(end-2:end);
 	
 				if strcmp(format, "xyz")
 						
-					fptr = fopen(filename, "r");
+					fptr = fopen(fnameOrSize, "r");
 				
 					natoms = fscanf(fptr, "%d\n", "C");  
 					[Lx Ly Lz] = fscanf(fptr, "%f %f %f\n", "C");
@@ -48,32 +51,52 @@ classdef atoms < handle
 					this.r = [x', y', z']; this.v = [vx', vy', vz']; this.f = zeros(natoms, 3);
 					this.lbox = [Lx, Ly, Lz]; 
 					this.natoms = natoms; 
-					
-					this.boxcross = int32(zeros(natoms, 3));
-					this.update_nblist = true;
+
 					this.r0 = [x', y', z']; this.rl = [x', y', z'];
 
-					this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
-					this.max_exclude = 5; this.exclude = -1*int32(ones(natoms, this.max_exclude));
-
 				elseif strcmp(format, "mat")
-					load(filename);					
+					load(fnameOrSize);					
 					this.r=r; this.v=v; this.f=f; this.m=m; this.q=q; this.t=t; 
 					this.rl = rl; this.natoms = natoms; this.lbox = lbox;
-	
-					this.boxcross = int32(zeros(natoms, 3));
-					this.update_nblist = true;
 					this.r0 = r; #[x', y', z'];
-				
-					this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); ## ACHTUNG WITH 500
-					this.max_exclude = 5; this.exclude = -1*int32(ones(natoms, this.max_exclude));
 				else
 					error("Format not supported");
 				end
 
-				this.resetmom();
-      		end
-
+			elseif nargin == 3
+				
+				nx = fnameOrSize(1); ny = fnameOrSize(2); nz = fnameOrSize(3);	
+				Lx = boxLengths(1); Ly = boxLengths(2); Lz = boxLengths(3); 
+					
+				dx = Lx/nx; dy = Ly/ny; dz = Lz/nz;
+				natoms = nx*ny*nz;
+			
+				idx = 1;
+				for n=1:nz
+					for m=1:ny
+						for k=1:nx
+							x(idx) = (k-1)*dx; y(idx) = (m-1)*dy; z(idx) = (n-1)*dz;
+							this.t(idx) = 'A';
+							idx++;
+						end
+					end
+				end	
+				this.t = char(this.t');
+				this.r = [x', y', z'];
+				this.m = ones(natoms,1); 
+				this.q = zeros(natoms,1);
+				this.f = zeros(natoms, 3);
+				this.lbox = [Lx, Ly, Lz]; 
+				this.natoms = natoms;  
+				this.r0 = [x', y', z']; this.rl = [x', y', z'];
+				this.setvels(temperature);
+			end
+					
+			this.boxcross = int32(zeros(natoms, 3)); this.update_nblist = true;
+		
+			this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
+			this.max_exclude = 5; this.exclude = -1*int32(ones(natoms, this.max_exclude));
+	
 		end	
 	
 		function save(this, filename, write_opt="w")

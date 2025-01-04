@@ -6,7 +6,7 @@ function test_3()
 	T0 = 1.42;
 	niter = 1e4;
 
-	p = atoms("start.xyz"); 
+	p = atoms([10,10,10], [11, 11, 11], 2.0);
 	p.t(1:500)='W';	p.t(501:end) = 'F';
 
 	intgr = integrator(); 

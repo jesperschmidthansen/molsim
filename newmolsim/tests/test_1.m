@@ -5,8 +5,8 @@ function test_1()
 
 	T0 = 1.1;
 	niter = 1e4;
-
-	p = atoms("start.xyz"); 
+	
+	p = atoms([10,10,10], [11, 11, 11], T0);
 	intgr = integrator(); 
 	prfrc = prforce();
 	thmstat = thermostat(p, T0);

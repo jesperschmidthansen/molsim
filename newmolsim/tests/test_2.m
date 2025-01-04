@@ -7,7 +7,7 @@ function test_2()
 	ekin = zeros(niter,1); epot = zeros(niter,1);	
 
 	for nthreads=1:8 
-		p = atoms("start.xyz"); 
+		p = atoms([10,10,10], [11, 11, 11], 2.0);
 		intgr = integrator(); 
 		prfrc = prforce(); 
 		 

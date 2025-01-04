@@ -1,11 +1,11 @@
 
-function test_0()
+function [ekin, epot] = test_0()
 
 	addpath("../mfiles/"); addpath("../mex/");
 
 	niter = 1e4;
-
-	p = atoms("start_1.xyz"); 
+	
+	p = atoms([10,10,10], [10.557, 10.557, 10.557], 1.0);
 	intgr = integrator(); 
 	prfrc = prforce(); 
 
@@ -29,6 +29,6 @@ function test_0()
 	printf("test_0 output:\n");
 	printf("Etot: %1.3e +/- %1.3e   ", mean(etot), std(etot));
 	printf("Momentum: %e %e %e\n", mom(1), mom(2), mom(3));
-	printf("Steps per build  %.3f\n", spnb);
+	printf("Steps per build  %.1f\n", spnb);
 
 end
