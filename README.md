@@ -81,12 +81,15 @@ is relaxed.
 
 - [X] Feature: Bond potential
 - [X] Feature: Angle potential
-- [ ] Feature: Dihedral potential
+- [X] Feature: Dihedral potential
 - [X] Feature: Pair interaction exclusion list 
+- [X] Feature: Simple cubic setup method in atoms class
 - [ ] Feature: Barostate
 - [ ] Feature: Standard run time sample classes
 - [ ] Feature: Electrostatic interactions
-- [ ] Feature: A set of molecular and atomic configurations
+- [ ] Feature: A set of molecular and atomic configurations 
+- [ ] Feature: Molecular class for infrastructure
+- [ ] Feature: Nose-Hoover thermostat
 - [X] Revision: endX -> end
 - [X] Revision: Some miscellaneous functions/definitions for mex-files 
 - [ ] Revision: Class properties access. Should these be different from public?
