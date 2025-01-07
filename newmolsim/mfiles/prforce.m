@@ -25,7 +25,11 @@ classdef prforce < handle
 			ms_setomp(this.nthreads);
 		end
 
-		function iteration_start(this, atoms)
+		function iteration_start(this, atoms, cutoff)
+	
+			if ( this.first_call_simulation && cutoff > this.max_cutoff )
+				error("There is a pair force with too large cutoff; change max_cutoff in prforce class");
+			end
 	
 			if this.first_call
 				atoms.f = zeros(atoms.natoms, 3);
@@ -42,11 +46,19 @@ classdef prforce < handle
 	
 		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
 					
-			this.iteration_start(atoms);
+			this.iteration_start(atoms, ljparams(1));
 
 			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
 
 		end	
+
+		function [epot Pconf] = sf(this, atoms, cutoff)
+
+			this.iteration_start(atoms, cutoff);
+			
+			[epot Pconf] = ms_sf(atoms.f, atoms.r, atoms.q, atoms.nblist, atoms.lbox, atoms.natoms, cutoff); 	
+		
+		end
 
 	end 
 
