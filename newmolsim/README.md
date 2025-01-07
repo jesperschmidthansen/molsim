@@ -11,7 +11,7 @@ is relaxed.
 - [X] Feature: Simple cubic setup method in atoms class
 - [ ] Feature: Barostate
 - [ ] Feature: Standard run time sample classes
-- [ ] Feature: Electrostatic interactions
+- [X] Feature: Electrostatic interactions (shifted force)
 - [ ] Feature: A set of molecular and atomic configurations 
 - [ ] Feature: Molecular class for infrastructure
 - [ ] Feature: Nose-Hoover thermostat
