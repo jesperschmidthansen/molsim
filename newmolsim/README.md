@@ -14,7 +14,7 @@ is relaxed.
 - [X] Feature: Electrostatic interactions (shifted force)
 - [ ] Feature: A set of molecular and atomic configurations 
 - [ ] Feature: Molecular class for infrastructure
-- [ ] Feature: Nose-Hoover thermostat
+- [X] Feature: Nose-Hoover thermostat
 - [X] Revision: endX -> end
 - [X] Revision: Some miscellaneous functions/definitions for mex-files 
 - [ ] Revision: Class properties access. Should these be different from public?
