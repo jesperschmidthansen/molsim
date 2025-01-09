@@ -16,20 +16,21 @@ function test_1()
 	counter = 1; P = zeros(3,3);
 	for n=1:niter
 		[epot, Pconf] = prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
-		thmstat.relaxtemp(p);
+		thmstat.nosehoover(p);
 		[ekin Pkin] = intgr.step(p, prfrc);
 
-		if rem(n, 10)==0
+		if rem(n, 10)==0 
 			Ekin(counter) = ekin;
 			P = P + Pconf + Pkin;	
 			counter++;
 		end
+
 	end
 
 	T = 2/3*mean(Ekin(end-100:end))./p.natoms; 
-	P = 10/niter*P;
+	P = P/(counter-1);
 
-	index = [1:counter-1]; plot(index, Ekin./p.natoms, ";ekin;");
+	index = [1:counter-1]; plot(index, 2/3*Ekin./p.natoms, ";T;");
 	print("test_1.pdf", '-dpdf');
 
 	printf("test_1 output:\n");
