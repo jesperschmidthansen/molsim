@@ -15,9 +15,14 @@ is relaxed.
 - [ ] Feature: A set of molecular and atomic configurations 
 - [ ] Feature: Molecular class for infrastructure
 - [X] Feature: Nose-Hoover thermostat
+- [ ] Feature: Easy complex system setup tool
 - [X] Revision: endX -> end
 - [X] Revision: Some miscellaneous functions/definitions for mex-files 
 - [ ] Revision: Class properties access. Should these be different from public?
+- [ ] Revision: Define class constants with correct properties (Constant=true)
+- [ ] Revision: All classes should have a disp method
+- [ ] Revision: Consider whether methods should have specified properties
+- [ ] Revision: Naming convensions (at the moment none)  
 - [ ] Test/examples: Example folder with different scripts
 
 
