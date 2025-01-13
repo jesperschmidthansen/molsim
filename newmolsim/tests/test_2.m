@@ -7,16 +7,14 @@ function test_2()
 	ekin = zeros(niter,1); epot = zeros(niter,1);	
 
 	for nthreads=1:8 
-		p = atoms([10,10,10], [11, 11, 11], 2.0);
-		intgr = integrator(); 
-		prfrc = prforce(); 
+		sim = molsim([10,10,10], [11, 11, 11], 2.0);
 		 
-		ms_setomp(nthreads);
+		sim.set_nthreads(nthreads);
 
 		tic();
 		for n=1:niter
-			prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
-			intgr.step(p, prfrc);
+			sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
+			sim.integrator.step(sim.atoms, sim.pairforce);
 		end
 		t = toc(); 
 

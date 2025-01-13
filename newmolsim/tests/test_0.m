@@ -5,22 +5,20 @@ function [ekin, epot] = test_0()
 
 	niter = 1e4;
 	
-	p = atoms([10,10,10], [10.557, 10.557, 10.557], 1.0);
-	intgr = integrator(); 
-	prfrc = prforce(); 
+	sim = molsim([10,10,10], [10.557, 10.557, 10.557], 1.0);
 
 	ekin = zeros(1, niter); epot = zeros(1, niter);
 
-	p.m(1:2:end)=1.32; p.resetmom();
+	sim.atoms.m(1:2:end)=1.32; sim.atoms.resetmom();
 
 	for n=1:niter
-		epot(n) = prfrc.lj(p, "AA", [2.5, 1.0, 1.0, 1.0]);   
-		ekin(n) = intgr.step(p, prfrc);
+		epot(n) = sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
+		ekin(n) = sim.integrator.step(sim.atoms, sim.pairforce);
 	end
 	
-	ekin = ekin./p.natoms; epot = epot./p.natoms; etot = epot + ekin;
-	spnb = niter/prfrc.neighb_updates; 
-	mom = p.getmom();
+	ekin = ekin./sim.natoms; epot = epot./sim.natoms; etot = epot + ekin;
+	spnb = niter/sim.pairforce.neighb_updates; 
+	mom = sim.atoms.getmom();
 	 
 	index = [1:n];
 	plot(index, ekin, ";ekin;", index, epot, ";epot;", index, epot+ekin, ";etot;")

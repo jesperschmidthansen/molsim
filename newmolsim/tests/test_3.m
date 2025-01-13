@@ -6,32 +6,31 @@ function test_3()
 	T0 = 1.42;
 	niter = 1e4;
 
-	p = atoms([10,10,10], [11, 11, 11], 2.0);
-	p.t(1:500)='W';	p.t(501:end) = 'F';
+	sim = molsim([10,10,10], [11, 11, 11], 2.0);
+	sim.atoms.t(1:500)='W';	sim.atoms.t(501:end) = 'F';
 
-	intgr = integrator(); 
-	prfrc = prforce();
-	thmstat = thermostat(p, T0, 'W');
+	sim.thermostat.t = 'W';
 	
 	ekin = zeros(niter,1); 
 	for n=1:niter
-		prfrc.lj(p, "FF", [2.5, 1.0, 1.0, 1.0]); 
-		prfrc.lj(p, "WW", [2.5, 1.0, 1.0, 1.0]); 
-  		prfrc.lj(p, "FW", [2.5, 1.0, 1.0, 1.0]); 
+		sim.pairforce.lj(sim.atoms, "FF", [2.5, 1.0, 1.0, 1.0]); 
+		sim.pairforce.lj(sim.atoms, "WW", [2.5, 1.0, 1.0, 1.0]); 
+  		sim.pairforce.lj(sim.atoms, "FW", [2.5, 1.0, 1.0, 1.0]); 
 		
-		p.tether('W', 300);
+		sim.atoms.tether('W', 300);
 	
-		thmstat.relaxtemp(p);
-		ekin(n) = intgr.step(p, prfrc);
+		sim.thermostat.nosehoover(sim.atoms);
+		ekin(n) = sim.integrator.step(sim.atoms, sim.pairforce);
 	end
 
-	p.save("tether.xyz");
+	sim.atoms.save("tether.xyz");
 
-	plot3(p.r(1:500,1), p.r(1:500,2), p.r(1:500,3), 'o', 'markerfacecolor', 'red');
+	plot3(sim.atoms.r(1:500,1), sim.atoms.r(1:500,2), sim.atoms.r(1:500,3), 'o', 'markerfacecolor', 'red');
 	hold on
-	plot3(p.r(501:end,1), p.r(501:end,2), p.r(501:end,3), 'o', 'markerfacecolor', 'blue');
+	plot3(sim.atoms.r(501:end,1), sim.atoms.r(501:end,2), sim.atoms.r(501:end,3), 'o', 'markerfacecolor', 'blue');
 	hold off
 	view([0,0,0]);
 	print("test_3.pdf", '-dpdf');
 
+	printf("Ekin %.2f\n", mean(ekin)/sim.natoms);
 end
