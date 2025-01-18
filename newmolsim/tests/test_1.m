@@ -6,7 +6,8 @@ function test_1()
 	T0 = 1.1;
 	niter = 1e4;
 	
-	sim = molsim([10,10,10], [11, 11, 11], T0);
+	sim = molsim();
+	sim.setconf([10,10,10], [11, 11, 11], T0);
 
 	sim.atoms.setvels(T0);
 

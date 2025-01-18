@@ -6,7 +6,9 @@ function test_3()
 	T0 = 1.42;
 	niter = 1e4;
 
-	sim = molsim([10,10,10], [11, 11, 11], 2.0);
+	sim = molsim();
+	sim.setconf([10,10,10], [11, 11, 11], 2.0);
+
 	sim.atoms.t(1:500)='W';	sim.atoms.t(501:end) = 'F';
 
 	sim.thermostat.t = 'W';

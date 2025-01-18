@@ -7,7 +7,8 @@ function test_2()
 	ekin = zeros(niter,1); epot = zeros(niter,1);	
 
 	for nthreads=1:8 
-		sim = molsim([10,10,10], [11, 11, 11], 2.0);
+		sim = molsim();
+		sim.setconf([10,10,10], [11, 11, 11], 2.0);
 		 
 		sim.set_nthreads(nthreads);
 

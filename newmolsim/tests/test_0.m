@@ -5,7 +5,8 @@ function [ekin, epot] = test_0()
 
 	niter = 1e4;
 	
-	sim = molsim([10,10,10], [10.557, 10.557, 10.557], 1.0);
+	sim = molsim();
+	sim.setconf([10,10,10], [10.557, 10.557, 10.557], 1.0);
 
 	ekin = zeros(1, niter); epot = zeros(1, niter);
 

@@ -8,7 +8,8 @@ function test_4()
 	lbox = (ndims.^3./0.8).^(1/3);
 
 	for m=1:length(ndims)
-		sim = molsim(ndims(m).*[1, 1, 1], lbox(m)*[1,1,1], 2.0); 
+		sim = molsim();
+		sim.setconf(ndims(m).*[1, 1, 1], lbox(m)*[1,1,1], 2.0); 
 
 		tic();
 		for n=1:niter

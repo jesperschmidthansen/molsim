@@ -5,7 +5,8 @@ function [dist _angles dihedrals] = test_5()
 
 	niter = 1e4;
 
-	sim = molsim("mol.xyz"); 
+	sim = molsim();
+	sim.setconf("mol.xyz"); 
 	sim.integrator.dt = 1.0e-3;
 
 	# Molecular definitions: Each mol is four atoms long. 
