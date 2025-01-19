@@ -179,7 +179,7 @@ void sep_sfg(int argc, char **argv){
 
 	// Pipe all temp. top files into start.top and remove 
 	// temp. files
-	pipe(mols, ntypes);
+	// pipe(mols, ntypes);
 
 	// Free memory
 	freemem(&lat, mols, ntypes, rlist);

@@ -94,8 +94,8 @@ classdef atoms < handle
 					
 			this.boxcross = int32(zeros(natoms, 3)); this.update_nblist = true;
 		
-			this.max_nnb = 500; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
-			this.max_exclude = 5; this.exclude = -1*int32(ones(natoms, this.max_exclude));
+			this.max_nnb = 1000; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
+			this.max_exclude = 20; this.exclude = -1*int32(ones(natoms, this.max_exclude));
 	
 		end	
 	
@@ -170,14 +170,6 @@ classdef atoms < handle
 			
 			this.resetmom();
 		end
-		
-		function vol = volume(this)
-			vol = this.lbox(1)*this.lbox(2)*this.lbox(3);
-		end
-
-		function lbox = getlbox(this)
-			lbox = this.lbox;
-		end
 
 		function dist = getdist(this, i, j)
 			
@@ -213,6 +205,69 @@ classdef atoms < handle
 			cD = sqrt(cB1*cB2); cc = cA/cD;
 			
 			dihedral = pi - acos(cc);	
+		end
+
+		function setexclusions(this, exarray, specifier="dihedrals")
+				
+			nr = rows(exarray);	
+			counter = zeros(this.natoms,1);
+	
+			switch (specifier)
+
+				case "bonds"
+					for n=1:nr
+						for m=1:2
+							idx(m) = exarray(n,m);
+						end
+						counter(idx(1))++; this.exclude(idx(1), counter(idx(1))) = idx(2);					
+
+						counter(idx(2))++; this.exclude(idx(2), counter(idx(2))) = idx(1);
+					end
+	
+				case "angles"
+					for n=1:nr
+						for m=1:3
+							idx(m) = exarray(n,m);
+						end
+						
+						counter(idx(1))++; 	this.exclude(idx(1), counter(idx(1)))=idx(2);		
+						counter(idx(1))++; 	this.exclude(idx(1), counter(idx(1)))=idx(3);		
+
+						counter(idx(2))++; 	this.exclude(idx(2), counter(idx(2)))=idx(1);		
+						counter(idx(2))++; 	this.exclude(idx(2), counter(idx(2)))=idx(3);		
+						
+						counter(idx(3))++; 	this.exclude(idx(3), counter(idx(3)))=idx(1);		
+						counter(idx(3))++; 	this.exclude(idx(3), counter(idx(3)))=idx(2);		
+					end
+
+				case "dihedrals"
+					for n=1:nr
+						for m=1:4
+							idx(m) = exarray(n,m);
+						end
+						
+						counter(idx(1))++; 	this.exclude(idx(1), counter(idx(1)))=idx(2);		
+						counter(idx(1))++; 	this.exclude(idx(1), counter(idx(1)))=idx(3);		
+						counter(idx(1))++; 	this.exclude(idx(1), counter(idx(1)))=idx(4);		
+
+						counter(idx(2))++; 	this.exclude(idx(2), counter(idx(2)))=idx(1);		
+						counter(idx(2))++; 	this.exclude(idx(2), counter(idx(2)))=idx(3);		
+						counter(idx(2))++; 	this.exclude(idx(2), counter(idx(2)))=idx(4);	
+
+						counter(idx(3))++; 	this.exclude(idx(3), counter(idx(3)))=idx(1);		
+						counter(idx(3))++; 	this.exclude(idx(3), counter(idx(3)))=idx(2);
+						counter(idx(3))++; 	this.exclude(idx(3), counter(idx(3)))=idx(4);
+		
+						counter(idx(4))++; 	this.exclude(idx(4), counter(idx(4)))=idx(1);		
+						counter(idx(4))++; 	this.exclude(idx(4), counter(idx(4)))=idx(2);
+						counter(idx(4))++; 	this.exclude(idx(4), counter(idx(4)))=idx(3);
+					end
+
+				otherwise
+					error("Not a valid exlusion specifier");	
+			end
+	
+
 		end
 	end
 
