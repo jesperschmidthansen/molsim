@@ -1,7 +1,7 @@
 #ifndef __MISC__
 #define __MISC__
 
-#define MAX_NNEIGHB 1000
+#define MAX_NNEIGHB 3000
 #define MAX_EXCLUSIONS 20
 #define DIHEDRAL_THRESHOLD 1.0e-4
 

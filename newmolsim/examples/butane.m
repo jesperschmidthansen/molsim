@@ -29,7 +29,7 @@ for n=1:ndihedrals
 	sim.dihedrals.coeffs(n,:) = [15.5000,  20.3050, -21.9170, -5.1150,  43.8340, -52.6070]; 
 end
 
-sim.atoms.setexclusions(sim.dihedrals.pidx);
+sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 
 
 for n=1:niter

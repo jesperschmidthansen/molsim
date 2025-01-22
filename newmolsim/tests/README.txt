@@ -5,5 +5,6 @@
 2: Simple LJ sim. Checks speed-up with parallelization
 3: Slitpore sim. Checks tethering
 4: Simple LJ sim. Checks speed for different system sizes
-5: Molecule sim. 
+5: Molecule sim. Checks bond, angle, and dihedral calculations
+6: Charged system 
 

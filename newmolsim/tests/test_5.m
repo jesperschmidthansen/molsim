@@ -52,7 +52,7 @@ function [dist _angles dihedrals] = test_5()
 	sim.dihedrals.coeffs = zeros(ndihedrals,6); sim.dihedrals.coeffs(:, 2) = -30.0;
 
 	# Exclude pair forces in molecule
-	sim.atoms.setexclusion(sim.dihedrals.pidx);
+	sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 	
 	ekin = zeros(1, niter); epot = zeros(1, niter); 
 	dist = zeros(1, niter); _angles = zeros(1, niter); dihedrals = zeros(1, niter);

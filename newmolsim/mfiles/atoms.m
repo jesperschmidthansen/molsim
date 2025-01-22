@@ -94,7 +94,7 @@ classdef atoms < handle
 					
 			this.boxcross = int32(zeros(natoms, 3)); this.update_nblist = true;
 		
-			this.max_nnb = 1000; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
+			this.max_nnb = 3000; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
 			this.max_exclude = 20; this.exclude = -1*int32(ones(natoms, this.max_exclude));
 	
 		end	
@@ -207,7 +207,7 @@ classdef atoms < handle
 			dihedral = pi - acos(cc);	
 		end
 
-		function setexclusions(this, exarray, specifier="dihedrals")
+		function setexclusions(this, exarray, specifier)
 				
 			nr = rows(exarray);	
 			counter = zeros(this.natoms,1);

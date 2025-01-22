@@ -9,6 +9,7 @@ function [ekin, epot] = test_6()
 	sim.setconf([14,14,14], [15.0, 15.0, 15.0], 1.0);
 
 	sim.atoms.q = (-1).^[1:sim.natoms];
+	sim.pairforce.max_cutoff = cutoff;
 
 	ekin = zeros(1, niter); epot = zeros(1, niter);
 	for n=1:niter
