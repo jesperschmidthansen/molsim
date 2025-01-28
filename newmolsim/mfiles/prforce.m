@@ -1,30 +1,36 @@
-
+# 
+# prforce is a class in the molsim-package. 
+# It contains methods to calculate the forces between atoms. 
+# 
+# Examples: See package examples/ folder
+#
+# User-relevant class properties
+# - Scalars: max_cutoff, skin
+#
+# Examples: See package examples/ folder
+#
 classdef prforce < handle
 
-	properties 
-		first_call, first_call_simulation;
+	properties (Access=public) 
 		max_cutoff, skin;
 		neighb_updates;
-		nthreads;
+		first_call, first_call_simulation;
 	end
 
 	methods
-
-		function this = prforce(max_cutoff=2.5, skin=0.5, nthreads=4)
+		
+		## Usage: prf = prforce();
+		##        prf = prforce(maximum cut off, skin);
+		##
+		## Returns an instance of the prforce class object.  
+		function this = prforce(max_cutoff=2.5, skin=0.5)
 			this.first_call = true;
 			this.first_call_simulation = true; 
 			this.max_cutoff = max_cutoff; this.skin = skin;
 			this.neighb_updates = 0;
-			this.nthreads = nthreads;
-		
-			ms_setomp(this.nthreads);
 		end
 
-		function setomp(this, ntreads)
-			this.nthreads = nthreads;
-			ms_setomp(this.nthreads);
-		end
-
+	
 		function iteration_start(this, atoms, cutoff)
 	
 			if ( this.first_call_simulation && cutoff > this.max_cutoff )
@@ -43,7 +49,19 @@ classdef prforce < handle
 				this.first_call_simulation = false;
 			end
 		end
-	
+
+		## Usage: [epot Pconf] = lj(atoms, atom types, parameters)
+		##
+		## Calculates the forces acting between atoms using the Lennard-Jones pair interaction
+		## potential. Returns the total potentual  energy and configurational pressure contribution
+		## from the interactions. Interactions can be exluded, use 'help molsim.setexclusion' for
+		## more details.
+		##
+		## atoms types are given by a string, e.g. "AA"
+		## parameters is a 4-vector [cut-off, sigma, epsilon, aw] 
+		## 
+		## Example: 
+		## >> epot = sim.prforce.lj(sim.atoms, "AB", [2.5, 1.0, 1.0, 1.0]);
 		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
 					
 			this.iteration_start(atoms, ljparams(1));
@@ -52,6 +70,15 @@ classdef prforce < handle
 
 		end	
 
+		## Usage: [epot Pconf] = sf(atoms, cut-off)
+		##
+		## Calculating the Coulomb forces acting between charges. The method is the shifted-force
+		## method. Should not be used for confined systems, and the interaction potential must be 
+		## sufficiently large.See The Journ. of Phys. Chem. vol. 166, p 5738 (2012).
+		## 
+		## Example:
+		## >> sim.prforce.max_cutoff = 3.5;
+		## >> sim.prforce.sf(sim.atoms, 3.5) 
 		function [epot Pconf] = sf(this, atoms, cutoff)
 
 			this.iteration_start(atoms, cutoff);

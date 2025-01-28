@@ -1,7 +1,17 @@
-
+# 
+# molsim is a (wrapper) class in the molsim-package. 
+# It contains all the relevat properties for a simulation. 
+# 
+# class properties
+# - sub-classes: atoms, integrator, pairforce, bonds, angels, dihedrals 
+# - vectors: lbox 
+# - scalars: natoms, volume,temperature 
+#
+# Examples: See package examples/ folder
+#
 classdef molsim < handle
 	
-	properties
+	properties (Access=public)
 		# Classes
 		atoms;
 		
@@ -24,16 +34,32 @@ classdef molsim < handle
 
 	methods
 		
+		## Usage: sim = molsim();
+		## 
+		## Returns an empty instance of molsim class object
 		function this = molsim()
 			this;	
 		end
 
+		## Usage: setconf(configuration-file) 
+		##        setconf([nx, ny, nz],[Lx, Ly, Lz], temperature);     
+		##
+		## Sets system configuration from file or from specified dimensions
+		##
+		## Example:
+		## >> sim = molsim();
+		## >> sim.setconf("conf.xyz");
+		## or
+		## >> sim = molsim();
+		## >> sim.setconf([10, 12, 10], [11, 14, 12], 2.0);
 		function setconf(this, fnameOrSize, boxLengths, temperature)	
 	
 			if nargin==2
 				this.atoms = atoms(fnameOrSize); 
 			elseif nargin==4
 				this.atoms = atoms(fnameOrSize, boxLengths, temperature);
+			else
+				error("Invalid call to setconf");
 			end
 
 			this.natoms = this.atoms.natoms; 
@@ -43,14 +69,19 @@ classdef molsim < handle
 
 			this.integrator = integrator();
 			this.pairforce = prforce(); 
-			
 			this.thermostat = thermostat(this.atoms);
-			if nargin == 3
-				this.thermostat.temperature = temperature;
-			end
 
 		end
 
+		## Usage: setbonds(top-file) 
+		##
+		## Sets the bonds between atoms from file with bond information
+		## 
+		## Example:
+		## >> sim = molsim();
+		## >> sim.setbonds("bonds.top");
+		##
+		## See molconfgen 
 		function setbonds(this, fname)
 			
 			_bonds = load(fname); 
@@ -62,6 +93,15 @@ classdef molsim < handle
  
 		end
 
+		## Usage: setangles(top-file) 
+		##
+		## Sets the angles between atoms from file with angle information
+		## 
+		## Example:
+		## >> sim = molsim();
+		## >> sim.setangles("angles.top");
+		##
+		## See molconfgen 
 		function setangles(this, fname)
 			
 			_angles = load(fname); 
@@ -73,6 +113,15 @@ classdef molsim < handle
  
 		end
 
+		## Usage: setdihedrals(top-file) 
+		##
+		## Sets the dihedrals between atoms from file with dihedral information
+		## 
+		## Example:
+		## >> sim = molsim();
+		## >> sim.setdihedrals("dihedrals.top");
+		##
+		## See molconfgen 
 		function setdihedrals(this, fname)
 			
 			_dihedrals = load(fname); 
@@ -84,6 +133,15 @@ classdef molsim < handle
  
 		end
 
+		
+		## Usage: scalebox(target density)
+		##        scalebox(target density, scale factor)
+		##
+		## Scales the simulation box with scale factor (if not specifed this defaults to 0.999)
+		##
+		## Example:
+		## >> sim=molsim();
+		## >> sim.scalebox(0.98, 0.9999);
 		function scalebox(this, dens0, prefac=0.999)
 
 			densnow = this.natoms/this.volume;
@@ -99,7 +157,14 @@ classdef molsim < handle
 				
 		end
 
-		function set_nthreads(this, nthreads)
+		## Usage: setnthreads(number of threads)
+		##
+		## Sets the number of threads for parallel computing (by default set to 4)
+		##
+		## Example:
+		## >> sim=molsim();
+		## >> sim.setnthreads(4);
+		function setnthreads(this, nthreads)
 			ms_setomp(nthreads);
 			this.nthreads = nthreads;
 		end

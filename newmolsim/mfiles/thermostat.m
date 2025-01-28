@@ -1,4 +1,9 @@
-
+# 
+# thermostat is a class in the molsim-package. 
+# It contains all the relevat properties and methods for thermostating. 
+# 
+# Examples: See package examples/ folder
+#
 classdef thermostat < handle
 
 	properties 
@@ -9,6 +14,10 @@ classdef thermostat < handle
 	end
 
 	methods 
+		
+		## Usage: therm = thermostat(atoms, temperature, atom type, thermostat relaxation parameter) 
+		##        
+		## Returns an instant of thermostat class object 
 		function this = thermostat(atoms, temperature=1.0, ptype='A', tauQ=10.0)
 			
 						
@@ -29,11 +38,17 @@ classdef thermostat < handle
 			ms_relaxtemp(atoms.v, this.t, atoms.natoms, atoms.t, atoms.m, this.tauQ, this.temperature);
 		end
 
-		function nosehoover(this, atoms, dt=0.005)
+		## Usage: nosehoover(atoms, dt)
+		##
+		## Add force to the atoms of specified type (see constructor) in accordance with the
+		## Nose-Hoover scheme. dt is the integrator time step (default is 0.005).
+		function nosehoover(this, atoms, dt=5e-3)
 
 			ekin = ms_nosehoover(atoms.f, this.xi, atoms.v, this.t, atoms.natoms, atoms.t, atoms.m);
 					
-			this.xi = this.xi + dt/this.tauQ*(0.66667*ekin - this.ntypes*this.temperature);
+			this.xi = this.xi + dt/this.tauQ*(2/3*ekin - this.ntypes*this.temperature);
 		end		
+
 	end
+
 end

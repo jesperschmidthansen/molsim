@@ -10,7 +10,7 @@ function test_2()
 		sim = molsim();
 		sim.setconf([10,10,10], [11, 11, 11], 2.0);
 		 
-		sim.set_nthreads(nthreads);
+		sim.setnthreads(nthreads);
 
 		tic();
 		for n=1:niter

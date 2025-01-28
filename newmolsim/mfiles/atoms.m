@@ -1,24 +1,38 @@
-
+# 
+# atoms is a class in the molsim-package. 
+# It contains all the relevat properties and methods for atoms. 
+# 
+# User-relevant class properties
+# - Matrices (natoms by 3): r (positions), v (velocities), f (forces), rl (lattice positions)
+# - Vectors (natoms elements): m (masses), q (charges) 
+# - String (natoms elements): t (atom types)  
+#
+# Examples: See package examples/ folder
+#
 classdef atoms < handle
 
 	properties (Access=public)
 		# Atom properties
 		r, v, f;
 		m, q, t; 
-		# Neighbourlist etc
-		nblist, max_nnb, update_nblist;
 		# Simulation box crossing
 		boxcross;
 		# Initial and last positions
 		r0; rl;
-		# Pair interaction exclusion list
-		exclude, max_exclude;
 		# Number of atoms and simulation box length 
 		natoms,	lbox;
+		# Neighbourlist etc
+		nblist, max_nnb, update_nblist;
+		# Pair interaction exclusion list
+		exclude, max_exclude;
 	end
 
 	methods
 	
+		## Usage: part = atoms(Configuration file name) 
+		##        part = atoms([Nx, Ny, Nz], [Lx, Ly, Lz], temperature)
+		##
+		## Returns an instant of atoms class object 
 		function this = atoms(fnameOrSize, boxLengths, temperature)
 
 			if nargin == 0 
@@ -99,6 +113,14 @@ classdef atoms < handle
 	
 		end	
 	
+		## Usage: save(filename);
+		##        save(filename, option);
+		##
+		## Saves the current configuration to file. Supported file formats are .xyz and .mat. For xyz-format 
+		## option can be be "w" for writing and "a" for appending
+		##
+		## Example:
+		## >> atoms.save("dump-conf.mat");
 		function save(this, filename, write_opt="w")
 	
 			format = filename(end-2:end);
@@ -130,24 +152,50 @@ classdef atoms < handle
 				
 		end
 
+		## Usage: thether(atom type, spring constant);
+		##
+		## Calculates the tethering force acting on the atoms due to the lattice 
+		## coordinates specified by the propery rl. 
+		## The atom type and restoring spring constant must be specified.  
+		##
+		## Example:
+		## >> atoms.tether('W', 100.0);
 		function tether(this, ptype, kspring)
 				
 			ms_tether(this.f, this.r, this.rl, ptype, this.t, kspring, this.lbox, this.natoms);
 			
 		end
 
+		## Usage: mvlattice(atom type, distance)
+		## 
+		## Moves the lattice coordinates of specified atom type by a distance
+		##
+		## Example:
+		## >> vel_wall = 0.01;
+		## >> dx = vel_wall*dt;
+		## >> atoms.mvlattice('W', [dx, 0.0, 0.0]);
 		function mvlattice(this, ptype, dr)
 			
 			ms_mvlattice(this.rl, ptype, dr, this.t, this.lbox, this.natoms); 
 			
 		end
-	
+
+		## Usage: momenta = getmom();
+		##
+		## Returns the total x,y,z-momenta.
+		##
+		## Example:
+		## >> mom = atoms.getmom();
+		## >> printf("%e %e %e\n", mom(1), mom(2), mom(3));	
 		function mom = getmom(this)
 			
 			for k=1:3; mom(k) = sum(this.v(:,k).*this.m); end
 		
 		end
 	
+		## Usage: resetmom();
+		##
+		## Resets the total momentum in all direction to zero
 		function resetmom(this)
 
 			mom = this.getmom()./sum(this.m);
@@ -155,6 +203,9 @@ classdef atoms < handle
 
 		end
 
+		## Usage: setvels(temperature);
+		##
+		## Sets atom velocity corresponding to a temperature
 		function setvels(this, temperature)
 			
 			this.v = randn(this.natoms, 3);
@@ -171,7 +222,10 @@ classdef atoms < handle
 			this.resetmom();
 		end
 
-		function dist = getdist(this, i, j)
+		## Usage: [distance dr] = getdist(i, j)
+		##
+		## Returns the distance and the position vector between atoms with indices i and j  
+		function [dist dr] = getdist(this, i, j)
 			
 			dr = this.r(i,:)-this.r(j,:);
 			dr = wrap(dr, this.lbox);
@@ -179,6 +233,9 @@ classdef atoms < handle
 			dist = sqrt(dot(dr,dr));
 		end
 
+		## Usage: angle = getangle(i,j,k)
+		##
+		## Returns the angle defined by the positions of atoms with indices i,j,k
 		function _angle = getangle(this, a, b, c)
 			
 			dr1 = wrap(this.r(b,:) - this.r(a,:), this.lbox);
@@ -190,6 +247,9 @@ classdef atoms < handle
 
 		end
 
+		## Usage: dihedral  = getdihedral(i,j,k,l)
+		##
+		## Returns the dihedral angle defined by the positions of atoms with indices i,j,k,l
 		function dihedral = getdihedral(this, a, b, c, d)
 			dr1 = wrap(this.r(b,:) - this.r(a,:), this.lbox);
 			dr2 = wrap(this.r(c,:) - this.r(b,:), this.lbox);			
@@ -207,6 +267,17 @@ classdef atoms < handle
 			dihedral = pi - acos(cc);	
 		end
 
+		## Usage: setexclusions(exclusion array, exclusion specifier);
+		##
+		## Sets exclusions for pair interactions (lj and sf). Valid specifiers are "bonds",
+		## "angles", and "dihedrals".
+		##
+		## Examples  -  From bonds
+		## >> sim.setbonds("bonds.top");
+		## >> atoms.setexclusions(sim.bonds.pidx, "bonds");
+		## or from dihedrals
+		## >> sim.setdihedrals("dihedrals.top");
+		## >> atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 		function setexclusions(this, exarray, specifier)
 				
 			nr = rows(exarray);	
