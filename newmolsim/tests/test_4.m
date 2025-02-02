@@ -14,7 +14,7 @@ function test_4()
 		tic();
 		for n=1:niter
 			sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
-			sim.integrator.step(sim.atoms, sim.pairforce);
+			sim.integrator.lf(sim.atoms, sim.pairforce);
 		end
 		t = toc(); 
 

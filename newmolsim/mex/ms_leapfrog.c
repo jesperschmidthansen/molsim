@@ -39,7 +39,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 void _leapfrog(double *ekin, double *Pkin, double *v, double *r, double *f, double *mass, 
 		int *cross, const double lbox[3], const unsigned npart, const double dt){
 	
-	int cross_idx[3]; double vhalf[3];
+	int cross_idx; double vhalf[3];
 	for ( unsigned n=0; n<npart; n++ ){
 		double invmass = 1.0/mass[n];
 		for ( int k=0; k<3; k++ ){
@@ -47,8 +47,8 @@ void _leapfrog(double *ekin, double *Pkin, double *v, double *r, double *f, doub
       		v[idx] += f[idx]*invmass*dt;
       		r[idx] += v[idx]*dt;
      		
-		   	_Periodic(cross_idx[k], r[idx], lbox[k]); 
-			cross[idx] += cross_idx[k];
+		   	_Periodic(cross_idx, r[idx], lbox[k]); 
+			cross[idx] += cross_idx;
 
      	 	vhalf[k] = v[idx] - 0.5*f[idx]*dt;
       		*ekin = *ekin + 0.5*vhalf[k]*vhalf[k]*mass[n];

@@ -65,7 +65,7 @@ function [dist _angles dihedrals] = test_5()
 		epot(n) = epot(n) + sim.angles.harmonic(sim.atoms, 0);
 		epot(n) = epot(n) + sim.dihedrals.ryckbell(sim.atoms, 0);
 
-		ekin(n) = sim.integrator.step(sim.atoms, sim.pairforce);
+		ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
 		
 		dist(n) = sim.atoms.getdist(1,2);
 		_angles(n) = sim.atoms.getangle(1,2,3);

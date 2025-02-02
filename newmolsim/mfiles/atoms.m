@@ -25,6 +25,8 @@ classdef atoms < handle
 		nblist, max_nnb, update_nblist;
 		# Pair interaction exclusion list
 		exclude, max_exclude;
+		# For dpd
+		pv, pa;
 	end
 
 	methods
@@ -105,7 +107,15 @@ classdef atoms < handle
 				this.r0 = [x', y', z']; this.rl = [x', y', z'];
 				this.setvels(temperature);
 			end
-					
+			
+			# DPD init
+			for n=1:natoms
+				for k=1:3	
+		   			this.pv(n,k) = this.v(n,k);
+				    this.pa(n,k) = 0.0;		
+				end
+			end
+
 			this.boxcross = int32(zeros(natoms, 3)); this.update_nblist = true;
 		
 			this.max_nnb = 3000; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 

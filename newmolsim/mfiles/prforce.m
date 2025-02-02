@@ -63,11 +63,8 @@ classdef prforce < handle
 		## Example: 
 		## >> epot = sim.prforce.lj(sim.atoms, "AB", [2.5, 1.0, 1.0, 1.0]);
 		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
-					
 			this.iteration_start(atoms, ljparams(1));
-
 			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
-
 		end	
 
 		## Usage: [epot Pconf] = sf(atoms, cut-off)
@@ -80,13 +77,15 @@ classdef prforce < handle
 		## >> sim.prforce.max_cutoff = 3.5;
 		## >> sim.prforce.sf(sim.atoms, 3.5) 
 		function [epot Pconf] = sf(this, atoms, cutoff)
-
 			this.iteration_start(atoms, cutoff);
-			
 			[epot Pconf] = ms_sf(atoms.f, atoms.r, atoms.q, atoms.nblist, atoms.lbox, atoms.natoms, cutoff); 	
-		
 		end
 
+		function epot = dpd(this, atoms, ptypes, params, temperature)
+			this.iteration_start(atoms, params(1));
+			epot = ms_dpd(atoms.f, atoms.r, atoms.v, ptypes, params, temperature, atoms.lbox, atoms.t, atoms.nblist, atoms.natoms);
+		end
+	
 	end 
 
 

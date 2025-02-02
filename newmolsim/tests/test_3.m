@@ -22,7 +22,7 @@ function test_3()
 		sim.atoms.tether('W', 300);
 	
 		sim.thermostat.nosehoover(sim.atoms);
-		ekin(n) = sim.integrator.step(sim.atoms, sim.pairforce);
+		ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
 	end
 
 	sim.atoms.save("tether.xyz");

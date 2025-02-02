@@ -15,7 +15,7 @@ function test_1()
 	for n=1:niter
 		[epot, Pconf] = sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
 		sim.thermostat.nosehoover(sim.atoms);
-		[ekin Pkin] = sim.integrator.step(sim.atoms, sim.pairforce);
+		[ekin Pkin] = sim.integrator.lf(sim.atoms, sim.pairforce);
 
 		if rem(n, 10)==0 
 			Ekin(counter) = ekin;

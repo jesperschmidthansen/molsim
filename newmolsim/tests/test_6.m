@@ -15,7 +15,7 @@ function [ekin, epot] = test_6()
 	for n=1:niter
 		epot(n) = sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
 		epot(n) = epot(n) + sim.pairforce.sf(sim.atoms, cutoff);
-		ekin(n) = sim.integrator.step(sim.atoms, sim.pairforce);
+		ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
 	end
 	
 	ekin = ekin./sim.natoms; epot = epot./sim.natoms; etot = epot + ekin;
