@@ -11,7 +11,6 @@ classdef integrator < handle
 	methods
 
 		function this = integrator(dt=0.005)
-			
 			this.dt = dt;
 			this.sidx = 0;
 		end
@@ -21,7 +20,6 @@ classdef integrator < handle
 			[ekin Pkin] = ms_leapfrog(atoms.v, atoms.r, atoms.f, atoms.m, atoms.boxcross, atoms.lbox, atoms.natoms, this.dt);					
 			
 			interactions.first_call = true;	
-			
 			this.sidx++;
 		
 		end
@@ -32,7 +30,6 @@ classdef integrator < handle
 								atoms.boxcross, atoms.lbox, atoms.natoms, this.dt, this.sidx, lambda);		
 			
 			interactions.first_call = true;	
-			
 			this.sidx++;
 		end		
 			

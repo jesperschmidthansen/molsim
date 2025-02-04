@@ -3,10 +3,10 @@ function [ekin, epot] = test_7()
 
 	addpath("../mfiles/"); addpath("../mex/");
 
-	niter = 1e4; dt = 0.01; temperature = 1.0;
+	niter = 2e3; dt = 0.01; temperature = 1.0;
 	
 	sim = molsim();
-	sim.setconf([10,10,10], [7, 7, 7], temperature);
+	sim.setconf([10,10,10], [6.3, 6.3, 6.3], temperature);
 	sim.pairforce.max_cutoff = 1.0;
 	sim.pairforce.skin = 1.0;
 	sim.integrator.dt = dt;
@@ -35,4 +35,5 @@ function [ekin, epot] = test_7()
 	printf("Momentum: %e %e %e\n", mom(1), mom(2), mom(3));
 	printf("Steps per build  %.1f\n", spnb);
 
+	max(max(sim.atoms.v))
 end
