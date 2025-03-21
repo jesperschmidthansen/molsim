@@ -6,10 +6,10 @@
   <tr>
     <th style="width:30%">
     <figure>
-  I     <img src="resources/logo_0.png" alt="Trulli" style="width:30%">
+  I     <img src="resources/logo_0.png"> <!-- alt="Trulli" style="width:30%">-->
     </figure>
     </th>
-    <td>
+    <th>
     <h2>
     molsim supports simulations of
     </h2>
