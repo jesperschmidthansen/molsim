@@ -2,22 +2,27 @@
 <body>
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
-<figure>
-  <img src="resources/logo_0.png" alt="Trulli" style="width:30%">
-</figure> 
-</p>
+ <div class="row">
+  <div class="column">
+    <figure>
+  I     <img src="resources/logo_0.png" alt="Trulli" style="width:30%">
+    </figure> 
+    </div>
+  <div class="column">
+    <p>
+    molsim supports simulations of
+    </p>
 
-<p>
-molsim supports simulations of
+    <ul>
+    <li>simple Lennard-Jones systems,</li>
+    <li>molecular systems with bond, angle, and torsion potentials,</li>
+    <li>confined flow systems, eg., Couette and Poiseuille flows,</li>
+    <li>charged systems using shifted force,</li>
+    <li> and more . .</li>
+    </ul>
+  </div>
+</div> 
 </p>
-
-<ul>
-<li>simple Lennard-Jones systems,</li>
-<li>molecular systems with bond, angle, and torsion potentials,</li>
-<li>confined flow systems, eg., Couette and Poiseuille flows,</li>
-<li>charged systems using shifted force,</li>
-<li> and more . .</li>
-</ul>
 
 <h2>Installation </h2>
 <p>At the Octave prompt simply use the command </p>
