@@ -3,7 +3,7 @@
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
 <figure>
-  <img src="logo_0.png" alt="Trulli" style="width:30%">
+  <img src="resources/logo_0.png" alt="Trulli" style="width:30%">
 </figure> 
 </p>
 
