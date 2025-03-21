@@ -9,10 +9,9 @@
     </figure> 
     </div>
   <div class="column">
-    <p>
+    <h2>
     molsim supports simulations of
-    </p>
-
+    </h2>
     <ul>
     <li>simple Lennard-Jones systems,</li>
     <li>molecular systems with bond, angle, and torsion potentials,</li>
