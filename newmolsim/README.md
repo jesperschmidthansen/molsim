@@ -1,14 +1,20 @@
  <html>
+<style>
+table, th, td {
+  border:0px solid black;
+}
+</style>
 <body>
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
- <div class="row">
-  <div class="column">
+ <table>
+  <tr>
+    <td>
     <figure>
   I     <img src="resources/logo_0.png" alt="Trulli" style="width:30%">
-    </figure> 
-    </div>
-  <div class="column">
+    </figure>
+    </td>
+    <td>
     <h2>
     molsim supports simulations of
     </h2>
@@ -17,10 +23,10 @@
     <li>molecular systems with bond, angle, and torsion potentials,</li>
     <li>confined flow systems, eg., Couette and Poiseuille flows,</li>
     <li>charged systems using shifted force,</li>
-    <li> and more . .</li>
+    <li> and more ...</li>
     </ul>
-  </div>
-</div> 
+  </td>
+</tr> 
 </p>
 
 <h2>Installation </h2>
