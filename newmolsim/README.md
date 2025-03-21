@@ -6,7 +6,7 @@
   <tr>
     <th style="width:30%">
     <figure>
-  I     <img src="resources/logo_0.png" alt="Trulli" style="width:50%">
+  I     <img src="resources/logo_0.png" style="width:50%">
     </figure>
     </th>
     <td>
@@ -18,7 +18,7 @@
     <li>molecular systems with bond, angle, and torsion potentials,</li>
     <li>confined flow systems, eg., Couette and Poiseuille flows,</li>
     <li>charged systems using shifted force,</li>
-    <li> and more ...</li>
+    <li>and more ...</li>
     </ul>
   </td>
  </tr> 
