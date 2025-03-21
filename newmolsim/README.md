@@ -16,6 +16,7 @@ is relaxed.
 - [ ] Feature: Molecular class for infrastructure
 - [X] Feature: Nose-Hoover thermostat
 - [X] Feature: Easy complex system setup tool
+- [ ] Feature: DPD support (initiated)
 - [X] Revision: endX -> end
 - [X] Revision: Some miscellaneous functions/definitions for mex-files 
 - [ ] Revision: Class properties access. Should these be different from public?
