@@ -21,7 +21,8 @@
     <li> and more ...</li>
     </ul>
   </td>
-</tr> 
+ </tr> 
+</table>
 </p>
 
 <h2>Installation </h2>
