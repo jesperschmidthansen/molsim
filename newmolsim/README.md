@@ -1,35 +1,22 @@
  <html>
- <style>
-    table,
-    th,
-    td {
-        border: 0px solid black;
-    }
-</style>
 <body>
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
- <table style:"width:80%">
-  <tr>
-    <th style="width:30%">
-    <figure>
-  I     <img src="resources/logo_0.png" style="width:50%">
-    </figure>
-    </th>
-    <td>
-    <h2>
-    molsim supports simulations of
-    </h2>
-    <ul>
+<figure>
+  <img src="resources/logo_0.png" style="width:50%">
+</figure>
+</p>
+
+<h2>
+ molsim supports simulations of
+</h2>
+<ul>
     <li>simple Lennard-Jones systems,</li>
     <li>molecular systems with bond, angle, and torsion potentials,</li>
     <li>confined flow systems, eg., Couette and Poiseuille flows,</li>
     <li>charged systems using shifted force,</li>
     <li>and more ...</li>
-    </ul>
-  </td>
- </tr> 
-</table>
+</ul>
 </p>
 
 <h2>Installation </h2>
