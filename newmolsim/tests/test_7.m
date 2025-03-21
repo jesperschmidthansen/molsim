@@ -30,7 +30,7 @@ function [ekin, epot] = test_7()
 	plot(index, ekin, ";ekin;", index, epot, ";epot;", index, epot+ekin, ";etot;")
 	print("test_0.pdf", '-dpdf');
 
-	printf("test_0 output:\n");
+	printf("test_7 output:\n");
 	printf("Etot: %1.3e +/- %1.3e   ", mean(etot), std(etot));
 	printf("Momentum: %e %e %e\n", mom(1), mom(2), mom(3));
 	printf("Steps per build  %.1f\n", spnb);

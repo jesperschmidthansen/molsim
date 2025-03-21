@@ -7,4 +7,5 @@
 4: Simple LJ sim. Checks speed for different system sizes
 5: Molecule sim. Checks bond, angle, and dihedral calculations
 6: Charged system 
+7: DPD system. 
 

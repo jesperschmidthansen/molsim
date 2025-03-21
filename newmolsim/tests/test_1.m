@@ -10,6 +10,7 @@ function test_1()
 	sim.setconf([10,10,10], [11, 11, 11], T0);
 
 	sim.atoms.setvels(T0);
+	sim.thermostat.temperature = T0;
 
 	counter = 1; P = zeros(3,3);
 	for n=1:niter
@@ -32,7 +33,7 @@ function test_1()
 	print("test_1.pdf", '-dpdf');
 
 	printf("test_1 output:\n");
-	printf("Ekin: %.3f +/- %.3f  Norm. mean temperature %f\n", mean(ekin)./sim.natoms, std(ekin)./sim.natoms, T/T0);
+	printf("Ekin: %.3f +/- %.3f  Norm. mean temperature %f\n", mean(Ekin)./sim.natoms, std(Ekin)./sim.natoms, T/T0);
 	printf("Av. normal press: %.3f  \n", (P(1,1)+P(2,2)+P(3,3))/3);
 
 end
