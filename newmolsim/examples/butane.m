@@ -40,7 +40,7 @@ for n=1:niter
 	sim.dihedrals.ryckbell(sim.atoms, 0);
 
 	sim.thermostat.nosehoover(sim.atoms);
-	ekin(n) = sim.integrator.step(sim.atoms, sim.pairforce);
+	ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
 	
 	if rem(n, 10)==0
 		sim.scalebox(dens0);

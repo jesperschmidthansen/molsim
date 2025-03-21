@@ -10,7 +10,10 @@ cutoff = 2.9;
 lbond = 0.316; kspring = 68421; 
 angle = 1.97; kangle = 490;
 
-molconfgen("water.xyz", "water.top", 2000, 0.1);
+#system("cp ../resources/molconf/water.xyz ./");
+#system("cp ../resources/molconf/water.top ./");i
+
+molconfgen("../resources/molconf/water.xyz", "../resources/molconf/water.top", 2000, 0.1);
 
 sim = molsim();
 sim.setconf("conf.xyz");
@@ -37,7 +40,7 @@ for n=1:niter
 	sim.angles.harmonic(sim.atoms, 0);
 
 	sim.thermostat.nosehoover(sim.atoms);
-	sim.integrator.step(sim.atoms, sim.pairforce);
+	sim.integrator.lf(sim.atoms, sim.pairforce);
 	
 	if rem(n, 10)==0
 		sim.scalebox(dens0);
