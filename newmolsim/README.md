@@ -2,14 +2,14 @@
 <body>
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
- <table>
+ <table style:"width:80%">
   <tr>
     <th style="width:30%">
     <figure>
   I     <img src="resources/logo_0.png" alt="Trulli" style="width:50%">
     </figure>
     </th>
-    <th>
+    <td>
     <h2>
     molsim supports simulations of
     </h2>
@@ -20,7 +20,7 @@
     <li>charged systems using shifted force,</li>
     <li> and more ...</li>
     </ul>
-  </th>
+  </td>
  </tr> 
 </table>
 </p>
