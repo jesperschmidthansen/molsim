@@ -1,4 +1,11 @@
  <html>
+ <style>
+    table,
+    th,
+    td {
+        border: 0px solid black;
+    }
+</style>
 <body>
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
