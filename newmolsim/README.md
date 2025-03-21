@@ -1,7 +1,7 @@
  <html>
 <style>
 table, th, td {
-  border:0px solid black;
+  border:1px solid black;
 }
 </style>
 <body>
