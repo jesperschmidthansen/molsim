@@ -1,13 +1,13 @@
  <html>
 table, th, td {
-  border: 1px solid black;
+  border: 0px solid black;
 }
 <body>
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
  <table>
   <tr>
-    <td style="width:30%">
+    <th style="width:30%">
     <figure>
   I     <img src="resources/logo_0.png" alt="Trulli" style="width:30%">
     </figure>
