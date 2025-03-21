@@ -1,18 +1,18 @@
  <html>
 table, th, td {
-  border: 0px solid black;
+  border: 1px solid black;
 }
 <body>
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
  <table>
   <tr>
-    <th style="width:30%">
+    <td style="width:30%">
     <figure>
   I     <img src="resources/logo_0.png" alt="Trulli" style="width:30%">
     </figure>
     </th>
-    <th>
+    <td>
     <h2>
     molsim supports simulations of
     </h2>
