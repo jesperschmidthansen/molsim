@@ -6,7 +6,7 @@
   <tr>
     <th style="width:30%">
     <figure>
-  I     <img src="resources/logo_0.png"> <!-- alt="Trulli" style="width:30%">-->
+  I     <img src="resources/logo_0.png" alt="Trulli" style="width:50%">
     </figure>
     </th>
     <th>
