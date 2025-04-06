@@ -1,4 +1,6 @@
-
+#
+# Usage: dr = wrap(dr, lbox)
+#
 function dr = wrap(dr, lbox)
 	
 	for k=1:3
