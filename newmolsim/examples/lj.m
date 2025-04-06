@@ -12,6 +12,6 @@ for n=1:niter
 	sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
 	
 	sim.thermostat.nosehoover(sim.atoms);
-	sim.integrator.step(sim.atoms, sim.pairforce);
+	sim.integrator.lf(sim.atoms, sim.pairforce);
 end
 
