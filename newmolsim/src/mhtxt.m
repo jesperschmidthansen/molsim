@@ -5,7 +5,7 @@ files = glob("*.c");
 
 for n=1:length(files)
 	fname = files{n};
-	nfname = sprintf("%s.m", fname(1:end-2))	
+	nfname = sprintf("%s.m", fname(1:end-2));	
 
 	fid = fopen(nfname, "w");
 	fprintf(fid, "# This function is a part of the molsim package\n");

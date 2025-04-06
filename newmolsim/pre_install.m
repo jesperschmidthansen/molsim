@@ -5,7 +5,7 @@
 function pre_install(dummy)
 
 	run("src/mhtxt.m");
-	system("mv src/*.m inst/");
+	system("mv src/ms_*.m inst/");
 
 end
 
