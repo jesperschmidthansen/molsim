@@ -102,5 +102,5 @@ molsim-2.0
   This code reorganization allows the user to change and extent the features in a more straight-forward 
   manner and it will ease the future planed implementation of CUDA support. 
 
-  Versions 2.X.Y will focus on bug-fixes.  		  
+  Versions 2.X.Y will focus on adding new features.  		  
 
