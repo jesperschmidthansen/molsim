@@ -135,21 +135,21 @@ classdef molsim < handle
 
 		
 		## Usage: scalebox(target density)
-		##        scalebox(target density, scale factor)
+		##        scalebox(target density, directions, scale factor)
 		##
 		## Scales the simulation box with scale factor (if not specifed this defaults to 0.999)
 		##
 		## Example:
 		## >> sim=molsim();
-		## >> sim.scalebox(0.98, 0.9999);
-		function scalebox(this, dens0, prefac=0.999)
+		## >> sim.scalebox(0.98, [1:2], 0.9999);
+		function scalebox(this, dens0, dirs=[1:3], prefac=0.999)
 
 			densnow = this.natoms/this.volume;
 
 			if densnow < dens0
-				this.lbox = prefac*this.lbox;
+				this.lbox(dirs) = prefac*this.lbox(dirs);
 			else 
-				this.lbox = this.lbox./prefac;
+				this.lbox(dirs) = this.lbox(dirs)./prefac;
 			end	
 			
 			this.volume = prod(this.lbox);
