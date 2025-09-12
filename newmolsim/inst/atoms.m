@@ -75,6 +75,7 @@ classdef atoms < handle
 					this.r=r; this.v=v; this.f=f; this.m=m; this.q=q; this.t=t; 
 					this.rl = rl; this.natoms = natoms; this.lbox = lbox;
 					this.r0 = r; #[x', y', z'];
+					this.boxcross = boxcross;
 				else
 					error("Format not supported");
 				end
@@ -153,9 +154,9 @@ classdef atoms < handle
 				fclose(fptr);
 			elseif strcmp(format, "mat")		
 				r = this.r; v = this.v; f = this.f; m = this.m; q = this.q; t = this.t; 
-				rl = this.rl; natoms=this.natoms; lbox=this.lbox;
+				rl = this.rl; natoms=this.natoms; lbox=this.lbox; boxcross = this.boxcross;
 				
-				save(filename, "r", "v", "f", "m", "q", "t", "rl", "natoms", "lbox");	
+				save(filename, "r", "v", "f", "m", "q", "t", "rl", "natoms", "lbox", "boxcross");	
 			else
 				error("Format not supported");
 			end
