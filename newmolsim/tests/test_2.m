@@ -1,7 +1,7 @@
 
 function test_2()
 
-	addpath("../mfiles/"); addpath("../mex/");
+	addpath("../inst/"); addpath("../src/");
 
 	niter = 1e3;
 	ekin = zeros(niter,1); epot = zeros(niter,1);	

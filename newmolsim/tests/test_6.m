@@ -1,7 +1,7 @@
 
 function [ekin, epot] = test_6()
 
-	addpath("../mfiles/"); addpath("../mex/");
+	addpath("../inst/"); addpath("../src/");
 
 	niter = 1e3; cutoff = 3.5;
 	

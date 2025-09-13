@@ -1,7 +1,7 @@
 
 function [ekin, epot] = test_7()
 
-	addpath("../mfiles/"); addpath("../mex/");
+	addpath("../inst/"); addpath("../src/");
 
 	niter = 2e3; dt = 0.01; temperature = 1.0;
 	

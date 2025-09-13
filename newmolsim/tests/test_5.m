@@ -1,7 +1,7 @@
 
 function [dist _angles dihedrals] = test_5()
 
-	addpath("../mfiles/"); addpath("../mex/");
+	addpath("../inst/"); addpath("../src/");
 
 	niter = 1e4;
 

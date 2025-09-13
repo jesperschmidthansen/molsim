@@ -1,7 +1,7 @@
 
 function test_4()
 
-	addpath("../mfiles/"); addpath("../mex/");
+	addpath("../inst/"); addpath("../src/");
 
 	niter = 1e3;
 	ndims = [10, 13, 15, 20, 25];

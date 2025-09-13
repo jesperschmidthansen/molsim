@@ -1,7 +1,7 @@
 
 function test_1()
 	 
-	addpath("../mfiles/"); addpath("../mex/");
+	addpath("../inst/"); addpath("../src/");
 
 	T0 = 1.1;
 	niter = 1e4;

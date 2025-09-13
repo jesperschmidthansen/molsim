@@ -69,13 +69,13 @@ classdef atoms < handle
 					this.natoms = natoms; 
 
 					this.r0 = [x', y', z']; this.rl = [x', y', z'];
+					this.boxcross = int32(zeros(natoms, 3)); 
 
 				elseif strcmp(format, "mat")
 					load(fnameOrSize);					
-					this.r=r; this.v=v; this.f=f; this.m=m; this.q=q; this.t=t; 
-					this.rl = rl; this.natoms = natoms; this.lbox = lbox;
-					this.r0 = r; #[x', y', z'];
-					this.boxcross = boxcross;
+					this.r = r; this.v = v; this.f = f; this.m = m; this.q = q; this.t = t; 
+					this.rl = rl; this.r0 = r0; this.boxcross = int32(boxcross);
+					this.natoms = natoms; this.lbox = lbox; 
 				else
 					error("Format not supported");
 				end
@@ -107,6 +107,7 @@ classdef atoms < handle
 				this.natoms = natoms;  
 				this.r0 = [x', y', z']; this.rl = [x', y', z'];
 				this.setvels(temperature);
+				this.boxcross = int32(zeros(natoms, 3)); 
 			end
 			
 			# DPD init
@@ -117,8 +118,7 @@ classdef atoms < handle
 				end
 			end
 
-			this.boxcross = int32(zeros(natoms, 3)); this.update_nblist = true;
-		
+			this.update_nblist = true;
 			this.max_nnb = 3000; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
 			this.max_exclude = 20; this.exclude = -1*int32(ones(natoms, this.max_exclude));
 	
@@ -154,9 +154,10 @@ classdef atoms < handle
 				fclose(fptr);
 			elseif strcmp(format, "mat")		
 				r = this.r; v = this.v; f = this.f; m = this.m; q = this.q; t = this.t; 
-				rl = this.rl; natoms=this.natoms; lbox=this.lbox; boxcross = this.boxcross;
+				rl = this.rl; r0 = this.r0; boxcross = this.boxcross;
+				natoms = this.natoms; lbox = this.lbox; 				
 				
-				save(filename, "r", "v", "f", "m", "q", "t", "rl", "natoms", "lbox", "boxcross");	
+				save(filename, "r", "v", "f", "m", "q", "t", "rl", "r0", "natoms", "lbox", "boxcross");	
 			else
 				error("Format not supported");
 			end

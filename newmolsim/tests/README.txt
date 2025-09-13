@@ -8,4 +8,5 @@
 5: Molecule sim. Checks bond, angle, and dihedral calculations
 6: Charged system 
 7: DPD system. 
+8: Checks save and load functionality
 
