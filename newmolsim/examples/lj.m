@@ -1,8 +1,8 @@
 clear all;
 
-addpath("../mfiles/"); addpath("../mex/");
+addpath("../inst/"); addpath("../src/");
 
-niter = 1e4;
+niter = 1e6;
 
 sim = molsim();
 sim.setconf([10,10,10], [10.557, 10.557, 10.557], 1.0);

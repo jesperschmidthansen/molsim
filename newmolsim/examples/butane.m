@@ -2,7 +2,7 @@
 
 clear all;
 
-addpath("../mfiles/"); addpath("../mex/");
+addpath("../inst/"); addpath("../src/");
 
 niter = 1e4; dt = 1e-3;
 temp0 = 3.0; dens0 = 1.49;

@@ -1,6 +1,6 @@
 clear all;
 
-addpath("../mfiles/"); addpath("../mex/");
+addpath("../inst/"); addpath("../src/");
 
 niter = 1e4; dt = 5e-4;
 temp0 = 3.0;dens0 = 3.16; temp0 = 298.15/78.2; 

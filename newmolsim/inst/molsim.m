@@ -164,9 +164,11 @@ classdef molsim < handle
 		## Example:
 		## >> sim=molsim();
 		## >> sim.setnthreads(4);
-		function setnthreads(this, nthreads)
-			ms_setomp(nthreads);
+		function setnthreads(this, nthreads=4)
+
 			this.nthreads = nthreads;
+			ms_setomp(nthreads);
+
 		end
 
 	end
