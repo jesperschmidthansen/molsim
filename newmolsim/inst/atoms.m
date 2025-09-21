@@ -12,12 +12,10 @@
 classdef atoms < handle
 
 	properties (Access=public)
-		# Atom properties
+		# Atom properties: pos., vel., force, mass, charge, type
 		r, v, f;
 		m, q, t; 
-		# Simulation box crossing
-		boxcross;
-		# Initial and last positions
+		# Last position since neighb. update and lattice position
 		r0; rl;
 		# Number of atoms and simulation box length 
 		natoms,	lbox;
@@ -25,8 +23,10 @@ classdef atoms < handle
 		nblist, max_nnb, update_nblist;
 		# Pair interaction exclusion list
 		exclude, max_exclude;
-		# For dpd
+		# For dpd: Previous vel. and acc.
 		pv, pa;
+		# Simulation box crosses
+		bxcrs;
 	end
 
 	methods
@@ -69,12 +69,12 @@ classdef atoms < handle
 					this.natoms = natoms; 
 
 					this.r0 = [x', y', z']; this.rl = [x', y', z'];
-					this.boxcross = int32(zeros(natoms, 3)); 
+					this.bxcrs = int32(zeros(natoms, 3));
 
 				elseif strcmp(format, "mat")
 					load(fnameOrSize);					
 					this.r = r; this.v = v; this.f = f; this.m = m; this.q = q; this.t = t; 
-					this.rl = rl; this.r0 = r0; this.boxcross = int32(boxcross);
+					this.rl = rl; this.r0 = r0; this.bxcrs = bxcrs;
 					this.natoms = natoms; this.lbox = lbox; 
 				else
 					error("Format not supported");
@@ -107,7 +107,8 @@ classdef atoms < handle
 				this.natoms = natoms;  
 				this.r0 = [x', y', z']; this.rl = [x', y', z'];
 				this.setvels(temperature);
-				this.boxcross = int32(zeros(natoms, 3)); 
+
+				this.bxcrs = int32(zeros(natoms,3));
 			end
 			
 			# DPD init
@@ -154,10 +155,10 @@ classdef atoms < handle
 				fclose(fptr);
 			elseif strcmp(format, "mat")		
 				r = this.r; v = this.v; f = this.f; m = this.m; q = this.q; t = this.t; 
-				rl = this.rl; r0 = this.r0; boxcross = this.boxcross;
+				rl = this.rl; r0 = this.r0; bxcrs = this.bxcrs; 
 				natoms = this.natoms; lbox = this.lbox; 				
 				
-				save(filename, "r", "v", "f", "m", "q", "t", "rl", "r0", "natoms", "lbox", "boxcross");	
+				save(filename, "r", "v", "f", "m", "q", "t", "rl", "r0", "natoms", "lbox", "bxcrs");	
 			else
 				error("Format not supported");
 			end

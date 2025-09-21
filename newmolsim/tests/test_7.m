@@ -3,7 +3,7 @@ function [ekin, epot] = test_7()
 
 	addpath("../inst/"); addpath("../src/");
 
-	niter = 2e3; dt = 0.01; temperature = 1.0;
+	niter = 2e4; dt = 0.01; temperature = 1.0;
 	
 	sim = molsim();
 	sim.setconf([10,10,10], [6.3, 6.3, 6.3], temperature);
@@ -28,12 +28,11 @@ function [ekin, epot] = test_7()
 	 
 	index = [1:n];
 	plot(index, ekin, ";ekin;", index, epot, ";epot;", index, epot+ekin, ";etot;")
-	print("test_0.pdf", '-dpdf');
+	print("test_7.pdf", '-dpdf');
 
 	printf("test_7 output:\n");
 	printf("Etot: %1.3e +/- %1.3e   ", mean(etot), std(etot));
 	printf("Momentum: %e %e %e\n", mom(1), mom(2), mom(3));
 	printf("Steps per build  %.1f\n", spnb);
 
-	max(max(sim.atoms.v))
 end

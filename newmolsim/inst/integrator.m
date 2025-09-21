@@ -32,7 +32,7 @@ classdef integrator < handle
 		## Returns kinetic energy and kinetic part of the pressure 
 		function [ekin Pkin]= lf(this, atoms, interactions)
 			
-			[ekin Pkin] = ms_leapfrog(atoms.v, atoms.r, atoms.f, atoms.m, atoms.boxcross, atoms.lbox, atoms.natoms, this.dt);					
+			[ekin Pkin] = ms_leapfrog(atoms.v, atoms.r, atoms.f, atoms.m, atoms.bxcrs, atoms.lbox, atoms.natoms, this.dt);					
 			
 			interactions.first_call = true;	
 			this.sidx++;
@@ -46,7 +46,7 @@ classdef integrator < handle
 		function ekin = dpd(this, atoms, interactions, lambda)
 
 			ekin = ms_verlet_dpd(atoms.r, atoms.v, atoms.f, atoms.pa, atoms.pv, atoms.m, ... 
-								atoms.boxcross, atoms.lbox, atoms.natoms, this.dt, this.sidx, lambda);		
+								atoms.bxcrs, atoms.lbox, atoms.natoms, this.dt, this.sidx, lambda);		
 			
 			interactions.first_call = true;	
 			this.sidx++;
