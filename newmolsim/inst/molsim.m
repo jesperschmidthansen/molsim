@@ -15,10 +15,10 @@ classdef molsim < handle
 		# Classes
 		atoms;
 		
-		integrator;
+		integrator;  
 		thermostat;
 
-		pairforce;
+		pairforce;  
 		bonds;
 		angles;
 		dihedrals;
@@ -67,7 +67,7 @@ classdef molsim < handle
 			this.volume = this.lbox(1)*this.lbox(2)*this.lbox(3);
 			this.nthreads = 4;
 
-			this.integrator = integrator();
+			this.integrator = integrator(); 
 			this.pairforce = prforce(); 
 			this.thermostat = thermostat(this.atoms);
 
@@ -171,6 +171,73 @@ classdef molsim < handle
 
 		end
 
+		## Usage: lennardjones(atom types, lj params)
+		## 
+		## Calculates the Lennard-Jones pair force between particles
+		##
+		## Example
+		## >> sim = molsim();
+		## >> sim.setconf([10,10,10],[11, 11, 23], 1.0);
+		## >> [epot, Pconf] = sim.lennardjones("AA", [2.5,1.0,1.0,0.0]);
+		function [epot Ppot] = lennardjones(this, atypes, params)
+			[epot, Ppot] = this.pairforce.lj(this.atoms, atypes, params);			
+		end
+
+		## Usage: sfcoulomb(cutoff)
+		##
+		## Calculates the Coulomb interactions using a shifted force method
+		## See e.g. Hansen et al., J. Phys. Chem. B, 5738:116 (2012) 
+		##
+		## Example: see water.m 
+		function [epot Ppot] = sfcoulomb(this, cutoff)
+			[epot, Ppot] = this.pairforce.sf(this.atoms, cutoff);
+		end
+ 
+		## Usage: harmonicbond(bond type)
+		##
+		## Calculates the bond forces using a harmonic bond potential
+		##
+		## Example: see butane.m
+		function epot = harmonicbond(this, btype)
+			epot = this.bonds.harmonic(this.atoms, btype);
+		end
+
+		## Usage: harmonicangle(angle type)
+		##
+		## Calculates the angle forces using a harmonic angle potential
+		##
+		## Example: see butane.m
+		function epot = harmonicangle(this, atype)
+			epot = this.angles.harmonic(this.atoms, atype);
+		end
+
+		## Usage: ryckbell(dihed. type)
+		## 
+		## The Ryckaert-Bellemann dihedral model
+		##
+		## Example: see butane.m
+		function epot = ryckbell(this, dtype)
+			epot = this.dihedrals.ryckbell(this.atoms, dtype);
+		end
+
+		## Usage: leapfrog()
+		##
+		## Integrate forward one step using the leap-frog algorithm
+		##
+		## Example: see lj.m
+		function [ekin Pkin] = leapfrog(this)
+			[ekin, Pkin] = this.integrator.lf(this.atoms, this.pairforce);
+		end
+
+		## Usage: nosehoover()
+		##
+		## Apply the Nose-Hoover termostat for NVT simulations
+		## See also documentation for thermostat
+		function nosehoover(this)
+			this.thermostat.nosehoover(this.atoms);
+		end
+
+			
 	end
 
 end

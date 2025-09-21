@@ -7,7 +7,7 @@ addpath("../inst/"); addpath("../src/");
 niter = 1e4; dt = 1e-3;
 temp0 = 3.0; dens0 = 1.49;
 
-molconfgen("butane.xyz", "butane.top", 500, 0.1);
+molconfgen("../resources/molconf/butane.xyz", "../resources/molconf/butane.top", 500, 0.1);
 
 sim = molsim();
 sim.setconf("conf.xyz");
@@ -33,14 +33,14 @@ sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 
 
 for n=1:niter
-	sim.pairforce.lj(sim.atoms, "CC", [2.5, 1.0, 1.0, 1.0]);   
+	sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
 	
-	sim.bonds.harmonic(sim.atoms, 0);
-	sim.angles.harmonic(sim.atoms, 0);
-	sim.dihedrals.ryckbell(sim.atoms, 0);
+	sim.harmonicbond(0);
+	sim.harmonicangle(0);
+	sim.ryckbell(0);
 
-	sim.thermostat.nosehoover(sim.atoms);
-	ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
+	sim.nosehoover();
+	sim.leapfrog();
 	
 	if rem(n, 10)==0
 		sim.scalebox(dens0);
