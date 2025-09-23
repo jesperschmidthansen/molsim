@@ -10,8 +10,8 @@ function test_3()
 	sim.setconf([10,10,10], [11, 11, 11], 2.0);
 
 	sim.atoms.t(1:500)='W';	sim.atoms.t(501:end) = 'F';
-
-	sim.thermostat.t = 'W';
+	sim.thermostat.temperature = T0;
+	sim.thermostat.settype(sim.atoms, 'W');
 	
 	ekin = zeros(niter,1); 
 	for n=1:niter
@@ -21,7 +21,7 @@ function test_3()
 		
 		sim.atoms.tether('W', 300);
 	
-		sim.thermostat.nosehoover(sim.atoms);
+		sim.thermostat.nosehoover(sim.atoms, sim.integrator.dt);
 		ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
 	end
 

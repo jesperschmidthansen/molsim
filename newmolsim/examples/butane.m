@@ -13,7 +13,7 @@ sim = molsim();
 sim.setconf("conf.xyz");
 
 sim.integrator.dt = dt;
-sim.thermostat.temperature = temp0;
+sim.thermostat.temperature= temp0;
 
 sim.setbonds("bonds.top");
 nbonds = sim.bonds.nbonds;
@@ -31,21 +31,27 @@ end
 
 sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 
+ekin = zeros(niter,1); epot = zeros(niter,1);
 
 for n=1:niter
-	sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
+	epot(n) = sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
 	
-	sim.harmonicbond(0);
-	sim.harmonicangle(0);
-	sim.ryckbell(0);
+	epot(n) += sim.harmonicbond(0);
+	epot(n) += sim.harmonicangle(0);
+	epot(n) += sim.ryckbell(0);
 
 	sim.nosehoover();
-	sim.leapfrog();
+	ekin(n) = sim.leapfrog();
 	
 	if rem(n, 10)==0
 		sim.scalebox(dens0);
 	end
 
 end
+sim.natoms/sim.volume
 
 sim.atoms.save("final.xyz");
+
+plot([1:niter], ekin/sim.natoms, [1:niter], epot/sim.natoms, [1:niter], (epot+ekin)./sim.natoms);
+pause(10);
+

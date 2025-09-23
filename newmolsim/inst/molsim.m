@@ -69,7 +69,7 @@ classdef molsim < handle
 
 			this.integrator = integrator(); 
 			this.pairforce = prforce(); 
-			this.thermostat = thermostat(this.atoms);
+			this.thermostat = thermostat();
 
 		end
 
@@ -154,7 +154,9 @@ classdef molsim < handle
 			
 			this.volume = prod(this.lbox);
 			this.atoms.lbox = this.lbox;
-				
+
+			# Ensures neighbourlist rebuild
+			this.pairforce.first_call_simulation = true;				
 		end
 
 		## Usage: setnthreads(number of threads)
@@ -229,12 +231,20 @@ classdef molsim < handle
 			[ekin, Pkin] = this.integrator.lf(this.atoms, this.pairforce);
 		end
 
+		function setthermostat(this, atype, temperature, tauQ=10.0)
+
+			this.thermostat.settype(this.atoms, atype);
+			this.thermostat.temperature = temperature;
+
+		end 
+
+
 		## Usage: nosehoover()
 		##
 		## Apply the Nose-Hoover termostat for NVT simulations
 		## See also documentation for thermostat
 		function nosehoover(this)
-			this.thermostat.nosehoover(this.atoms);
+			this.thermostat.nosehoover(this.atoms, this.integrator.dt);
 		end
 
 			

@@ -14,7 +14,8 @@ classdef prforce < handle
 	properties (Access=public) 
 		max_cutoff, skin;
 		neighb_updates;
-		first_call, first_call_simulation;
+		first_call; 
+		first_call_simulation;
 	end
 
 	methods
@@ -41,7 +42,8 @@ classdef prforce < handle
 				atoms.f = zeros(atoms.natoms, 3); 
 				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.lbox, atoms.natoms);
 				if this.first_call_simulation || dr2 > this.skin*this.skin 
-					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, this.skin, atoms.natoms, atoms.exclude);
+					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, 
+									this.skin, atoms.natoms, atoms.exclude);
 					this.neighb_updates ++;
 				end
 				this.first_call = false;

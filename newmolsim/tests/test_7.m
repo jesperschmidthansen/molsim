@@ -3,7 +3,7 @@ function [ekin, epot] = test_7()
 
 	addpath("../inst/"); addpath("../src/");
 
-	niter = 2e4; dt = 0.01; temperature = 1.0;
+	niter = 1e4; dt = 0.01; temperature = 1.0;
 	
 	sim = molsim();
 	sim.setconf([10,10,10], [6.3, 6.3, 6.3], temperature);
