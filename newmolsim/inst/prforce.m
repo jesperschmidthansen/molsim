@@ -40,7 +40,7 @@ classdef prforce < handle
 	
 			if this.first_call # first_call set to true in integrator
 				atoms.f = zeros(atoms.natoms, 3); 
-				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.lbox, atoms.natoms);
+				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.lbox);
 				if this.first_call_simulation || dr2 > this.skin*this.skin 
 					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, 
 									this.skin, atoms.natoms, atoms.exclude);

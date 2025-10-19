@@ -1,7 +1,7 @@
 #include <octave/oct.h>
 #include <omp.h>
 
-#define HELPTXT ("Usage: ms_setomp(numthreads) \n\n Sets the number of threads to numthreads\n")
+#define HELPTXT ("Usage: ms_setomp(numthreads) \n\nSets the number of threads to numthreads\n")
 
 DEFUN_DLD(ms_setomp, args, ,HELPTXT){
 	octave_value_list retval;
