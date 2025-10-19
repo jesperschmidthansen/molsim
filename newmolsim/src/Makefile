@@ -15,7 +15,7 @@ all: $(mexs) $(octs)
 	$(CC) $(FLAGS) --mex $< -o $@
 
 %.oct: %.cpp
-	$(CC) $< -o $@
+	$(CC) $(FLAGS) $< -o $@
 
 clean:
 	rm -f *.mex *.oct
