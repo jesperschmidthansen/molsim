@@ -1,15 +1,23 @@
 
 CC = mkoctfile
-FLAGS = -Wall -Wextra -Ofast --mex
+FLAGS += -Wall -Wextra -Ofast 
 
-srcs = $(wildcard *.c)
-mexs = $(srcs:.c=.mex)
+srcm = $(wildcard *.c)
+mexs = $(srcm:.c=.mex)
 
-all: $(mexs)
+srco = $(wildcard *.cpp)
+octs = $(srco:.cpp=.oct)
+
+
+all: $(mexs) $(octs)
 
 %.mex: %.c
-	$(CC) $(FLAGS) $< -o $@
+	$(CC) $(FLAGS) --mex $< -o $@
+
+%.oct: %.cpp
+	$(CC) $< -o $@
 
 clean:
-	rm -f *.mex
-	touch *.c
+	rm -f *.mex *.oct
+	touch *.c *.cpp
+
