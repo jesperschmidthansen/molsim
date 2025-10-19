@@ -174,9 +174,7 @@ classdef atoms < handle
 		## Example:
 		## >> atoms.tether('W', 100.0);
 		function tether(this, ptype, kspring)
-				
 			ms_tether(this.f, this.r, this.rl, ptype, this.t, kspring, this.lbox, this.natoms);
-			
 		end
 
 		## Usage: mvlattice(atom type, distance)
