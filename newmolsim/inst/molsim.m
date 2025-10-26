@@ -173,6 +173,36 @@ classdef molsim < handle
 
 		end
 
+		## Usage addatom(position, atom type, mass, charge)
+		##
+		## Inserts an atom at a particular position. NOTE: position 
+		## should be different from any other atom's position 
+		##
+		## Example
+		## >> sim = molsim();
+		## >> sim.setconf([10,10,10],[11, 11, 23], 1.0);
+		## >> sim.addatom(rand*sim.lbox, 'B', 2.0, -2.);
+		function addatom(this, r, atype, mass, charge)
+		
+			this.natoms = this.natoms + 1;
+			this.atoms.natoms = this.natoms;
+
+			this.atoms.r = [this.atoms.r; r];
+			this.atoms.rl = [this.atoms.rl; r];
+			this.atoms.r0 = [this.atoms.r0; r];
+			this.atoms.v = [this.atoms.v; rand(1,3)];
+			this.atoms.f = [this.atoms.f; [0,0,0]];
+				
+			this.atoms.t = [this.atoms.t; atype(1)];
+			this.atoms.m = [this.atoms.m; mass];
+			this.atoms.q = [this.atoms.q; charge];
+
+			this.atoms.nblist = [this.atoms.nblist; -1*int32(ones(1, this.atoms.max_nnb))];
+			this.atoms.exclude = [this.atoms.exclude; -1*int32(ones(1, this.atoms.max_exclude))];
+			this.atoms.bxcrs = [this.atoms.bxcrs; [0,0,0]];
+		end
+
+
 		## Usage: lennardjones(atom types, lj params)
 		## 
 		## Calculates the Lennard-Jones pair force between particles
