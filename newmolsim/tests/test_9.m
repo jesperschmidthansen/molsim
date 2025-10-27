@@ -23,6 +23,7 @@ function [epot, ekin] = test_9()
 
 		if epsilon < 1.0
 			epsilon += 1e-3;
+			sim.atoms.resetmom();
 		end
 	end
 
