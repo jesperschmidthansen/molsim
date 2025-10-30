@@ -1,11 +1,11 @@
 #include <octave/oct.h>
 
 
-DEFUN_DLD(evcorr_2, args, , "usage:c = evcorr(a,b)"){
+DEFUN_DLD(ms_evcorr, args, , "usage:c = ms_evcorr(a,b)"){
 	octave_value_list retval;
 
 	if ( args.length() != 2 ) {
-		error("evcorr: Incorrect input\n");
+		error("ms_evcorr: Incorrect input\n");
 		return retval;
 	}
 
