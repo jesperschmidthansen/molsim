@@ -10,10 +10,10 @@ cutoff = 2.9;
 lbond = 0.316; kspring = 68421; 
 angle = 1.97; kangle = 490;
 
-#molconfgen("../resources/molconf/water.xyz", "../resources/molconf/water.top", 2000, 0.1);
+molconf("../resources/molconf/water.xyz", "../resources/molconf/water.top", [15, 15, 15], 3.0);
 
 sim = molsim();
-sim.setconf("conf.xyz");
+sim.setconf("start.xyz");
 sim.atoms.setvels(temp0);
 sim.pairforce.max_cutoff = cutoff;
 sim.integrator.dt = dt;
@@ -21,11 +21,13 @@ sim.thermostat.temperature = temp0;
 
 sim.setbonds("bonds.top");
 nbonds = sim.bonds.nbonds;
-sim.bonds.springs = kspring*ones(nbonds,1); sim.bonds.l0 = lbond*ones(nbonds,1); 
+sim.bonds.springs = kspring*ones(nbonds,1); 
+sim.bonds.l0 = lbond*ones(nbonds,1); 
 
 sim.setangles("angles.top");
 nangles = sim.angles.nangles;	
-sim.angles.springs = kangle*ones(nangles,1); sim.angles.a0 = angle*ones(nangles, 1);
+sim.angles.springs = kangle*ones(nangles,1); 
+sim.angles.a0 = angle*ones(nangles, 1);
 
 sim.atoms.setexclusions(sim.angles.pidx, "angles");
 

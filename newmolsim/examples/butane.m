@@ -7,10 +7,10 @@ addpath("../inst/"); addpath("../src/");
 niter = 1e4; dt = 1e-3;
 temp0 = 3.0; dens0 = 1.49;
 
-molconfgen("../resources/molconf/butane.xyz", "../resources/molconf/butane.top", 500, 0.1);
+molconf("../resources/molconf/butane.xyz", "../resources/molconf/butane.top", [10 10 10], 4.0);
 
 sim = molsim();
-sim.setconf("conf.xyz");
+sim.setconf("start.xyz");
 
 sim.integrator.dt = dt;
 sim.thermostat.temperature= temp0;
