@@ -43,6 +43,10 @@ classdef thermostat < handle
 			end
 		end
 
+		function relaxttemp(this, atoms, type, temperature, tauQ=0.01)
+			ms_relaxtemp(atoms.v, type, atoms.natoms, atoms.t, atoms.m, tauQ, temperature);
+		end
+
 		## Usage: nosehoover(atoms, dt)
 		##
 		## Add force to the atoms of specified type (see constructor) in accordance with the
