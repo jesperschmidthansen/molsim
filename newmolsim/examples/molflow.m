@@ -9,7 +9,7 @@ temp0 = 3.0;
 dztot = 0.0; dz = 1e-3;
 
 molconf("../resources/molconf/diatomic.xyz", "../resources/molconf/diatomic.top", [5 5 40], 2.0);
-molslitpore("start.xyz", [3.0 3.0], [1.0, 1.0]);
+molslitpore("start.xyz", [3.0, 3.0], [1.0, 1.0]);
 
 sim = molsim();
 sim.setconf("molslitpore.xyz");

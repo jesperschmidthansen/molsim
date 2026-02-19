@@ -42,7 +42,7 @@ function molslitpore(xyzmol, wthickness, rho)
 	fout = fopen("molslitpore.xyz", "w");	
 	fprintf(fout, "%d\n", natoms);
 	fprintf(fout, "%f %f %f\n", lbox(1), lbox(2), lbox(3)+wthickness(1)+wthickness(2));
-
+	
 	# just copying	
 	for n=1:natomsMols
 		fprintf(fout, "%c %f %f %f %f %f %f %f %f\n", t(n), pos(n,1), pos(n,2), pos(n,3), ...
