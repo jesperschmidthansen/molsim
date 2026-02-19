@@ -16,7 +16,7 @@ sim.setconf("molslitpore.xyz");
 
 sim.integrator.dt = dt;
 
-sim.setbonds("bonds.top");
+sim.settop();
 nbonds = sim.bonds.nbonds;
 sim.bonds.springs = 200*ones(nbonds,1); sim.bonds.l0 = 1.0*ones(nbonds,1); 
 

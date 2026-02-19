@@ -28,6 +28,9 @@ classdef molsim < handle
 		lbox; volume;
 		temperature;
 
+		# Molecule info
+		nmols; atom_idxs; 
+
 		# Misc. properties
 		nthreads;
 	end
@@ -81,8 +84,8 @@ classdef molsim < handle
 		## >> sim = molsim();
 		## >> sim.setbonds("bonds.top");
 		##
-		## See molconfgen 
-		function setbonds(this, fname)
+		## See molconf 
+		function setbonds(this, fname, molinfo=false)
 			
 			_bonds = load(fname); 
 			_nbonds = rows(_bonds);
@@ -90,6 +93,12 @@ classdef molsim < handle
 			this.bonds = bonds(_nbonds);
 			this.bonds.pidx = _bonds(:,2:3) + 1;
 			this.bonds.btypes = _bonds(:,4);			
+ 
+			if molinfo
+				load molinfo.mat 
+				this.nmols = nmols;
+				this.atom_idxs = atom_idxs;
+			end
  
 		end
 
@@ -101,7 +110,7 @@ classdef molsim < handle
 		## >> sim = molsim();
 		## >> sim.setangles("angles.top");
 		##
-		## See molconfgen 
+		## See molconf 
 		function setangles(this, fname)
 			
 			_angles = load(fname); 
@@ -121,7 +130,7 @@ classdef molsim < handle
 		## >> sim = molsim();
 		## >> sim.setdihedrals("dihedrals.top");
 		##
-		## See molconfgen 
+		## See molconf 
 		function setdihedrals(this, fname)
 			
 			_dihedrals = load(fname); 
@@ -133,7 +142,32 @@ classdef molsim < handle
  
 		end
 
-		
+		## Usage: settop()
+		##
+		## Read topology files generated molconf 
+		## 
+		## Example:
+		## >> system("rm bonds.top angles.top dihedrals.top"); 
+		## molconf("water.xyz", "water.top", [10 10 10], 2.0);  
+		## sim = molsim(); 
+		## sim.setconf("start.xyz"); 
+		## sim.settop();
+		##
+		## See also water.m in examples/
+		function settop(this)
+
+			if exist("bonds.top")
+				this.setbonds("bonds.top", true); 
+			end
+			if exist("angles.top")
+				this.setangles("angles.top"); 
+			end
+			if exist("dihedrals.top")
+				this.setdihedrals("dihedrals.top");
+			end
+
+		end
+
 		## Usage: scalebox(target density)
 		##        scalebox(target density, directions, scale factor)
 		##
@@ -278,6 +312,22 @@ classdef molsim < handle
 		end
 
 			
+		## Usage: rmol = getmolpos()
+		##
+		## Get molecular centre of mass
+		##
+		## Example:
+		## >> molconf("butane.xyz", "butane.top", [5 5 20], 3.0);
+		## >> sim = molsim();
+		## >> sim.setconf("start.xyz"); sim.settop();
+		## >> sim.getmolpos()
+		function rmols = getmolpos(this)
+			nuau = columns(this.atom_idxs);
+			rmols = ms_calcmolpos(this.atoms.r, this.atoms.m, this.natoms, ...
+									this.atom_idxs, nuau, this.atoms.bxcrs, this.lbox); 
+		end
+		
+		
 	end
 
 end

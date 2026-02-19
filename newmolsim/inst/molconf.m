@@ -1,8 +1,9 @@
 
 
-function molconf(xyzfile, topfile, numdim, offset = 10.0)
+function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0)
 
-
+	nmols = prod(numdim);
+	
 	### Positions
 	[t, pos, mass, charge] = rpos(xyzfile);
 	
@@ -38,6 +39,16 @@ function molconf(xyzfile, topfile, numdim, offset = 10.0)
 		wdihedrals(numdim, nuau, dinfo);
 	end
 	
+	### Mol. details to return 
+	atom_idxs = zeros(nmols, nuau);
+	for n=1:nmols
+		for m=1:nuau
+			atom_idxs(n,m) = (n-1)*nuau + m;
+		end
+	end
+
+	save molinfo.mat nmols atom_idxs;
+
 endfunction
 
 function [t, pos, mass, charge] = rpos(xyzfile)
