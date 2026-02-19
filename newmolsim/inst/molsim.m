@@ -312,18 +312,18 @@ classdef molsim < handle
 		end
 
 			
-		## Usage: rmol = getmolpos()
+		## Usage: [rmol masses] = getmolpos()
 		##
-		## Get molecular centre of mass
+		## Get molecular centre of masses and molecular masses
 		##
 		## Example:
 		## >> molconf("butane.xyz", "butane.top", [5 5 20], 3.0);
 		## >> sim = molsim();
 		## >> sim.setconf("start.xyz"); sim.settop();
 		## >> sim.getmolpos()
-		function rmols = getmolpos(this)
+		function [rmols mmols] = getmolpos(this)
 			nuau = columns(this.atom_idxs);
-			rmols = ms_calcmolpos(this.atoms.r, this.atoms.m, this.natoms, ...
+			[rmols mmols] = ms_calcmolpos(this.atoms.r, this.atoms.m, this.natoms, ...
 									this.atom_idxs, nuau, this.atoms.bxcrs, this.lbox); 
 		end
 		
