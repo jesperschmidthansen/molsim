@@ -61,14 +61,13 @@ classdef prforce < handle
 		## more details.
 		##
 		## atoms types are given by a string, e.g. "AA"
-		## parameters is a 4-vector [cut-off, sigma, epsilon, aw] 
+		## parameters is a 4-vector [cut-off, epsilon, sigma, aw] 
 		## 
 		## Example: 
 		## >> epot = sim.prforce.lj(sim.atoms, "AB", [2.5, 1.0, 1.0, 1.0]);
 		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
 			this.iteration_start(atoms, ljparams(1));
 			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
-			
 		end	
 
 		## Usage: [epot Pconf] = sf(atoms, cut-off)

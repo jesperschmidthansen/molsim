@@ -240,13 +240,14 @@ classdef molsim < handle
 		## Usage: lennardjones(atom types, lj params)
 		## 
 		## Calculates the Lennard-Jones pair force between particles
+		## lj parameters is a 4-vector [cut-off, epsilon, sigma, aw]
 		##
 		## Example
 		## >> sim = molsim();
 		## >> sim.setconf([10,10,10],[11, 11, 23], 1.0);
 		## >> [epot, Pconf] = sim.lennardjones("AA", [2.5,1.0,1.0,0.0]);
 		function [epot Ppot] = lennardjones(this, atypes, params)
-			[epot, Ppot] = this.pairforce.lj(this.atoms, atypes, params);			
+			[epot, Ppot] = this.pairforce.lj(this.atoms, atypes, params);		
 		end
 
 		## Usage: sfcoulomb(cutoff)
@@ -323,7 +324,7 @@ classdef molsim < handle
 		## >> sim.getmolpos()
 		function [rmols mmols] = getmolpos(this)
 			nuau = columns(this.atom_idxs);
-			[rmols mmols] = ms_calcmolpos(this.atoms.r, this.atoms.m, this.natoms, ...
+			[rmols mmols] = ms_calcmolpos(this.atoms.r, this.atoms.m, nuau*this.nmols, ...
 									this.atom_idxs, nuau, this.atoms.bxcrs, this.lbox); 
 		end
 		
@@ -338,7 +339,7 @@ classdef molsim < handle
 		## >> sim.getmolvel()
 		function vmols = getmolvel(this)
 			nuau = columns(this.atom_idxs);
-			vmols = ms_calcmolvel(this.atoms.r, this.atoms.m, this.natoms, this.atom_idxs, nuau); 
+			vmols = ms_calcmolvel(this.atoms.r, this.atoms.m, nuau*this.nmols, this.atom_idxs, nuau); 
 		end
 		
 	end
