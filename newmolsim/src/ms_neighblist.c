@@ -40,7 +40,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 			fprintf(stderr, "Number of cells in %d direction less than three - BAILING OUT!", ncells[k]);
   		lcells[k] = lbox[k]/ncells[k];
 	}
-
 	// Allocate/prepare for cell list build
 	int *cell_list = malloc(sizeof(int)*(npart + ncells[0]*ncells[1]*ncells[2]));
 	if ( cell_list == NULL ) {
@@ -49,7 +48,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	}
 
 	_build_cell_list(cell_list, r, ncells, lcells, npart);
-	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, MAX_NNEIGHB, exclusion_list, MAX_EXCLUSIONS);
+	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, 
+											MAX_NNEIGHB, exclusion_list, MAX_EXCLUSIONS);
 
 	for ( unsigned n=0; n<npart; n++ ){
 		for ( unsigned k=0; k<3; k++ ){
@@ -95,11 +95,19 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 	
 	size_t nbytes = sizeof(int)*npart;
 	int *index = malloc(nbytes); 
+	if ( index==NULL ){
+		fprintf(stderr, "%s at %d: Mem. allocation error", __func__, __LINE__);
+		exit(EXIT_FAILURE);
+	}
 	memset(index, 0, nbytes);
 
 	nbytes = sizeof(int)*(npart+1);
 	int *icc = malloc(nbytes); 
-	memset(index, 0, nbytes);
+	if ( icc==NULL ){
+		fprintf(stderr, "%s at %d: Mem. allocation error", __func__, __LINE__);
+		exit(EXIT_FAILURE);
+	}
+	memset(icc, 0, nbytes);
 	
 	unsigned nsubbox2 = nsubbox[1]*nsubbox[0]; 
 	unsigned nsubbox3 = nsubbox[2]*nsubbox2;
@@ -131,7 +139,6 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 				for ( int i=0; i<nccell; i++ ){
 
 					j1 = icc[i];
-
 					// Over neighb. cells
 					for ( unsigned offset = 0; offset < 14; offset++ ) { 
 
@@ -168,7 +175,7 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 										neighb_list[index[j1]*npart + j1] = j2;
 										index[j1]++;
 									}	  
-
+									
 									if ( index[j1] == (int)max_nneighb ){
 										fprintf(stderr, "Found too many neighbours - Bailing out!");
 										exit(EXIT_FAILURE);
@@ -177,13 +184,13 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 							}		
 							// Get next particle in list for cell m2 
 							j2 =cell_list[j2+nsubbox3]; 
-						}
-					} 
+						} // while
+					}// for
 				}
 			} } }
 
-	free(index);
 	free(icc);
+	free(index);
 }
 
 bool _check_exclusion(int *exclusion_list, int idx_0, int idx_1, unsigned npart, unsigned max_exclusion){

@@ -33,26 +33,24 @@ classdef prforce < handle
 
 	
 		function iteration_start(this, atoms, cutoff)
-	
+		
 			if ( this.first_call_simulation && cutoff > this.max_cutoff )
 				error("There is a pair force with too large cutoff; change max_cutoff in prforce class");
 			end
-	
+
 			if this.first_call # first_call set to true in integrator
-				
 				atoms.f = zeros(atoms.natoms, 3);
 				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.lbox, atoms.natoms);
-				
 				if this.first_call_simulation || dr2 > this.skin*this.skin 
 					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, 
 									this.skin, atoms.natoms, atoms.exclude);
 					this.neighb_updates ++;
 				end
-				
 				this.first_call = false;
 				this.first_call_simulation = false;
 				
 			end
+	
 		end
 
 		## Usage: [epot Pconf] = lj(atoms, atom types, parameters)
@@ -70,6 +68,7 @@ classdef prforce < handle
 		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
 			this.iteration_start(atoms, ljparams(1));
 			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
+			
 		end	
 
 		## Usage: [epot Pconf] = sf(atoms, cut-off)
