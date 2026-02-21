@@ -37,13 +37,13 @@ I encourage anyone who uses or plans to use molsim to submit problematic issues 
 </p>
 
 <h2>Why MEX?</h2>
-GNU Octave offers fantastic C++ interface with dynamically linked functions (DLDs). However, I find
-the pure C MEX interface to produce faster running binaries. This is perhaps due to call-by-value and
-call-by-reference strategies giving DLDs an additional copying overhead.    
+<p>GNU Octave offers fantastic C++ interface with the dynamically linked functions (DLDs). However, I find the pure C MEX interface to produce faster running binaries. This is perhaps due to call-by-value interface giving DLDs an additional copying overhead.    
+</p>
 
-Consider the two functions below. 
+<p>
+The test: The functions below shows a DLD and a MEX version of a function that calculates the sum of an array and updates the array with a number; this is a relevant task in molecular dynamics. 
 <table>
- <tr> <td> DLD</td><td>MEX</td></tr>
+ <tr> <td> DLD msum_oct.cpp </td><td>MEX msum_mex.c</td></tr>
 <tr>
  <td>
   
@@ -100,8 +100,17 @@ DEFUN_DLD(msum_oct, args, ,""){
 </code></pre>
 </td>
 </table>
+</td>
+</p>
 
-<p> dsds </p>
+<p>The functions are compiled with or without <code>-Ofast</code> flag. Timing is done by 
+<pre><code>
+>> A=randn(1000, 1000); s=zeros(40, 1);
+>> for n=1:40; tic(); [s(n) A]= msum_oct(A); s(n) = toc(); end;
+>> sum(s), mean(s), std(s)
+</code></pre>
+and likwise for msum_mex. This shows a speed-up of a factor of approximately 2 on my computer. The actual speed-up depends on the array size, hardware, etc.   
+</p>
 
 
 <h2>To-do</h2>
