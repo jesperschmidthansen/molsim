@@ -50,7 +50,7 @@ Consider the two functions below.
 </tr>
 <tr>
 <th>
- <code>
+ <pre>
 #include <octave/oct.h>
 
 DEFUN_DLD(msum_oct, args, ,""){
@@ -77,7 +77,7 @@ DEFUN_DLD(msum_oct, args, ,""){
 
   return retval;
 }
-</code>                     
+</pre>                     
 </th>
 <th>
 <code>
