@@ -80,7 +80,7 @@ DEFUN_DLD(msum_oct, args, ,""){
  #include "mex.h"
  
  void mexFunction(int nlhs, mxArray *plhs[], 
-                     int nrhs, const mxArray *prhs[]) {
+              int nrhs, const mxArray *prhs[]) {
  
      double *A = mxGetPr(prhs[0]);
      int nrows = mxGetM(prhs[0]);
@@ -89,14 +89,17 @@ DEFUN_DLD(msum_oct, args, ,""){
      double sum=0.0f;
      for (int n=0; n&lt;nrows; n++) {
         for (int m=0; m&lt;ncols; m++) {
-            int idx = m*nrows + n;
-            sum += A[idx];
-            A[idx] += 1.0;
+           int idx = m*nrows + n;
+           sum += A[idx];
+           A[idx] += 1.0;
         }
       }
  
       plhs[0] = mxCreateDoubleScalar(sum);
  }
+
+ 
+ 
 </code></pre>
 </td>
 </table>
