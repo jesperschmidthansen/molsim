@@ -42,12 +42,15 @@ the pure C MEX interface to produce faster running binaries. This is perhaps due
 call-by-reference strategies giving DLDs an additional copying overhead.    
 
 Consider the two functions below. 
-<table>
+
+<table style="width:100%">
+<tr> 
+ <th> DLD </th>
+ <th> MEX </th>
+</tr>
 <tr>
-<td>
-<pre>
-{
-<code>
+<th>
+ <code>
 #include <octave/oct.h>
 
 DEFUN_DLD(msum_oct, args, ,""){
@@ -74,11 +77,9 @@ DEFUN_DLD(msum_oct, args, ,""){
 
   return retval;
 }
-</code>                      
-}
-</pre>
-</td>
-<td>
+</code>                     
+</th>
+<th>
 <code>
 #include "mex.h"
  
@@ -100,8 +101,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
      plhs[0] = mxCreateDoubleScalar(sum);
  }
 </code>
+</th>
 </td>
-</tr>
 </table>
 
 <h2>To-do</h2>
