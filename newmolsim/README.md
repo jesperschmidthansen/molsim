@@ -36,6 +36,73 @@ Checkout the project example folder
 I encourage anyone who uses or plans to use molsim to submit problematic issues - this includes issues regarding the documentation. I also welcome contributions to the code for the project, whether it is core features or post simulation data analysis programs. 
 </p>
 
+<h2>Why MEX?</h2>
+GNU Octave offers fantastic C++ interface with dynamically linked functions (DLDs). However, I find
+the pure C MEX interface to produce faster running binaries. This is perhaps due to call-by-value and
+call-by-reference strategies giving DLDs an additional copying overhead.    
+
+Consider the two functions below. 
+<table>
+<tr>
+<td>
+<pre>
+{
+<code>
+#include <octave/oct.h>
+
+DEFUN_DLD(msum_oct, args, ,""){
+   octave_value_list retval;
+
+   Matrix A(args(0).array_value());
+
+   int nrows = A.dim1();
+   int ncols = A.dim2();
+
+  double *Aptr = A.fortran_vec();
+
+  double sum = 0.0f;
+  for ( int n=0; n<nrows; n++ ){
+      for ( int m=0; m<ncols; m++ ){
+          int idx = m*nrows + n;
+          sum += Aptr[idx];
+          Aptr[idx] += 1.0;
+      }
+  }
+
+  retval.append(sum);
+  retval.append(A);
+
+  return retval;
+}
+</code>                      
+}
+</pre>
+</td>
+<td>
+<code>
+#include "mex.h"
+ 
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
+       
+    double *A = mxGetPr(prhs[0]);
+    int nrows = mxGetM(prhs[0]);
+    int ncols = mxGetN(prhs[0]);
+       
+    double sum=0.0f;
+    for ( int n=0; n<nrows; n++ ){
+        for ( int m=0; m<ncols; m++ ){
+              int idx = m*nrows + n;
+             sum += A[idx];
+              A[idx] += 1.0;
+         }
+     }
+  
+     plhs[0] = mxCreateDoubleScalar(sum);
+ }
+</code>
+</td>
+</tr>
+</table>
 
 <h2>To-do</h2>
 Octave now supports object oriented programming. molsim is under complete reconstructed to benefit
