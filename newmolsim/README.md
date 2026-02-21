@@ -37,11 +37,11 @@ I encourage anyone who uses or plans to use molsim to submit problematic issues 
 </p>
 
 <h2>Why MEX?</h2>
-<p>GNU Octave offers fantastic C++ interface with the dynamically linked functions (DLDs). However, I find the pure C MEX interface to produce faster running binaries. This is perhaps due to call-by-value interface giving DLDs an additional copying overhead.    
+<p>GNU Octave offers a fantastic C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
 </p>
 
 <p>
-The test: The functions below shows a DLD and a MEX version of a function that calculates the sum of an array and updates the array with a number; this is a relevant task in molecular dynamics. 
+Test: The functions below shows a DLD and a MEX version of a function that calculates the sum of an array and updates the array with a number; this is a relevant task in molecular dynamics. 
 <table>
  <tr> <td> DLD msum_oct.cpp </td><td>MEX msum_mex.c</td></tr>
 <tr>
@@ -112,7 +112,7 @@ DEFUN_DLD(msum_oct, args, ,""){
 >> for n=1:40; tic(); [s(n) A]= msum_oct(A); s(n) = toc(); end;
 >> sum(s), mean(s), std(s)
 </code></pre>
-and likwise for msum_mex. This shows a speed-up of a factor of approximately 2 on my computer. The actual speed-up depends on the array size, hardware, etc.   
+and likwise for msum_mex. This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up depends on the array size, hardware, optimization flags, etc.   
 </p>
 
 
@@ -123,15 +123,15 @@ from this. Matlab compatibility is not a priority.
 - [ ] Feature: Barostate
 - [ ] Feature: Standard run time sample classes
 - [ ] Feature: Electrostatic interactions using the Wolf scheme
-- [ ] Feature: A set of molecular and atomic configurations 
-- [ ] Feature: Molecular class for infrastructure
+- [X] Feature: A set of molecular and atomic configurations 
+- [X] Feature: Molecular class for infrastructure (contained in molsim class)
 - [ ] Feature: DPD support (initiated)
 - [ ] Revision: Class properties access. Should these be different from public?
 - [ ] Revision: Define class constants with correct properties (Constant=true)
 - [ ] Revision: All classes should have a disp method
 - [ ] Revision: Consider whether methods should have specified properties
 - [ ] Revision: Naming convensions (at the moment none)  
-- [ ] Revision: ms_molconfig is a mess... 
+- [X] Revision: ms_molconfig is a mess... 
 
 </body>
 </html>
