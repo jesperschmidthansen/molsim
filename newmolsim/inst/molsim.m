@@ -22,7 +22,9 @@ classdef molsim < handle
 		bonds;
 		angles;
 		dihedrals;
-		
+	
+		molecules;
+	
 		# Simulation system 	
 		natoms;
 		lbox; volume;
@@ -73,7 +75,7 @@ classdef molsim < handle
 			this.integrator = integrator(); 
 			this.pairforce = prforce(); 
 			this.thermostat = thermostat();
-
+			this.molecules = molecules();
 		end
 
 		## Usage: setbonds(top-file) 
@@ -98,6 +100,9 @@ classdef molsim < handle
 				load molinfo.mat 
 				this.nmols = nmols;
 				this.atom_idxs = atom_idxs;
+	
+				this.molecules.nmols = nmols;
+				this.molecules.atom_idxs = atom_idxs;
 			end
  
 		end

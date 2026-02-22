@@ -63,7 +63,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 
 void _build_cell_list(int *cell_list, double *pos, unsigned *nsubbox, double *lsubbox, unsigned npart){
-
 	const unsigned nsubbox2 = nsubbox[0]*nsubbox[1]; 
 	const unsigned nsubbox3 = nsubbox2*nsubbox[2];
 	const unsigned length = npart + nsubbox3;
@@ -82,7 +81,7 @@ void _build_cell_list(int *cell_list, double *pos, unsigned *nsubbox, double *ls
 		cell_list[n+nsubbox3] = cell_list[i];
 		cell_list[i] = n;  
 	}
-
+	
 }
 
 
