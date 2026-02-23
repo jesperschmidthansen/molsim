@@ -23,7 +23,7 @@ DEFUN_DLD(ms_calcmolpos, args, ,HELPTXT){
 	for ( int n=0; n<nmols; n++ ){
 		double x[100], y[100], z[100]; // trying stack...
 		
-		int aidx = atomIdx(n, 0);
+		int aidx = atomIdx(n, 0) - 1;
 		x[0] = atomPos(aidx, 0);
 		y[0] = atomPos(aidx, 1);
 		z[0] = atomPos(aidx, 2);
