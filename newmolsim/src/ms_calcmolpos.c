@@ -1,11 +1,12 @@
 #include "mex.h"
 #include <stdio.h>
+#include <math.h>
+#include "ms_misc.h"
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 		
 	if ( nlhs > 2 || nrhs != 7 ){
-		printf("%d %d\n", nlhs, nrhs);
 		mexErrMsgTxt("Input error for calcmolpos");
 	}
 
@@ -26,26 +27,50 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	plhs[1] = mxCreateDoubleMatrix(nmols, 1, mxREAL);
 	double *ptr_m = (double *)mxGetPr(plhs[1]);
 
+	double pos[100][3]; 
+
 	for ( unsigned n=0; n<nmols; n++){
         
-		for ( int k=0; k<3; k++ ) ptr[k*nmols + n] = 0.0;
-        double mass = 0.0;
+		unsigned int aidx = (unsigned int)atom_idx[n]-1;
 
-		for ( unsigned i=0; i<nuau; i++ ){
-            unsigned int aidx = (unsigned int)atom_idx[i*nmols+n]-1;
+		for ( int k=0; k<3; k++ ) pos[0][k] = r[k*npart+aidx]; 
+		double mass = amass[aidx];
+
+		for ( unsigned i=1; i<nuau; i++ ){
 			if ( aidx > npart-1 ){
-				mexErrMsgTxt("Boom");
+				mexErrMsgTxt("Atomic index exceeds the number of atoms");
 			}
-		   	mass += amass[aidx];	
+		
+
             for ( int k=0; k<3; k++ ){
-				double rtrue =  r[k*npart+aidx] + cross[k*npart+aidx]*lbox[k]; 
-				ptr[k*nmols + n] += amass[aidx]*rtrue;
-			}
+				double dr =  r[k*npart+aidx] - r[k*npart+aidx-1]; 
+				_Wrap(dr, lbox[k]);				
+				pos[i][k] = pos[i-1][k] + dr;
+			}		
+			mass += amass[aidx];
 		}
 
-		for ( int k=0; k<3; k++ ) ptr[k*nmols + n] /= mass;
+		for ( int k=0; k<3; k++ ){
+			int idx = k*nmols + n; 
+			ptr[idx] = 0.0;
+		}
+		
+		for ( unsigned i=0; i<nuau; i++ ){
+			aidx = (unsigned int)atom_idx[i*nmols+n]-1;
+			for ( int k=0; k<3; k++ ){
+				int idx = k*nmols + n; 
+				ptr[idx] += amass[aidx]*pos[i][k];
+			}
+		}
+					
+		for ( int k=0; k<3; k++ ){
+			int idx = k*nmols + n;
+			ptr[idx] = ptr[idx]/mass;
+			_Periodic0( ptr[idx], lbox[k] );
+		}
 
 		ptr_m[n] = mass;
+
 	}
 
 }
