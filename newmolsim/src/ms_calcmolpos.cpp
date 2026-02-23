@@ -3,7 +3,7 @@
 
 #define HELPTXT ("")
 
-DEFUN_DLD(ms_calcmolpos_oct, args, ,HELPTXT){
+DEFUN_DLD(ms_calcmolpos, args, ,HELPTXT){
 	octave_value_list retval;
 
 	Matrix atomPos(args(0).matrix_value());

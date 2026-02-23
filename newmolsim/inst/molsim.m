@@ -329,8 +329,8 @@ classdef molsim < handle
 		## >> sim.getmolpos()
 		function [rmols mmols] = getmolpos(this)
 			nuau = columns(this.atom_idxs);
-			[rmols mmols] = ms_calcmolpos_oct(this.atoms.r, this.atoms.m, nuau*this.nmols, ...
-												this.atom_idxs, nuau, this.lbox); 
+			[rmols mmols] = ms_calcmolpos(this.atoms.r, this.atoms.m, nuau*this.nmols, ...
+											this.atom_idxs, nuau, this.lbox); 
 
 
 		end
