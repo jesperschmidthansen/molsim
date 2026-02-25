@@ -335,7 +335,7 @@ classdef molsim < handle
 
 		end
 		
-		## Usage: rmol = getmolvel()
+		## Usage: vmol = getmolvel()
 		##
 		## Get molecular centre of velocity
 		##
@@ -348,7 +348,21 @@ classdef molsim < handle
 			nuau = columns(this.atom_idxs);
 			vmols = ms_calcmolvel(this.atoms.r, this.atoms.m, nuau*this.nmols, this.atom_idxs, nuau); 
 		end
-		
+	
+		## Usage: ete = getmolete()
+		##
+		## Get molecular centre of velocity
+		##
+		## Example:
+		## >> molconf("butane.xyz", "butane.top", [5 5 20], 3.0);
+		## >> sim = molsim();
+		## >> sim.setconf("start.xyz"); sim.settop();
+		## >> sim.getmolete()
+		function ete = getmolete(this)
+			nuau = columns(this.atom_idxs);
+			ete = ms_calcmolete(this.atoms.r, this.nmols*nuau, this.atom_idxs, nuau, this.lbox);
+		end
+	
 	end
 
 end
