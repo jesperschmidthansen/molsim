@@ -1,7 +1,7 @@
 #include <octave/oct.h>
 #include "ms_misc.h"
 #include <stdio.h>
-
+#include <stdlib.h>
 #define HELPTXT ("")
 
 DEFUN_DLD(ms_calcmolete, args, ,HELPTXT){
@@ -20,11 +20,12 @@ DEFUN_DLD(ms_calcmolete, args, ,HELPTXT){
 	for ( int n=0; n<nmols; n++ ){
 		int aidx = atomIdx(n, 0) - 1;
 		int bidx = atomIdx(n, nuau-1) - 1;
-				
+
 		for ( int k=0; k<3; k++ ){
 			molEte(n, k) = atomPos(aidx, k) - atomPos(bidx,k);
-			_Wrap(molEte(n,k), lbox(k));
+			_Wrap( molEte(n,k), lbox(k) );
 		}
+
 	}	
 	
 	retval.append(molEte);

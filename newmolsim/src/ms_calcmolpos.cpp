@@ -50,7 +50,7 @@ DEFUN_DLD(ms_calcmolpos, args, ,HELPTXT){
 		
 		for ( int k=0; k<3; k++ ){
 			molPos(n, k) = cm[k]/mass;
-			_Periodic0(cm[k], lbox(k));
+			_Periodic0( molPos(n,k), lbox(k));
 		}
 		molMass(n) = mass;
 	
