@@ -60,9 +60,9 @@ classdef molsim < handle
 		function setconf(this, fnameOrSize, boxLengths, temperature)	
 	
 			if nargin==2
-				this.atoms = atoms(fnameOrSize); 
+				this.atoms = ms_atoms(fnameOrSize); 
 			elseif nargin==4
-				this.atoms = atoms(fnameOrSize, boxLengths, temperature);
+				this.atoms = ms_atoms(fnameOrSize, boxLengths, temperature);
 			else
 				error("Invalid call to setconf");
 			end
@@ -72,10 +72,10 @@ classdef molsim < handle
 			this.volume = this.lbox(1)*this.lbox(2)*this.lbox(3);
 			this.nthreads = 4;
 
-			this.integrator = integrator(); 
-			this.pairforce = prforce(); 
-			this.thermostat = thermostat();
-			this.molecules = molecules();
+			this.integrator = ms_integrator(); 
+			this.pairforce = ms_pairforce(); 
+			this.thermostat = ms_thermostat();
+			this.molecules = ms_molecules();
 		end
 
 		## Usage: setbonds(top-file) 
@@ -86,13 +86,13 @@ classdef molsim < handle
 		## >> sim = molsim();
 		## >> sim.setbonds("bonds.top");
 		##
-		## See molconf 
+		## Also, see molconf 
 		function setbonds(this, fname, molinfo=false)
 			
 			_bonds = load(fname); 
 			_nbonds = rows(_bonds);
 			
-			this.bonds = bonds(_nbonds);
+			this.bonds = ms_bonds(_nbonds);
 			this.bonds.pidx = _bonds(:,2:3) + 1;
 			this.bonds.btypes = _bonds(:,4);			
  
@@ -121,7 +121,7 @@ classdef molsim < handle
 			_angles = load(fname); 
 			_nangles = rows(_angles);
 			
-			this.angles = angles(_nangles);
+			this.angles = ms_angles(_nangles);
 			this.angles.pidx = _angles(:,2:4) + 1;
 			this.angles.atypes = _angles(:,5);			
  
@@ -141,7 +141,7 @@ classdef molsim < handle
 			_dihedrals = load(fname); 
 			_ndihedrals = rows(_dihedrals);
 			
-			this.dihedrals = dihedrals(_ndihedrals);
+			this.dihedrals = ms_dihedrals(_ndihedrals);
 			this.dihedrals.pidx = _dihedrals(:,2:5) + 1;
 			this.dihedrals.dtypes = _dihedrals(:,6);			
  
