@@ -1,4 +1,8 @@
-
+#
+# Usage molslitpore(xyz file, wall thickness, whall density)
+#
+# This is a function in the molsim package.
+# 
 
 function molslitpore(xyzmol, wthickness, rho)
 

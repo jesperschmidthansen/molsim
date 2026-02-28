@@ -1,6 +1,26 @@
-
-
-function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0)
+#
+# Usage [nmols, atomsidx] = molconf(single mol xyz-file, single-mol top-file, numdim, offset,verbose)
+#
+# This is a function in the molsim package.
+# 
+# Generates a system configuration file and topology files from single molecule files. 
+# Saves configuration in 'start.xyz' and topology files in 'bonds.top', 'angles.top' and
+# 'dihedral.top' These files are overridden if they exist.
+#
+# Returns:
+#  Number of molecules
+#  Row-wise array of atom indices per molecule
+#  
+# Input:
+#  single mol xyz-file: Molecule configuration  
+#  single-mol top-file: Molecule topology
+#  numdim: 3-array specifying number of molecules in x,y, and z directions.  
+#  offset: Distance between molecular centre-of-mass. Default 10;
+#  verbose: Set to true if some verbose statements should printed. Default false
+#
+# Examples: water.m and butane.m in example folder
+# 
+function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0, verbose=false)
 
 	nmols = prod(numdim);
 	
@@ -17,6 +37,10 @@ function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0)
 		pos(:,k) = pos(:,k) - min(pos(:,k));
 	end
 
+	if verbose
+		printf("Found %d atoms in molecule - writing start.xyz file.\n", nuau);
+	end
+
 	wpos(t, pos, mass, charge, numdim, offset);
 
 	### Bonds
@@ -24,18 +48,27 @@ function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0)
 	if binfo == -1 
 		warning("No bonds found\n");
 	else  
+		if verbose
+			printf("Found %d bonds in molecule - writing bonds.top file.\n", rows(binfo));
+		end
 		wbonds(numdim, nuau, binfo);
 	end
 	
 	### Angles 
 	ainfo = rangle(topfile);
 	if ainfo != -1
+		if verbose
+			printf("Found %d angles in molecule - writing angles.top file.\n ", rows(ainfo));
+		end
 		wangles(numdim, nuau, ainfo);
 	end
 
 	### Dihedrals
 	dinfo = rdihedral(topfile);
 	if dinfo != -1
+		if verbose
+			printf("Found %d dihedrals in molecule - writing dihedrals.top file. \n ", rows(dinfo));	
+		end	
 		wdihedrals(numdim, nuau, dinfo);
 	end
 	
