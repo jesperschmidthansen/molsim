@@ -1,7 +1,7 @@
 #
-# Usage: dr = wrap(dr, lbox)
+# Usage: dr = ms_wrap(dr, lbox)
 #
-function dr = wrap(dr, lbox)
+function dr = ms_wrap(dr, lbox)
 	
 	for k=1:3
 		if dr(k) > 0.5*lbox(k)

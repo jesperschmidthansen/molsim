@@ -239,7 +239,7 @@ classdef ms_atoms < handle
 		function [dist dr] = getdist(this, i, j)
 			
 			dr = this.r(i,:)-this.r(j,:);
-			dr = wrap(dr, this.lbox);
+			dr = ms_wrap(dr, this.lbox);
 
 			dist = sqrt(dot(dr,dr));
 		end
@@ -249,8 +249,8 @@ classdef ms_atoms < handle
 		## Returns the angle defined by the positions of atoms with indices i,j,k
 		function _angle = getangle(this, a, b, c)
 			
-			dr1 = wrap(this.r(b,:) - this.r(a,:), this.lbox);
-			dr2 = wrap(this.r(c,:) - this.r(b,:), this.lbox);			
+			dr1 = ms_wrap(this.r(b,:) - this.r(a,:), this.lbox);
+			dr2 = ms_wrap(this.r(c,:) - this.r(b,:), this.lbox);			
 
 			c11 = dot(dr1, dr1); c12 = dot(dr1, dr2); c22 = dot(dr2, dr2);
 
@@ -262,9 +262,9 @@ classdef ms_atoms < handle
 		##
 		## Returns the dihedral angle defined by the positions of atoms with indices i,j,k,l
 		function dihedral = getdihedral(this, a, b, c, d)
-			dr1 = wrap(this.r(b,:) - this.r(a,:), this.lbox);
-			dr2 = wrap(this.r(c,:) - this.r(b,:), this.lbox);			
-			dr3 = wrap(this.r(d,:) - this.r(c,:), this.lbox);
+			dr1 = ms_wrap(this.r(b,:) - this.r(a,:), this.lbox);
+			dr2 = ms_wrap(this.r(c,:) - this.r(b,:), this.lbox);			
+			dr3 = ms_wrap(this.r(d,:) - this.r(c,:), this.lbox);
 
 			c11 = dot(dr1, dr1); c12 = dot(dr1, dr2); c13 = dot(dr1, dr3);
 			c22 = dot(dr2, dr2); c23 = dot(dr2, dr3); c33 = dot(dr3, dr3);
