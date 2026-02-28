@@ -18,7 +18,7 @@ function [dist _angles dihedrals] = test_5()
 	nmols = int32(sim.natoms/4);
 
 	# Bonds 	
-	nbonds = nmols*3; sim.bonds = bonds(nbonds);
+	nbonds = nmols*3; sim.bonds = ms_bonds(nbonds);
 	pidx = 0;
 	for n=1:nmols
 		for m=1:3
@@ -30,7 +30,7 @@ function [dist _angles dihedrals] = test_5()
 	sim.bonds.springs = 500*ones(nbonds,1); sim.bonds.l0 = 1.1*ones(nbonds,1); 
 
 	# Angles
-	nangles = nmols*2; sim.angles = angles(nangles);
+	nangles = nmols*2; sim.angles = ms_angles(nangles);
 	pidx = 0;
 	for n=1:nmols
 		for m=1:2
@@ -42,7 +42,7 @@ function [dist _angles dihedrals] = test_5()
 	sim.angles.springs = 100*ones(nangles,1); sim.angles.a0 = 2.1*ones(nangles, 1);
 
 	# Dihedrals
-	ndihedrals = nmols; sim.dihedrals = dihedrals(ndihedrals);
+	ndihedrals = nmols; sim.dihedrals = ms_dihedrals(ndihedrals);
 	pidx = 0;
 	for n=1:nmols
 		pidx++;
@@ -58,7 +58,7 @@ function [dist _angles dihedrals] = test_5()
 	dist = zeros(1, niter); _angles = zeros(1, niter); dihedrals = zeros(1, niter);
 	
 	sim.atoms.resetmom();
-
+	
 	for n=1:niter
 		epot(n) = sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
 		epot(n) = epot(n) + sim.bonds.harmonic(sim.atoms, 0);

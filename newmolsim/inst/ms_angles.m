@@ -23,7 +23,7 @@ classdef ms_angles < handle
 		## Usage: a = angles(nangles)
 		## 
 		## Returns an instance of the angles class object   
-		function this = angles(nangles)
+		function this = ms_angles(nangles)
 			this.pidx = zeros(nangles, 3);
 			this.atypes = zeros(nangles, 1);
 			this.springs = zeros(nangles, 1);
