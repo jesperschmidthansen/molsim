@@ -3,23 +3,21 @@
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
 <figure>
-  <img src="doc/logo.png" alt="Trulli" style="width:30%">
-</figure> 
+  <img src="resources/logo_0.png" style="width:40%" class="center">
+</figure>
 </p>
 
-<p>
-molsim supports simulations of
-</p>
-
+<h2>
+ molsim supports simulations of
+</h2>
 <ul>
-<li>simple Lennard-Jones systems,</li>
-<li>molecular systems with bond, angle, and torsion potentials,</li>
-<li>confined flow systems, eg., Couette and Poiseuille flows,</li>
-<li>charged systems using shifted force and Wolf methods,</li>
-<li>dissipative particle dynamics systems,</li>
-<li>different ensembles,</li>
-<li> and more . .</li>
+    <li>simple Lennard-Jones systems,</li>
+    <li>molecular systems with bond, angle, and torsion potentials,</li>
+    <li>confined flow systems, eg., Couette and Poiseuille flows,</li>
+    <li>charged systems using shifted force,</li>
+    <li>and more ...</li>
 </ul>
+</p>
 
 <h2>Installation </h2>
 <p>At the Octave prompt simply use the command </p>
@@ -28,57 +26,112 @@ molsim supports simulations of
   >> pkg install "https://github.com/jesperschmidthansen/molsim/archive/refs/tags/v&lt;version&gt;.tar.gz"
  </code> 
 </pre>
-<p>where &lt;version&gt; is the version number. NOTE: Depdending on your system you may recieve warnings like
-<pre>
- <code>
-  note: expected 'const mwSize *' {aka 'const long long int *'} but argument is of type 'const long int *'
- </code> 
-</pre>
-These warnings are not always harmful and not a molsim issue. Proceed with care.
+<p>where &lt;version&gt; is the version number. 
 
-<h2>An example</h2>
-An example of an NVE water simulation script
-
-```octave
-nloops = 1000; temp0 = 298.15/78.2;
-cutoff= 2.5; sigma=1.0; epsilon=1.0; aw=1.0; cutoff_sf = 2.9;
-lbond = 0.316; kspring = 68421; 
-angle = 1.97; kangle = 490;
-
-molsim('set', 'cutoff', cutoff_sf);
-molsim('set', 'timestep', 0.0005);
-molsim('set', 'exclusion', 'molecule'); 
-
-molsim('set', 'omp', 4);
-
-molsim('load', 'xyz', 'sys_water.xyz');  molsim('load', 'top', 'sys_water.top');
-
-for n=1:nloops 
-  molsim('reset')
-  
-  molsim('calcforce', 'lj', 'OO', cutoff, sigma, epsilon, aw);
-  molsim('calcforce', 'coulomb', 'sf', cutoff_sf);
-  molsim('calcforce', 'bond', 0, lbond, kspring);
-  molsim('calcforce', 'angle', 0, angle, kangle);
-  
-  molsim('integrate', 'leapfrog');
-end
-
-molsim('clear');
-```
-<p> <b>IMPORTANT NOTE</b>: The 'sys_water.xyz' configuration file and 'sys_water.top' topology file must be in
-same directory from where you execute the script. They can be found under the project's resource/ folder </p>
-<p> For further explanation check out the package tutorial under the project's doc/ folder </p> 
+<h2>Examples</h2>
+Checkout the project example folder
 
 <h2>Contribution</h2>
 <p>
-I encourage anyone who uses or plans to use molsim to submit problematic issues - this includes issues regarding the documentation. I also welcome contributions to the code for the project, whether it is core features (seplib), post simulation data analysis programs, or extending the molsim wrapper. 
+I encourage anyone who uses or plans to use molsim to submit problematic issues - this includes issues regarding the documentation. I also welcome contributions to the code for the project, whether it is core features or post simulation data analysis programs. 
 </p>
 
-<h2>To-do</h2>
-Octave now supports object oriented programming. molsim is under complete reconstructed to benefit from this, see folder newmolsim. Matlab compatibility
-is relaxed.
+<h2>Why MEX?</h2>
+<p>GNU Octave offers a fantastic C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
+</p>
 
+<p>
+Test: The functions below shows a DLD and a MEX version of a function that calculates the sum of an array and updates the array with a number; this is a relevant task in molecular dynamics. 
+<table>
+ <tr> <td> DLD msum_oct.cpp </td><td>MEX msum_mex.c</td></tr>
+<tr>
+ <td>
+  
+ <pre><code>
+#include &lt;octave/oct.h&gt;
+
+DEFUN_DLD(msum_oct, args, ,""){
+   octave_value_list retval;
+   Matrix A(args(0).array_value());
+   int nrows = A.dim1();
+   int ncols = A.dim2();
+
+   double *Aptr = A.fortran_vec();
+
+   double sum=0.0f;
+   for (int n=0; n&lt;nrows; n++) {
+     for (int m=0; m&lt;ncols; m++) {
+         int idx = m*nrows + n;
+         sum += Aptr[idx];
+         Aptr[idx] += 1.0;
+      }
+   }
+
+   retval.append(sum);
+   retval.append(A);
+   return retval;
+}
+</code></pre>
+</td>
+
+<td>
+ 
+<pre><code>
+ #include "mex.h"
+ 
+ void mexFunction(int nlhs, mxArray *plhs[], 
+              int nrhs, const mxArray *prhs[]) {
+ 
+     double *A = mxGetPr(prhs[0]);
+     int nrows = mxGetM(prhs[0]);
+     int ncols = mxGetN(prhs[0]);
+ 
+     double sum=0.0f;
+     for (int n=0; n&lt;nrows; n++) {
+        for (int m=0; m&lt;ncols; m++) {
+           int idx = m*nrows + n;
+           sum += A[idx];
+           A[idx] += 1.0;
+        }
+      }
+ 
+      plhs[0] = mxCreateDoubleScalar(sum);
+ }
+
+ 
+ 
+</code></pre>
+</td>
+</table>
+</td>
+</p>
+
+<p>The functions are compiled with or without <code>-Ofast</code> flag. Timing is done by 
+<pre><code>
+>> A=randn(1000, 1000); s=zeros(40, 1);
+>> for n=1:40; tic(); [s(n) A]= msum_oct(A); s(n) = toc(); end;
+>> sum(s), mean(s), std(s)
+</code></pre>
+and likwise for msum_mex. This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up depends on the array size, hardware, optimization flags, etc.   
+</p>
+
+
+<h2>To-do</h2>
+Octave now supports object oriented programming. molsim is under complete reconstructed to benefit
+from this. Matlab compatibility is not a priority.
+
+- [ ] Feature: Barostate
+- [ ] Feature: Standard run time sample classes
+- [ ] Feature: Electrostatic interactions using the Wolf scheme
+- [X] Feature: A set of molecular and atomic configurations 
+- [X] Feature: Molecular class for infrastructure (contained in molsim class)
+- [ ] Feature: DPD support (initiated)
+- [ ] Revision: Class properties access. Should these be different from public?
+- [ ] Revision: Define class constants with correct properties (Constant=true)
+- [ ] Revision: All classes should have a disp method
+- [ ] Revision: Consider whether methods should have specified properties
+- [ ] Revision: Naming convensions (at the moment none)  
+- [X] Revision: ms_molconfig is a mess... 
 
 </body>
 </html>

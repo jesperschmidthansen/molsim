@@ -93,7 +93,14 @@ molsim-1.0.1
   * Bug-fix in optimization for very small systems (seplib issue)	
   * Changed definition of bonded exclusion to include angles and torsions as well
 
-molsim-1.0.2
+molsim-2.0
 ------------
 
-  * Fix to action 'add', specifier 'tolattice'
+  molsim is now a self-contained GNU Octave package. The code is completely reorganized and the UI
+  is based on classes. This major change is motivated in order to overcome different problematic 
+  issues with file-scope etc in version 1.X.Y, where molsim simply was simply a wrapper for the C seplib library. 
+  This code reorganization allows the user to change and extent the features in a more straight-forward 
+  manner and it will ease the future planed implementation of CUDA support. 
+
+  Versions 2.X.Y will focus on adding new features.  		  
+

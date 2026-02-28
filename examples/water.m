@@ -1,47 +1,69 @@
-##
-## Ampient conditions dens0 = 3.15, temp=3.9;
-##
-## sigma = 3.16 Å, epsilon/kB=78.2, mass=16
-## 
-## SPC/Fw model see Wu et al, JCP 124:024503 (2006)
-##
-##
+clear all;
 
-nloops = 1000; dens0 = 3.16; temp0 = 298.15/78.2;
+addpath("../inst/"); addpath("../src/"); addpath("../resources/setup/");
 
-cutoff = 2.5; sigma = 1.0; epsilon=1.0; aw=1.0;
-cutoff_sf = 2.9;
+niter = 1e5; dt = 5e-4;
+dens0 = 3.16; temp0 = 298.15/78.2; 
+
+cutoff = 2.9;
 
 lbond = 0.316; kspring = 68421; 
 angle = 1.97; kangle = 490;
 
-molsim('set', 'cutoff', cutoff_sf);
-molsim('set', 'timestep', 0.0005);
-molsim('set', 'exclusion', 'molecule'); 
+system("rm *top");
+molconf("../resources/molconf/water.xyz", "../resources/molconf/water.top", [15, 15, 15], 3.0);
 
-molsim('set', 'omp', 4);
- 
-molsim('load', 'xyz', 'water.xyz');
-molsim('load', 'top', 'water.top');
+sim = molsim();
+sim.setconf("start.xyz");
+sim.settop();
 
-m=0;
-for n=1:nloops
+sim.atoms.setvels(temp0);
+sim.pairforce.max_cutoff = cutoff;
+sim.integrator.dt = dt;
+sim.thermostat.temperature = temp0;
 
-	molsim('reset')
+nbonds = sim.bonds.nbonds;
+sim.bonds.springs = kspring*ones(nbonds,1); 
+sim.bonds.l0 = lbond*ones(nbonds,1); 
 
-	molsim('calcforce', 'lj', 'OO', cutoff, sigma, epsilon, aw);
-	molsim('calcforce', 'coulomb', 'sf', cutoff_sf);
+nangles = sim.angles.nangles;	
+sim.angles.springs = kangle*ones(nangles,1); 
+sim.angles.a0 = angle*ones(nangles, 1);
 
-	molsim('calcforce', 'bond', 0, lbond, kspring);
-	molsim('calcforce', 'angle', 0, angle, kangle);
+sim.atoms.setexclusions(sim.angles.pidx, "angles");
 
-	molsim('integrate', 'leapfrog');
+qH = sim.atoms.q(1);
+idx_O = find( sim.atoms.t=='O' );
+idx_H = find( sim.atoms.t=='H' );
+sim.atoms.q = zeros(sim.natoms, 1);
 
-	molsim('thermostat', 'relax', 'O', temp0, 0.01);
-	molsim('thermostat', 'relax', 'H', temp0, 0.01);
+qnow = 0.0; dQ = qH/1e2;
 
-	molsim('compress', dens0);
+for n=1:niter
+	sim.lennardjones("OO", [2.5, 1.0, 1.0, 1.0]);   
+	sim.sfcoulomb(cutoff);
+	sim.harmonicbond(0);
+	sim.harmonicangle(0);
 
-endfor
+	sim.nosehoover();
+	ekin = sim.leapfrog();
+	
+	if rem(n, 50)==0
+		if sim.natoms/sim.volume < dens0 
+			sim.scalebox(dens0, [1:3], 0.999);
+		elseif qnow < qH
+			sim.atoms.q(idx_H) += dQ;
+			sim.atoms.q(idx_O) -= 2*dQ;
+			qnow += dQ;
+		end
 
-molsim('clear');
+		printf("\r It. no. %d, dens. %f, temp. %f, charge %f ", ... 
+			n, sim.natoms/sim.volume, ekin*2/(3*sim.natoms), qnow); 
+		fflush(stdout);
+	end
+
+end
+printf("\n");
+
+sim.atoms.save("water-sys.xyz"); sim.atoms.save("water-sys.mat");
+
