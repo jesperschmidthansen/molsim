@@ -1,6 +1,6 @@
 clear all;
 
-addpath("../inst/"); addpath("../src/");
+addpath("../inst/"); addpath("../src/"); addpath("../resources/setup/");
 
 niter = 1e5; dt = 5e-4;
 dens0 = 3.16; temp0 = 298.15/78.2; 
