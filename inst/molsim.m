@@ -346,7 +346,7 @@ classdef molsim < handle
 		## >> sim.getmolvel()
 		function vmols = getmolvel(this)
 			nuau = columns(this.atom_idxs);
-			vmols = ms_calcmolvel(this.atoms.r, this.atoms.m, nuau*this.nmols, this.atom_idxs, nuau); 
+			vmols = ms_calcmolvel(this.atoms.v, this.atoms.m, nuau*this.nmols, this.atom_idxs, nuau); 
 		end
 	
 		## Usage: ete = getmolete()
