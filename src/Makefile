@@ -1,13 +1,11 @@
-
 CC = mkoctfile
-FLAGS += -Wall -Wextra -Ofast 
+FLAGS = -Wall -Wextra -Ofast
 
 srcm = $(wildcard *.c)
 mexs = $(srcm:.c=.mex)
 
 srco = $(wildcard *.cpp)
 octs = $(srco:.cpp=.oct)
-
 
 all: $(mexs) $(octs)
 
@@ -19,5 +17,3 @@ all: $(mexs) $(octs)
 
 clean:
 	rm -f *.mex *.oct ms*.m
-	touch *.c *.cpp
-
