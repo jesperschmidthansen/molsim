@@ -125,12 +125,12 @@ from this. Matlab compatibility is not a priority.
 - [ ] Feature: Electrostatic interactions using the Wolf scheme
 - [X] Feature: A set of molecular and atomic configurations 
 - [X] Feature: Molecular class for infrastructure (contained in molsim class)
-- [ ] Feature: DPD support (initiated)
+- [X] Feature: DPD support (initiated)
 - [ ] Revision: Class properties access. Should these be different from public?
 - [ ] Revision: Define class constants with correct properties (Constant=true)
 - [ ] Revision: All classes should have a disp method
 - [ ] Revision: Consider whether methods should have specified properties
-- [ ] Revision: Naming convensions (at the moment none)  
+- [X] Revision: Naming convensions (at the moment none)  
 - [X] Revision: ms_molconfig is a mess... 
 
 </body>
