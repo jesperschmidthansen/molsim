@@ -1,7 +1,12 @@
 #include <octave/oct.h>
 #include "ms_misc.h"
 
-#define HELPTXT ("")
+#define HELPTXT "ms_calcmolpos is a part of the molsim package \n\
+It is not inteded that it is used directly by the user\n\
+but only through the package class methods\n\
+For usage see the package source https://github.com/jesperschmidthansen/molsim"
+
+
 
 DEFUN_DLD(ms_calcmolpos, args, ,HELPTXT){
 	octave_value_list retval;

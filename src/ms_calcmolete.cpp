@@ -2,7 +2,12 @@
 #include "ms_misc.h"
 #include <stdio.h>
 #include <stdlib.h>
-#define HELPTXT ("")
+
+#define HELPTXT "ms_calcmolete is a part of the molsim package \n\
+It is not inteded that it is used directly by the user\n\
+but only through the package class methods\n\
+For usage see the package source https://github.com/jesperschmidthansen/molsim"
+
 
 DEFUN_DLD(ms_calcmolete, args, ,HELPTXT){
 	octave_value_list retval;

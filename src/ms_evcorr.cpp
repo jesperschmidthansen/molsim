@@ -1,7 +1,11 @@
 #include <octave/oct.h>
 
+#define HELPTXT "Usage: c = ms_evcorr(a ,b)\n\
+\n\
+Evaluates the correlation between column vectors a and b\n"
 
-DEFUN_DLD(ms_evcorr, args, , "usage:c = ms_evcorr(a,b)"){
+
+DEFUN_DLD(ms_evcorr, args, , HELPTXT){
 	octave_value_list retval;
 
 	if ( args.length() != 2 ) {

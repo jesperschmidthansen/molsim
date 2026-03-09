@@ -18,6 +18,6 @@ all: $(mexs) $(octs)
 	$(CC) $(FLAGS) $< -o $@
 
 clean:
-	rm -f *.mex *.oct
+	rm -f *.mex *.oct ms*.m
 	touch *.c *.cpp
 
