@@ -51,7 +51,7 @@ function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0, v
 		if verbose
 			printf("Found %d bonds in molecule - writing bonds.top file.\n", rows(binfo));
 		end
-		wbonds(numdim, nuau, binfo);
+		binfo = wbonds(numdim, nuau, binfo);
 	end
 	
 	### Angles 
@@ -60,7 +60,7 @@ function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0, v
 		if verbose
 			printf("Found %d angles in molecule - writing angles.top file.\n ", rows(ainfo));
 		end
-		wangles(numdim, nuau, ainfo);
+		ainfo = wangles(numdim, nuau, ainfo);
 	end
 
 	### Dihedrals
@@ -69,7 +69,7 @@ function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0, v
 		if verbose
 			printf("Found %d dihedrals in molecule - writing dihedrals.top file. \n ", rows(dinfo));	
 		end	
-		wdihedrals(numdim, nuau, dinfo);
+		dinfo = wdihedrals(numdim, nuau, dinfo);
 	end
 	
 	### Mol. details to return 
@@ -82,7 +82,11 @@ function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0, v
 
 	save molinfo.mat nmols atom_idxs;
 
+	save topology.mat binfo ainfo dinfo nmols atom_idxs;
+
 endfunction
+
+
 
 function [t, pos, mass, charge] = rpos(xyzfile)
 
@@ -111,7 +115,7 @@ function wpos(t, pos, mass, q, numdim, offset)
 	nuau = length(t);
 	nmol = prod(numdim);
 
-	fout = fopen("start.xyz", "w");
+	fout = fopen("configuration.xyz", "w");
 	if fout == -1
 		error("Couldn't open output file");
 	end
@@ -205,23 +209,26 @@ function bondinfo = rbond(topfile)
 endfunction
 
 
-function wbonds(numdim, nuau, bondinfo)
+function ball = wbonds(numdim, nuau, bondinfo)
 
 	fout = fopen("bonds.top", "w");
 	if fout==-1
 		error("Couldn't open bond top output file");
 	end
 
-	nmol = prod(numdim); nbonds = rows(bondinfo);
+	nmol = prod(numdim); nbonds = rows(bondinfo); c=1;
 	for n=1:nmol
 		for m=1:nbonds
 			aidx = bondinfo(m, 1) + nuau*(n-1);
 			bidx = bondinfo(m, 2) + nuau*(n-1);
-			fprintf(fout, "%d %d %d %d\n", n, aidx, bidx, bondinfo(m,3));  
+			#fprintf(fout, "%d %d %d %d\n", n, aidx, bidx, bondinfo(m,3));  
+			ball(c,:) = [aidx, bidx, bondinfo(m,3)];
+			c++;
 		end		
 	end
 	
 	fclose(fout);
+	
 	
 endfunction
 
@@ -271,20 +278,22 @@ function angleinfo = rangle(topfile)
 
 endfunction
 
-function wangles(numdim, nuau, angleinfo)
+function aall = wangles(numdim, nuau, angleinfo)
 
 	fout = fopen("angles.top", "w");
 	if fout == -1
 		error("Couldn't open bond top output file");
 	end
 
-	nmol = prod(numdim); nangles = rows(angleinfo);
+	nmol = prod(numdim); nangles = rows(angleinfo); c=1;
 	for n=1:nmol
 		for m=1:nangles
 			aidx = angleinfo(m, 1) + nuau*(n-1);
 			bidx = angleinfo(m, 2) + nuau*(n-1);
 			cidx = angleinfo(m, 3) + nuau*(n-1);
-			fprintf(fout, "%d %d %d %d %d\n", n, aidx, bidx, cidx, angleinfo(m,4));  
+			#fprintf(fout, "%d %d %d %d %d\n", n, aidx, bidx, cidx, angleinfo(m,4));  
+			aall(c, :) = [aidx, bidx, cidx, angleinfo(m,4)]; 
+			c++;
 		end		
 	end
 	
@@ -339,23 +348,23 @@ function dihedralinfo = rdihedral(topfile)
 
 endfunction
 
-function wdihedrals(numdim, nuau, dihedralinfo)
+function dall = wdihedrals(numdim, nuau, dihedralinfo)
 
 	fout = fopen("dihedrals.top", "w");
 	if fout == -1
 		error("Couldn't open dihedral top output file");
 	end
 
-	nmol = prod(numdim); ndihedrals = rows(dihedralinfo);
+	nmol = prod(numdim); ndihedrals = rows(dihedralinfo); c = 1;
 	for n=1:nmol
 		for m=1:ndihedrals
 			aidx = dihedralinfo(m, 1) + nuau*(n-1);
 			bidx = dihedralinfo(m, 2) + nuau*(n-1);
 			cidx = dihedralinfo(m, 3) + nuau*(n-1);
 			didx = dihedralinfo(m, 4) + nuau*(n-1);
-
-			fprintf(fout, "%d %d %d %d %d %d\n", ...
-					n, aidx, bidx, cidx, didx, dihedralinfo(m,5));  
+			dall(c,:)= [aidx, bidx, cidx, didx, dihedralinfo(m,5)]; 
+			c++;
+			#fprintf(fout, "%d %d %d %d %d %d\n",n, aidx, bidx, cidx, didx, dihedralinfo(m,5));  
 		end		
 	end
 	

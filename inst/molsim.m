@@ -152,15 +152,14 @@ classdef molsim < handle
 		## Read topology files generated molconf 
 		## 
 		## Example:
-		## >> system("rm bonds.top angles.top dihedrals.top"); 
-		## molconf("water.xyz", "water.top", [10 10 10], 2.0);  
-		## sim = molsim(); 
-		## sim.setconf("start.xyz"); 
-		## sim.settop();
+		## >> molconf("water.xyz", "water.top", [10 10 10], 2.0);  
+		## >> sim = molsim(); 
+		## >> sim.setconf("configuration.xyz"); 
+		## >> sim.settop("topology.mat");
 		##
 		## See also water.m in examples/
-		function settop(this)
-
+		function settop(this, fname="topology.mat")
+			#{
 			if exist("bonds.top")
 				this.setbonds("bonds.top", true); 
 			end
@@ -169,6 +168,47 @@ classdef molsim < handle
 			end
 			if exist("dihedrals.top")
 				this.setdihedrals("dihedrals.top");
+			end
+			#}
+			
+			
+			load(fname); 
+		
+			this.nmols = nmols;
+			this.atom_idxs = atom_idxs;
+	
+			this.molecules.nmols = nmols;
+			this.molecules.atom_idxs = atom_idxs;
+			
+			# Bonds
+			if binfo != -1
+
+				nbonds = rows(binfo); 
+				
+				this.bonds = ms_bonds(nbonds);
+				this.bonds.pidx = binfo(:,1:2) + 1;
+				this.bonds.btypes = binfo(:,3);			
+			end
+			
+			# Angles
+			if ainfo != -1
+				
+				nangles = rows(ainfo);
+				
+				this.angles = ms_angles(nangles);
+				this.angles.pidx = ainfo(:,1:3) + 1;
+				this.angles.atypes = ainfo(:,4);			
+			end 
+
+		
+			# Dihedral
+			if dinfo != -1
+				
+				ndihedrals = rows(dinfo);
+			
+				this.dihedrals = ms_dihedrals(ndihedrals);
+				this.dihedrals.pidx = dinfo(:,1:4) + 1;
+				this.dihedrals.dtypes = dinfo(:,5);			
 			end
 
 		end
@@ -362,7 +402,7 @@ classdef molsim < handle
 			nuau = columns(this.atom_idxs);
 			ete = ms_calcmolete(this.atoms.r, this.nmols*nuau, this.atom_idxs, nuau, this.lbox);
 		end
-	
+
 	end
 
 end

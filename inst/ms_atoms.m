@@ -165,7 +165,7 @@ classdef ms_atoms < handle
 				
 		end
 
-		## Usage: thether(atom type, spring constant);
+		## Usage: tether(atom type, spring constant);
 		##
 		## Calculates the tethering force acting on the atoms due to the lattice 
 		## coordinates specified by the propery rl. 
