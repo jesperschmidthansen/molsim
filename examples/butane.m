@@ -2,29 +2,24 @@
 clear all;
 
 # Remove if script is run after package installation 
-addpath("../inst/"); addpath("../src/");  addpath("../resources/setup/");
+addpath("../inst/"); addpath("../src/");  
 
 # Variables holding number of MD loops, time step size, simulation temperature and density 
 nloops = 1e4; dt = 1e-3;
 temp0 = 3.0; dens0 = 1.49;
 
-# Write configuation and topology files: start.xyz bonds.top, angles.top, dihedrals.top  
-# Configuration is 10x10x10 molecules with center-of-mass distance of 4
-system("rm -f *top");
-molconf("../resources/molconf/butane.xyz", "../resources/molconf/butane.top", [10 10 10], 4.0);
-
 # Instance of molsim 
 sim = molsim();
 
-# Set configureation from start.xyz
-sim.setconf("start.xyz");
+# Set configureation from file 
+sim.setconf("../resources/molconf/butane_config_system.xyz");
+
+# Reads in topology  
+sim.settop("../resources/molconf/butane_topology_system.mat");
 
 # Set integrator time step and thermostat temperature
 sim.integrator.dt = dt;
 sim.thermostat.temperature= temp0;
-
-# Reads in topology files 
-sim.settop();
 
 # Sets the bond spring constant and zero force bond length - only one bond type, namely, 0
 nbonds = sim.bonds.nbonds;
@@ -66,7 +61,3 @@ for n=1:nloops
 	end
 
 end
-
-# Save the final configuration
-sim.atoms.save("final.xyz");
-

@@ -78,75 +78,6 @@ classdef molsim < handle
 			this.molecules = ms_molecules();
 		end
 
-		## Usage: setbonds(top-file) 
-		##
-		## Sets the bonds between atoms from file with bond information
-		## 
-		## Example:
-		## >> sim = molsim();
-		## >> sim.setbonds("bonds.top");
-		##
-		## Also, see molconf 
-		function setbonds(this, fname, molinfo=false)
-			
-			_bonds = load(fname); 
-			_nbonds = rows(_bonds);
-			
-			this.bonds = ms_bonds(_nbonds);
-			this.bonds.pidx = _bonds(:,2:3) + 1;
-			this.bonds.btypes = _bonds(:,4);			
- 
-			if molinfo
-				load molinfo.mat 
-				this.nmols = nmols;
-				this.atom_idxs = atom_idxs;
-	
-				this.molecules.nmols = nmols;
-				this.molecules.atom_idxs = atom_idxs;
-			end
- 
-		end
-
-		## Usage: setangles(top-file) 
-		##
-		## Sets the angles between atoms from file with angle information
-		## 
-		## Example:
-		## >> sim = molsim();
-		## >> sim.setangles("angles.top");
-		##
-		## See molconf 
-		function setangles(this, fname)
-			
-			_angles = load(fname); 
-			_nangles = rows(_angles);
-			
-			this.angles = ms_angles(_nangles);
-			this.angles.pidx = _angles(:,2:4) + 1;
-			this.angles.atypes = _angles(:,5);			
- 
-		end
-
-		## Usage: setdihedrals(top-file) 
-		##
-		## Sets the dihedrals between atoms from file with dihedral information
-		## 
-		## Example:
-		## >> sim = molsim();
-		## >> sim.setdihedrals("dihedrals.top");
-		##
-		## See molconf 
-		function setdihedrals(this, fname)
-			
-			_dihedrals = load(fname); 
-			_ndihedrals = rows(_dihedrals);
-			
-			this.dihedrals = ms_dihedrals(_ndihedrals);
-			this.dihedrals.pidx = _dihedrals(:,2:5) + 1;
-			this.dihedrals.dtypes = _dihedrals(:,6);			
- 
-		end
-
 		## Usage: settop()
 		##
 		## Read topology files generated molconf 
@@ -159,19 +90,11 @@ classdef molsim < handle
 		##
 		## See also water.m in examples/
 		function settop(this, fname="topology.mat")
-			#{
-			if exist("bonds.top")
-				this.setbonds("bonds.top", true); 
+		
+			if !exist(fname)
+				error("Topology file does not exists\n");
 			end
-			if exist("angles.top")
-				this.setangles("angles.top"); 
-			end
-			if exist("dihedrals.top")
-				this.setdihedrals("dihedrals.top");
-			end
-			#}
-			
-			
+	
 			load(fname); 
 		
 			this.nmols = nmols;
