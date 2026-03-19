@@ -4,12 +4,12 @@
 # This is a function in the molsim package.
 # 
 # Generates a system configuration file and topology files from single molecule files. 
-# Saves configuration in 'start.xyz' and topology files in 'bonds.top', 'angles.top' and
-# 'dihedral.top' These files are overridden if they exist.
+# Saves configuration in 'configuration.xyz' and topology files in 'topology.mat'. 
+# The configuration file is the standard xyz-format and can be visualized in eg. VMD and Ovito
 #
 # Returns:
 #  Number of molecules
-#  Row-wise array of atom indices per molecule
+#  Row-wise array of atom indices per molecule 
 #  
 # Input:
 #  single mol xyz-file: Molecule configuration  
@@ -18,7 +18,7 @@
 #  offset: Distance between molecular centre-of-mass. Default 10;
 #  verbose: Set to true if some verbose statements should printed. Default false
 #
-# Examples: water.m and butane.m in example folder
+# Examples: water.m in example folder
 # 
 function [nmols, atom_idxs] = molconf(xyzfile, topfile, numdim, offset = 10.0, verbose=false)
 
