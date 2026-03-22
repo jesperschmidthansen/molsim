@@ -2,24 +2,21 @@
 
 NOTE: In case of faulty release, remember to remove the release *tag* as well. 
 
-0: Make seplib release (includes running test and successful building of molsim in Octave and Matlab with 'buildmex.m')
-1: Import latest seplib revision
-2: Compilation with max. warning level (pass with no warning)
-3: All tests must pass (also under cuda/)
-4: Update file NEWS 
-5: Update file DESCRIPTION
-6: Check scripts/functions in directory examples/  
-7: Commit and make molsim release
-8: Check install release from http address (remove path to local repository first)
-9: Generate sha 
+1: Compilation with max. warning level (pass with no warning)
+2: All tests must pass 
+3: Update file NEWS 
+4: Update file DESCRIPTION
+5: Check scripts/functions in directory examples/  
+6: Commit and make molsim release
+7: Check install release from http address (remove path to local repository first)
+8: Generate sha 
   - >> urlwrite ("https://github.com/jesperschmidthansen/molsim/archive/refs/tags/v<version>.tar.gz", "molsim-<version>.tar.gz");
   - >> hash ("sha256", fileread ("molsim-<version>.tar.gz"))
-10a: Use gnu-octave/package link and open molsim.yaml
-10b: Edit molsim.yaml as necessary and propose changes + 
+9a: Use gnu-octave/package link and open molsim.yaml
+9b: Edit molsim.yaml as necessary and 
+    propose changes + 
 	create pull request + 
 	merge pull request + 
 	merge + 
 	confirm merge
-11: Copy tutorial.pdf to the NHSS repository
-12: Check all code runs correctly in the NHSS repository
 
