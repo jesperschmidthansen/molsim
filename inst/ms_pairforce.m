@@ -70,6 +70,13 @@ classdef ms_pairforce < handle
 			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
 		end	
 
+		function[epot Pconf] = ljcsf(this, atoms, ptypes, params)
+			maxcutoff = max(params(1), params(end));		
+			this.iteration_start(atoms, maxcutoff);
+			
+			[epot Pconf] = ms_ljcsf(atoms.f, ptypes, params, atoms.r, atoms.q, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms); 	
+
+		end
 		## Usage: [epot Pconf] = sf(atoms, cut-off)
 		##
 		## Calculating the Coulomb forces acting between charges. The method is the shifted-force

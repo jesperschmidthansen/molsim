@@ -109,7 +109,7 @@ DEFUN_DLD(msum_oct, args, ,""){
 <p>The functions are compiled with or without <code>-Ofast</code> flag. Timing is done by 
 <pre><code>
 >> A=randn(1000, 1000); s=zeros(40, 1);
->> for n=1:40; tic(); [s(n) A]= msum_oct(A); s(n) = toc(); end;
+>> for n=1:40; tic(); [sumA A]= msum_oct(A); s(n) = toc(); end;
 >> sum(s), mean(s), std(s)
 </code></pre>
 and likwise for msum_mex. This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up depends on the array size, hardware, optimization flags, etc.   
@@ -132,6 +132,7 @@ from this. Matlab compatibility is not a priority.
 - [ ] Revision: Consider whether methods should have specified properties
 - [X] Revision: Naming convensions (at the moment none)  
 - [X] Revision: ms_molconfig is a mess... 
+- [ ] Revision: Thermostating is hand-held at the moment, should be fixed
 
 </body>
 </html>

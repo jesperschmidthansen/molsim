@@ -1,5 +1,6 @@
 
 clear all
+system("../src/configure");
 system("make -C ../src/ -B");
 
 test_files = glob("test_*.m");

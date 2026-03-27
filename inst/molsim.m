@@ -227,6 +227,20 @@ classdef molsim < handle
 		function [epot Ppot] = sfcoulomb(this, cutoff)
 			[epot, Ppot] = this.pairforce.sf(this.atoms, cutoff);
 		end
+
+ 		## Usage: ljcsf(atom types, params)
+		## 
+		## Calculates the Lennard-Jones and Coulomb pair force between particles
+		## params is a 5-vector [LJ cut-off, epsilon, sigma, aw, Coulomb cut-off]
+		## Faster than calling lennardjones and sdcoulomb separately 
+		## Example
+		## >> sim = molsim();
+		## >> sim.setconf([10,10,10],[11, 11, 23], 1.0);
+		## >> sim.pairforce.max_cutoff = 3.5;
+		## >> [epot, Pconf] = sim.ljcsf("AA", [2.5,1.0,1.0,0.0, 3.5]);
+		function [epot Ppot] = ljcsf(this, atypes, params)
+			[epot, Ppot] = this.pairforce.ljcsf(this.atoms, atypes, params);
+		end
  
 		## Usage: harmonicbond(bond type)
 		##
