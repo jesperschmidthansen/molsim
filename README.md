@@ -130,6 +130,7 @@ from this. Matlab compatibility is not a priority.
 - [X] Feature: A set of molecular and atomic configurations 
 - [X] Feature: Molecular class for infrastructure (contained in molsim class)
 - [X] Feature: DPD support (initiated)
+- [ ] Feature: A doc/ directory (initially just a reference to examples/ directory?)
 - [ ] Revision: Class properties access. Should these be different from public?
 - [ ] Revision: Define class constants with correct properties (Constant=true)
 - [ ] Revision: All classes should have a disp method
