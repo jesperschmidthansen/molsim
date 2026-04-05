@@ -3,7 +3,7 @@
 <h1> molsim - Molecular dynamics with GNU Octave </h1>
 <p>
 <figure>
-  <img src="resources/logo_0.png" style="width:40%" class="center">
+  <img src="resources/logo_0.png" style="width:75%" class="center">
 </figure>
 </p>
 
@@ -118,7 +118,7 @@ This shows a speed-up of a factor of approximately 2 on the computers I have tri
 </p>
 
 <h2>Acknowledgement</h2>
-* John Donoghue for the post_install.m script.
+John Donoghue for the post_install.m script.
 
 <h2>To-do</h2>
 Octave now supports object oriented programming. molsim is under complete reconstructed to benefit
