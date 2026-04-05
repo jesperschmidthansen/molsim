@@ -37,7 +37,7 @@ I encourage anyone who uses or plans to use molsim to submit problematic issues 
 </p>
 
 <h2>Why MEX?</h2>
-<p>GNU Octave offers a fantastic C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
+<p>GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
 </p>
 
 <p>
@@ -111,10 +111,14 @@ DEFUN_DLD(msum_oct, args, ,""){
 >> A=randn(1000, 1000); s=zeros(40, 1);
 >> for n=1:40; tic(); [sumA A]= msum_oct(A); s(n) = toc(); end;
 >> sum(s), mean(s), std(s)
+>> for n=1:40; tic(); sumA = msum_oct(A); s(n) = toc(); end;
+>> sum(s), mean(s), std(s)
 </code></pre>
-and likwise for msum_mex. This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up depends on the array size, hardware, optimization flags, etc.   
+This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up depends on the array size, hardware, optimization flags, etc.   
 </p>
 
+<h2>Acknowledgement</h2>
+* John Donoghue for the post_install.m script.
 
 <h2>To-do</h2>
 Octave now supports object oriented programming. molsim is under complete reconstructed to benefit
