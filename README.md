@@ -130,8 +130,8 @@ from this. Matlab compatibility is not a priority.
 - [ ] Revision: Define class constants with correct properties (Constant=true)
 - [ ] Revision: All classes should have a disp method
 - [ ] Revision: Consider whether methods should have specified properties
-- [X] Revision: Naming convensions (at the moment none)  
-- [X] Revision: ms_molconfig is a mess... 
+- [X] Revision: Naming conventions (at the moment none)  
+- [X] Revision: ms_molconfig is a mess...  
 - [ ] Revision: Thermostating is hand-held at the moment, should be fixed
 
 </body>
