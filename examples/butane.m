@@ -17,9 +17,9 @@ sim.setconf("../resources/molconf/butane_config_system.xyz");
 # Reads in topology  
 sim.settop("../resources/molconf/butane_topology_system.mat");
 
-# Set integrator time step and thermostat temperature
+# Set integrator time step and thermostat tauQ = 10.0 
 sim.integrator.dt = dt;
-sim.thermostat.temperature= temp0;
+sim.setthermostat("nh", temp0, 10.0);
 
 # Sets the bond spring constant and zero force bond length - only one bond type, namely, 0
 nbonds = sim.bonds.nbonds;
@@ -50,8 +50,7 @@ for n=1:nloops
 	epot(n) += sim.ryckbell(0);
 
 	# Apply Nose-Hoover thermostat
-	sim.nosehoover();
-
+	sim.applythermostat();
 	# Integrate forward in time
 	ekin(n) = sim.leapfrog();
 	

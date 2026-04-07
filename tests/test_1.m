@@ -9,31 +9,29 @@ function test_1()
 	sim = molsim();
 	sim.setconf([10,10,10], [11, 11, 11], T0);
 
-	sim.atoms.setvels(T0);
-	sim.thermostat.temperature = T0;
+	sim.atoms.resetmom();
 
-	counter = 1; P = zeros(3,3);
+	sim.atoms.t(501:end)='B';
+	sim.setthermostat("nh", T0, 10);
+	
+	ekin = zeros(niter,1);
 	for n=1:niter
-		[epot, Pconf] = sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
-		sim.thermostat.nosehoover(sim.atoms, sim.integrator.dt);
-		[ekin Pkin] = sim.integrator.lf(sim.atoms, sim.pairforce);
+		sim.lennardjones("AA", [2.5, 1.0, 1.0, 1.0]);   
+		sim.lennardjones("AB", [2.5, 1.0, 1.0, 1.0]);   
+		sim.lennardjones("BB", [2.5, 1.0, 1.0, 1.0]);   
 
-		if rem(n, 10)==0 
-			Ekin(counter) = ekin;
-			P = P + Pconf + Pkin;	
-			counter++;
-		end
-
+		sim.applythermostat();		
+		ekin(n) = sim.leapfrog();
 	end
 
-	T = 2/3*mean(Ekin(end-100:end))./sim.natoms; 
-	P = P/(counter-1);
+	T = 2/3*mean(ekin(end-100:end))./sim.natoms; 
+	mom = sim.atoms.getmom();
 
-	index = [1:counter-1]; plot(index, 2/3*Ekin./sim.natoms, ";T;");
+	plot(2/3*ekin./sim.natoms);
 	print("test_1.pdf", '-dpdf');
 
 	printf("test_1 output:\n");
-	printf("Ekin: %.3f +/- %.3f  Norm. mean temperature %f\n", mean(Ekin)./sim.natoms, std(Ekin)./sim.natoms, T/T0);
-	printf("Av. normal press: %.3f  \n", (P(1,1)+P(2,2)+P(3,3))/3);
-
+	printf("Ekin: %.3f +/- %.3f  Norm. mean temperature %f\n", mean(ekin)./sim.natoms, std(ekin)./sim.natoms, T/T0);
+	printf("Momentum: %1.3e %1.3e %1.3e \n", mom(1), mom(2), mom(3));
+	
 end

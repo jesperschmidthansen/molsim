@@ -7,22 +7,21 @@ function test_3()
 	niter = 1e4;
 
 	sim = molsim();
-	sim.setconf([10,10,10], [11, 11, 11], 2.0);
+	sim.setconf([10,10,10], [11, 11, 11], T0);
 
 	sim.atoms.t(1:500)='W';	sim.atoms.t(501:end) = 'F';
-	sim.thermostat.temperature = T0;
-	sim.thermostat.settype(sim.atoms, 'W');
+	sim.setthermostat('relax', 'W', T0, 0.01);
 	
 	ekin = zeros(niter,1); 
 	for n=1:niter
-		sim.pairforce.lj(sim.atoms, "FF", [2.5, 1.0, 1.0, 1.0]); 
-		sim.pairforce.lj(sim.atoms, "WW", [2.5, 1.0, 1.0, 1.0]); 
-  		sim.pairforce.lj(sim.atoms, "FW", [2.5, 1.0, 1.0, 1.0]); 
+		sim.lennardjones("FF", [2.5, 1.0, 1.0, 1.0]); 
+		sim.lennardjones("WW", [2.5, 1.0, 1.0, 1.0]); 
+  		sim.lennardjones("FW", [2.5, 1.0, 1.0, 1.0]); 
 		
 		sim.atoms.tether('W', 300);
 	
-		sim.thermostat.nosehoover(sim.atoms, sim.integrator.dt);
-		ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
+		sim.applythermostat();
+		ekin(n) = sim.leapfrog();
 	end
 
 	sim.atoms.save("tether.xyz");
@@ -34,5 +33,5 @@ function test_3()
 	view([0,0,0]);
 	print("test_3.pdf", '-dpdf');
 
-	printf("Ekin %.2f\n", mean(ekin)/sim.natoms);
+	printf("Temperature %.2f\n", 2/3*mean(ekin(end-100:end))/sim.natoms);
 end

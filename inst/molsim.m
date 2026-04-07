@@ -16,7 +16,7 @@ classdef molsim < handle
 		atoms;
 		
 		integrator;  
-		thermostat;
+		thermostat; thermtype;
 
 		pairforce;  
 		bonds;
@@ -67,15 +67,17 @@ classdef molsim < handle
 				error("Invalid call to setconf");
 			end
 
+			# Auxillary properties (bit of copying)
 			this.natoms = this.atoms.natoms; 
 			this.lbox = this.atoms.lbox;
 			this.volume = this.lbox(1)*this.lbox(2)*this.lbox(3);
+
+			# Default no. of threads
 			this.nthreads = 4;
 
+			# Minimal property classes - other property classes set if used
 			this.integrator = ms_integrator(); 
 			this.pairforce = ms_pairforce(); 
-			this.thermostat = ms_thermostat();
-			this.molecules = ms_molecules();
 		end
 
 		## Usage: settop()
@@ -278,23 +280,45 @@ classdef molsim < handle
 			[ekin, Pkin] = this.integrator.lf(this.atoms, this.pairforce);
 		end
 
-		function setthermostat(this, atype, temperature, tauQ=10.0)
+		## Usage: setthermostat(thermostate type, atom types, temperatures, relax times)
+		##        setthermostat(thermostate type, temperature, relax time)
+		##
+		## Defines/sets the thermostat device. Possible types are "nh" (Nose-Hoover) and "relax"
+		## (simple temperature relaxation). For "nh" relaxation time should be in order of 10, for
+		## "relax" the relaxation time should be in order of 0.1-0.01.
+		##
+		## IMPORTANT: When applying the Noose-Hoover thermostat on specific types the overall
+		## momentum is not conserved. Can be enforced by the user through the resetmom method. 
+		##
+		## Example
+		## >> # Thermostat type A and B to temperature 1 and 2 respectively using relaxation device  
+		## >> sim.setthermostat("relax", "AB", [1.0, 2.0], [0.01, 0.01]);
+		## >> # Thermostat all system particles with a Nose-Hoover to temperaure 1.42
+		## >> sim.setthermostat("nh", 1.42, 10.0);   
+		function setthermostat(this, thermtype, atomtypesOrTemperature, temperaturesOrTauQ, tauQ)
+	
+			this.thermtype = thermtype;
 
-			this.thermostat.settype(this.atoms, atype);
-			this.thermostat.temperature = temperature;
+			if nargin==4
+				this.thermostat = ms_thermostat(atomtypesOrTemperature, temperaturesOrTauQ); 
+			elseif nargin==5
+				this.thermostat = ms_thermostat(atomtypesOrTemperature, tauQ, temperaturesOrTauQ);
+			else
+				error("setthermostat requires 3 or 4 arguments");
+			end
 
 		end 
 
 
-		## Usage: nosehoover()
-		##
-		## Apply the Nose-Hoover termostat for NVT simulations
-		## See also documentation for thermostat
-		function nosehoover(this)
-			this.thermostat.nosehoover(this.atoms, this.integrator.dt);
-		end
+		function applythermostat(this)
 
-			
+			if strcmp(this.thermtype, "nh")
+				this.thermostat.nosehoover(this.atoms, this.integrator.dt);
+			elseif strcmp(this.thermtype, "relax") 
+ 				this.thermostat.relaxtemp(this.atoms);
+			end
+		end
+		
 		## Usage: [rmol masses] = getmolpos()
 		##
 		## Get molecular centre of masses and molecular masses

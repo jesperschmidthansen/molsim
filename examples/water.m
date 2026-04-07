@@ -19,7 +19,7 @@ sim.settop("topology.mat");
 sim.atoms.setvels(temp0);
 sim.pairforce.max_cutoff = cutoff;
 sim.integrator.dt = dt;
-sim.thermostat.temperature = temp0;
+sim.setthermostat("nh", temp0, 10.0);
 
 nbonds = sim.bonds.nbonds;
 sim.bonds.springs = kspring*ones(nbonds,1); 
@@ -44,7 +44,7 @@ for n=1:niter
 	sim.harmonicbond(0);
 	sim.harmonicangle(0);
 
-	sim.nosehoover();
+	sim.applythermostat();
 	ekin = sim.leapfrog();
 	
 	if rem(n, 50)==0

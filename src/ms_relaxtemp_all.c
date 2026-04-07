@@ -29,7 +29,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 		Tkin_particle *= rational*mass[n];
 	
 		double fac = sqrt( 1.0 + tau*(T0/Tkin_particle - 1.0) );
-		printf("%f\n", Tkin_particle);
 		for ( int k=0; k<3; k++ ){
 			unsigned idx = k*npart + n;
 			v[idx] *= fac;

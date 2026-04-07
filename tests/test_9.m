@@ -3,23 +3,18 @@ function [epot, ekin] = test_9()
 	niter = 1e4;
 	sim = molsim();
 	sim.setconf([10,10,10], [10,10,10], 1.0);
-	sim.thermostat.temperature = 1.0;
-	sim.thermostat.tauQ = 50.0;
 
 	sim.addatom([0.5, 0.5, 0.5], 'B', 1.0, 0.0);
 	sim.atoms.resetmom();
 
-	sim.atoms.save("dump.xyz");
+	sim.setthermostat("nh", 1.0, 10.0); 		
 
-	ekin = zeros(1, niter); epot = zeros(1, niter);
-
-	epsilon = 0.0;
+	ekin = zeros(1, niter); epot = zeros(1, niter); 	
 	for n=1:niter
 		epot(n) = sim.lennardjones("AA", [2.5, 1.0, 1.0, 1.0]);   
-		epot(n) += sim.lennardjones("AB", [2.5, epsilon, 1.0, 1.0]);   
-		epot(n) += sim.lennardjones("BB", [2.5, epsilon, 1.0, 1.0]);   
+		epot(n) += sim.lennardjones("AB", [2.5, 0.5, 1.0, 1.0]);   
 
-		sim.nosehoover();
+		sim.applythermostat();
 		ekin(n) = sim.leapfrog();
 	end
 
