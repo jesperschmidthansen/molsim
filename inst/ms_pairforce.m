@@ -48,7 +48,6 @@ classdef ms_pairforce < handle
 				end
 				this.first_call = false;
 				this.first_call_simulation = false;
-				
 			end
 	
 		end

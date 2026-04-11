@@ -26,13 +26,15 @@ classdef molsim < handle
 		# Aux. system quantities/properties 	
 		natoms;
 		lbox; volume;
-		#temperature;
 
 		# Molecule info
 		nmols; atom_idxs; 
 
 		# No. threads 
 		nthreads;
+
+		# Auto-saver - stepspersave - save id number
+		autosave; stprsave; saveid;
 	end
 
 	methods
@@ -182,7 +184,6 @@ classdef molsim < handle
 		## >> sim.setconf([10,10,10],[11, 11, 23], 1.0);
 		## >> sim.addatom(rand*sim.lbox, 'B', 2.0, -2.);
 		function addatom(this, r, atype, mass, charge)
-		
 			this.natoms = this.natoms + 1;
 			this.atoms.natoms = this.natoms;
 
@@ -212,6 +213,11 @@ classdef molsim < handle
 		## >> sim.setconf([10,10,10],[11, 11, 23], 1.0);
 		## >> [epot, Pconf] = sim.lennardjones("AA", [2.5,1.0,1.0,0.0]);
 		function [epot Ppot] = lennardjones(this, atypes, params)
+			
+			if this.pairforce.first_call || this.pairforce.first_call_simulation  
+				this.doautosave(this.integrator.sidx);
+			end
+
 			[epot, Ppot] = this.pairforce.lj(this.atoms, atypes, params);		
 		end
 
@@ -222,6 +228,11 @@ classdef molsim < handle
 		##
 		## Example: see water.m 
 		function [epot Ppot] = sfcoulomb(this, cutoff)
+			
+			if this.pairforce.first_call || this.pairforce.first_call_simulation  
+				this.doautosave(this.integrator.sidx);
+			end
+
 			[epot, Ppot] = this.pairforce.sf(this.atoms, cutoff);
 		end
 
@@ -237,6 +248,11 @@ classdef molsim < handle
 		## >> sim.pairforce.max_cutoff = 3.5;
 		## >> [epot, Pconf] = sim.ljcsf("AA", [2.5,1.0,1.0,0.0, 3.5]);
 		function [epot Ppot] = ljcsf(this, atypes, params)
+			
+			if this.pairforce.first_call || this.pairforce.first_call_simulation  
+				this.doautosave(this.integrator.sidx);
+			end
+
 			[epot, Ppot] = this.pairforce.ljcsf(this.atoms, atypes, params);
 		end
  
@@ -318,7 +334,59 @@ classdef molsim < handle
  				this.thermostat.relaxtemp(this.atoms);
 			end
 		end
-		
+
+		## Usage: setautosave(steps per save)
+		##
+		## Sets autosaver which saves simulation snaps shot of 
+		## time, configuration space, force and simulation box crossing. This is 
+		## useful for post simulation data analysis.
+		##
+		## The autosaver outputs a compressed file 'molsim.zip' containing data files 
+		## 'molsim-%06.mat" with variabes 'time', 'r', 'v', 'f', 'bxcrs'.    
+		##
+		## If a file 'molsim.zip' exists in the current directory it will be deleted.
+		##
+		## The autosaver will slow down the execution time. 
+		##
+		## Example
+		## >> sim = molsim();
+		## >> sim.setautosave(100); # Save every 100 time steps
+		function setautosave(this, stepsPerSave)
+			
+			this.autosave = true;
+			this.stprsave = stepsPerSave;
+			this.saveid = 0;
+			
+			if exist("molsim*.mat")
+				delete("molsim*.mat");
+			end
+
+		end	
+
+		## Usage: doautosave(iteration index)
+		##
+		## Does an autosave
+		function doautosave(this, n)
+			
+			if this.autosave && rem(n, this.stprsave)==0
+				filename = sprintf("molsim-%06d.mat", this.saveid);
+
+				r = this.atoms.r; v = this.atoms.v; f = this.atoms.f; bxcrs = this.atoms.bxcrs; 
+				time = this.integrator.sidx*this.integrator.dt;
+
+				save(filename, "time", "r", "v", "f", "bxcrs");	
+
+				if exist("molsim.zip") 
+					unzip("molsim.zip");
+				end
+
+				zip("molsim.zip", "molsim*.mat");	
+				delete("molsim*.mat");
+				this.saveid++;	
+			end
+
+		end	
+
 		## Usage: [rmol masses] = getmolpos()
 		##
 		## Get molecular centre of masses and molecular masses
@@ -332,8 +400,6 @@ classdef molsim < handle
 			nuau = columns(this.atom_idxs);
 			[rmols mmols] = ms_calcmolpos(this.atoms.r, this.atoms.m, nuau*this.nmols, ...
 											this.atom_idxs, nuau, this.lbox); 
-
-
 		end
 		
 		## Usage: vmol = getmolvel()
