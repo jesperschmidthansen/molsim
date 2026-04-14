@@ -35,6 +35,10 @@ classdef molsim < handle
 
 		# Auto-saver - stepspersave - save id number
 		autosave; stprsave; saveid;
+
+		# Timer
+		nloops; tic;
+
 	end
 
 	methods
@@ -430,6 +434,25 @@ classdef molsim < handle
 			ete = ms_calcmolete(this.atoms.r, this.nmols*nuau, this.atom_idxs, nuau, this.lbox);
 		end
 
+
+		function timer(this, nloops)
+			this.nloops = nloops;
+			this.tic=tic(); 
+		end
+
+		function showtimer(this);
+			nloops = this.nloops;
+			n = this.integrator.sidx;
+
+			time_now = toc(this.tic); 
+			time_per_loop = time_now/n;
+			time_remain = (nloops - n)*time_per_loop;
+	 		
+			printf("\rRemaining: %.1f %%  ETA: %.1f min.  (%d sps on average) ", 
+                     (nloops-n)/nloops*100, time_remain/60, int64(1/time_per_loop)) 
+            fflush(stdout);
+		end
+	
 	end
 
 end
