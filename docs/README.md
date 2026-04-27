@@ -36,17 +36,25 @@ $$
 
 The table shows the terms 
 <table>
- <tr> <td> Potential function </td> <td> Parameters </td></tr>
+ <tr> <td> Potential function </td> <td> User supplied parameters </td></tr>
  <tr><td> 
 $U_\mathrm{lattice} = \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2$  
  </td>
- <td> $k_0$ $r_0$</td></tr>
+ <td> $k_0$, $r_0$</td></tr>
  <tr><td>
     $U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}}
    4\epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w
     \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$
 </td>
    <td> $\epsilon$, $\sigma$, $a_w$</td></tr> 
+<tr> <td> $U_{\mathrm{coulomb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}$</td> 
+<td> </td></tr>
+<tr><td> $U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2$ </td>
+<td> $k_s$, $l_0$ </td></tr>
+<tr> <td> $U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 $ </td>
+<td> $k_\theta$, $\theta_0$ </td></tr>
+<tr> <td> $U_\mathrm{torsion}=\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)$ </td>
+<td> $c_n$ </td></tr>
 </table>
 
 
@@ -54,21 +62,10 @@ $U_\mathrm{lattice} = \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf
  
  
 
-$$
-U_{\mathrm{coulomb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}
-$$
 
-$$
- U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2
-$$
 
-$$
- U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 
-$$
 
-$$
-U_\mathrm{torsion}=\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)
-$$
+
 
 <h2>Why MEX?</h2>
 <p>GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
