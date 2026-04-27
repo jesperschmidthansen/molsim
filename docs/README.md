@@ -149,28 +149,5 @@ DEFUN_DLD(msum_oct, args, ,""){
 </code></pre>
 This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up depends on the array size, hardware, optimization flags, etc.   
 </p>
-
-<h2>Acknowledgement</h2>
-John Donoghue for the post_install.m script.
-
-<h2>To-do</h2>
-Octave now supports object oriented programming. molsim is under complete reconstructed to benefit
-from this. Matlab compatibility is not a priority.
-
-- [ ] Feature: Barostate
-- [ ] Feature: Standard run time sample classes
-- [ ] Feature: Electrostatic interactions using the Wolf scheme
-- [X] Feature: A set of molecular and atomic configurations 
-- [X] Feature: Molecular class for infrastructure (contained in molsim class)
-- [X] Feature: DPD support (initiated)
-- [ ] Feature: A doc/ directory (initially just a reference to examples/ directory?)
-- [ ] Revision: Class properties access. Should these be different from public?
-- [ ] Revision: Define class constants with correct properties (Constant=true)
-- [ ] Revision: All classes should have a disp method
-- [ ] Revision: Consider whether methods should have specified properties
-- [X] Revision: Naming conventions (at the moment none)  
-- [X] Revision: ms_molconfig is a mess...  
-- [ ] Revision: Thermostating is hand-held at the moment, should be fixed
-
 </body>
 </html>
