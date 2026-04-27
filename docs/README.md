@@ -5,10 +5,12 @@ This text is not meant to introduce molecular dynamics; such introductions
 can be found in many standard books. In brief, the basic idea is to solve the classical 
 equation of motion of an ensemble of interacting particles. In the simplest form 
 this means solving (numerically) Newton's second law
+
 $$
    \frac{\mathrm{d}\mathbf{r}_i}{\mathrm{d} t} = \mathbf{v}_i \ , \ \
    \frac{\mathrm{d}\mathbf{p}_i}{\mathrm{d} t} = \mathbf{f}_i \ ,
 $$
+
 where $\mathbf{r}_i, \mathbf{v}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the
 particle position, velocity, momentum and force acting on the particle, respectively. In a
 standard simulation we solve this set of differential equations by (i)
