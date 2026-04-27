@@ -26,17 +26,25 @@ do (as many times as we want)
    r, p <- integrate(f,p)
 done
 </pre></code>
-
-$
+The force is given by the gradient of the potential energy function $U$ by $\mathbf{f} = - \nabla
+U$. In molsim the energy function is 
+$$
  U(\mathbf{r}_i, r_{ij}, \ldots) =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coulomb}} +
  U_\mathrm{bonds} + U_\mathrm{angles} +  U_\mathrm{torsion}
 $$
+The table shows the terms 
+<table>
+ <tr> <td> Potential function </td> <td> Parameters </td></tr>
+ <tr><td> 
+$U_\mathrm{lattice} = \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2$  
+ </td>
+ <td> $k_0$ $r_0$</td></tr>
+</table>
 
-$$
-U_\mathrm{lattice} = \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2 
-$$
 
 
+ 
+ 
 $$
 U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}}
    4\epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w
