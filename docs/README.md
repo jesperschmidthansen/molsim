@@ -1,14 +1,36 @@
  <html>
 <body>
+
 $$
  U(\mathbf{r}_i, r_{ij}, \ldots) =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coulomb}} +
  U_\mathrm{bonds} + U_\mathrm{angles} +  U_\mathrm{torsion}
 $$
 
 $$
+U_\mathrm{lattice} = \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf{r}_0)^2 
+$$
+
+
+$$
 U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}}
    4\epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w
     \left(\frac{\sigma}{r_{ij}}\right)^{6}\right] \, .
+$$
+
+$$
+U_{\mathrm{coulomb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}
+$$
+
+$$
+ U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2
+$$
+
+$$
+ U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 
+$$
+
+$$
+U_\mathrm{torsion}=\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)
 $$
 
 <h2>Why MEX?</h2>
