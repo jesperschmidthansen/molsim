@@ -51,7 +51,7 @@ $U_\mathrm{lattice} = \sum_\mathrm{sites} \frac{1}{2}k_0 (\mathbf{r}_i - \mathbf
 <td> </td></tr>
 <tr><td> $U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2$ </td>
 <td> $k_s$, $l_0$ </td></tr>
-<tr> <td> $U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2 $ </td>
+<tr> <td> $U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
 <td> $k_\theta$, $\theta_0$ </td></tr>
 <tr> <td> $U_\mathrm{torsion}=\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)$ </td>
 <td> $c_n$ </td></tr>
