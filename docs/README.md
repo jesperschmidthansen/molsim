@@ -19,13 +19,14 @@ forward in time. The following pseudo code lists the basic idea
 
 <pre><code>
 Set simulation parameters
-Set initial configuration $\mathbf{r}, \mathbf{p}$
+Set initial configuration position r and momenta p
  
 do (as many times as we want)
-   $\mathbf{f}$ $\leftarrow$ calcforce($\mathbf{r}$)
-   $\mathbf{r},\mathbf{p}$ $\leftarrow$ integrate($\mathbf{f}$,$\mathbf{p}$)
+   f <- calcforce(r)
+   r, p <- integrate(f,p)
 done
 </pre></code>
+
 $
  U(\mathbf{r}_i, r_{ij}, \ldots) =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coulomb}} +
  U_\mathrm{bonds} + U_\mathrm{angles} +  U_\mathrm{torsion}
