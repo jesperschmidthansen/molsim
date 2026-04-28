@@ -39,27 +39,28 @@ The table shows the terms
  </tr>
  <tr>
   <td>$U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}} 4\epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$ </td>
-  <td> $r_\text{cutoff} $, $\epsilon$, $\sigma$, $a_w$</td>
-  <td> molsim.lennardjones(atoms types, [$r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$]); </td>
+  <td> $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$</td>
+  <td> molsim.lennardjones(atoms types, [ $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$ ]) </td>
  </tr> 
 <tr> 
  <td> $U_{\mathrm{coulomb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}$</td> 
 <td> $r_\text{cutoff}$ </td>
 <td> molsim.sfcoulomb($r_\text{cutoff}$) </td>
 </tr>
-<tr><td> $U_{\mathrm{bonds}} =\sum_{\mathrm{bonds}} \frac{1}{2} k_{s}(r_{ij} - l_0)^2$ </td>
+<tr><td> $U_{\mathrm{bonds}} =\frac{1}{2} \sum_{\mathrm{bonds}} k_{s}(r_{ij} - l_0)^2$ </td>
 <td> $k_s$, $l_0$ </td>
 <td> molsim.harmonicbond()</td>
 </tr>
-<tr> <td> $U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
+<tr> 
+ <td> $U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
 <td> $k_\theta$, $\theta_0$ </td>
 <td> molsim.harmonicangle() </td>
 </tr>
- 
 <tr> 
  <td> $U_\mathrm{torsion}=\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)$ </td>
-<td> $c_n$ </td></tr>
-<td>  sim.ryckbell();</td>
+ <td> $c_n$ </td>
+ <td> molsim.ryckbell()</td>
+</tr>
 </table>
 
 
