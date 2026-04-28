@@ -15,14 +15,33 @@ where $\mathbf{r}_i, \mathbf{v}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the part
 standard simulation we solve this set of differential equations by (i) evaluating the forces acting on the particles, and (ii) from this integrate forward in time. The following pseudo code lists the basic idea
 
 <pre><code>
-Set simulation parameters
-Set initial configuration position r and momenta p
+Set initial configuration: position r and momenta p
  
 do (as many times as we want)
    f <- calcforce(r)
    r, p <- integrate(f,p)
 done
 </pre></code>
+
+<h3>Simple example</h3>
+
+<pre><code>
+# Instance of molsim object
+sim = molsim();
+
+# Set number of particles and simulation box lengths in each direction. Temperature is initially set to 1.0
+sim.setconf([10,10,10], [10.557, 10.557, 10.557], 1.0);
+
+# Main MD loop
+for n=1:1e4
+   # Calculates the forces acting on particles of type A - default type
+	 sim.lennardjones("AA", [2.5, 1.0, 1.0, 1.0]);   
+   # Integrate forward in time using the leap-frog algorithm
+	 sim.leapfrog();
+end
+</code></pre>
+
+<h3>Force field model</h3>
 The force is given by the gradient of the potential energy function $U$ by $\mathbf{f} = - \nabla U$. In molsim the energy function is 
 
 $$
@@ -38,7 +57,7 @@ The table shows the terms
  <td> molsim.atoms.tether(atom type, $k_0$) </td>
  </tr>
  <tr>
-  <td>$U_\mathrm{vWaals} =  \sum_{i,j \, \mathrm{pairs}} 4\epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$ </td>
+  <td>$U_\mathrm{vWaals} =  4\sum_{i,j \, \mathrm{pairs}} \epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$ </td>
   <td> $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$</td>
   <td> molsim.lennardjones(atoms types, [ $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$ ]) </td>
  </tr> 
@@ -63,17 +82,13 @@ The table shows the terms
 </tr>
 </table>
 
+<h3>Integrator and thermostats</h3>
 
+<h3>Setting up a configuration</h3>
 
- 
- 
+<h3>Saving</h3>
 
-
-
-
-
-
-<h2>Why MEX?</h2>
+<h3>Why MEX?</h3>
 <p>GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
 </p>
 
