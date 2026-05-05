@@ -40,8 +40,8 @@ classdef ms_dihedrals < handle
 		## Cambridge University Press. 	
 		##
 		## Example:
-		## >> epot = sim.dihedrals.ryckbell(sim.atoms, 0)
-		function epot = ryckbell(this, atoms, dtype)
+		## >> epot = sim.dihedrals.ryckbell(sim.atoms)
+		function epot = ryckbell(this, atoms, dtype=0)
 	
 			epot = ms_dihedrals_ryckaert(atoms.f, atoms.r, this.ndihedrals, dtype, this.dtypes, this.coeffs, 
 												this.pidx, atoms.lbox, atoms.natoms);

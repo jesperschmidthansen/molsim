@@ -38,8 +38,8 @@ classdef ms_angles < handle
 		## Returns the total potential energy 	
 		##
 		## Example:
-		## >> epot = sim.angles.harmonic(sim.atoms, 0)
-		function epot = harmonic(this, atoms, atype)
+		## >> epot = sim.angles.harmonic(sim.atoms)
+		function epot = harmonic(this, atoms, atype=0)
 		
 			epot = ms_angle_harmonic(atoms.f, atoms.r, this.nangles, atype, this.atypes, this.springs,
 										this.a0, this.pidx, atoms.lbox, atoms.natoms);

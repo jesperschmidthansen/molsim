@@ -113,7 +113,9 @@ classdef molsim < handle
 				
 				this.bonds = ms_bonds(nbonds);
 				this.bonds.pidx = binfo(:,1:2) + 1;
-				this.bonds.btypes = binfo(:,3);			
+				# Bond type is currently 0 since only one type is supported
+				# In future this can be set to binfo(:,3);	
+				this.bonds.btypes = 0; 		
 			end
 			
 			# Angles
@@ -123,7 +125,9 @@ classdef molsim < handle
 				
 				this.angles = ms_angles(nangles);
 				this.angles.pidx = ainfo(:,1:3) + 1;
-				this.angles.atypes = ainfo(:,4);			
+				# Angle type is currently 0 since only one type is supported
+				# In future this can be set to ainfo(:,3);	
+				this.angles.atypes = 0;			
 			end 
 
 		
@@ -134,7 +138,9 @@ classdef molsim < handle
 			
 				this.dihedrals = ms_dihedrals(ndihedrals);
 				this.dihedrals.pidx = dinfo(:,1:4) + 1;
-				this.dihedrals.dtypes = dinfo(:,5);			
+				# Diheadral type is currently 0 since only one type is supported
+				# In future this can be set to dinfo(:,3);	
+				this.dihedrals.dtypes = 0;			
 			end
 
 		end
@@ -265,8 +271,8 @@ classdef molsim < handle
 		## Calculates the bond forces using a harmonic bond potential
 		##
 		## Example: see butane.m
-		function epot = harmonicbond(this, btype)
-			epot = this.bonds.harmonic(this.atoms, btype);
+		function epot = harmonicbond(this)
+			epot = this.bonds.harmonic(this.atoms);
 		end
 
 		## Usage: harmonicangle(angle type)
@@ -274,8 +280,8 @@ classdef molsim < handle
 		## Calculates the angle forces using a harmonic angle potential
 		##
 		## Example: see butane.m
-		function epot = harmonicangle(this, atype)
-			epot = this.angles.harmonic(this.atoms, atype);
+		function epot = harmonicangle(this)
+			epot = this.angles.harmonic(this.atoms);
 		end
 
 		## Usage: ryckbell(dihed. type)
@@ -283,8 +289,8 @@ classdef molsim < handle
 		## The Ryckaert-Bellemann dihedral model
 		##
 		## Example: see butane.m
-		function epot = ryckbell(this, dtype)
-			epot = this.dihedrals.ryckbell(this.atoms, dtype);
+		function epot = ryckbell(this)
+			epot = this.dihedrals.ryckbell(this.atoms);
 		end
 
 		## Usage: leapfrog()

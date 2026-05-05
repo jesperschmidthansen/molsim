@@ -2,7 +2,7 @@ clear all;
 
 addpath("../inst/"); addpath("../src/"); addpath("../resources/setup/");
 
-niter = 1e5; dt = 5e-4;
+niter = 1e4; dt = 5e-4;
 dens0 = 3.16; temp0 = 298.15/78.2; 
 
 cutoff = 2.9;
@@ -10,7 +10,7 @@ cutoff = 2.9;
 lbond = 0.316; kspring = 68421; 
 angle = 1.97; kangle = 490;
 
-molconf("../resources/molconf/water.xyz", "../resources/molconf/water.top", [15, 15, 15], 3.0);
+molconf("../resources/molconf/water.xyz", "../resources/molconf/water.top", [15, 15, 15]);
 
 sim = molsim();
 sim.setconf("configuration.xyz");
@@ -31,18 +31,11 @@ sim.angles.a0 = angle*ones(nangles, 1);
 
 sim.atoms.setexclusions(sim.angles.pidx, "angles");
 
-qH = sim.atoms.q(1);
-idx_O = find( sim.atoms.t=='O' );
-idx_H = find( sim.atoms.t=='H' );
-sim.atoms.q = zeros(sim.natoms, 1);
-
-qnow = 0.0; dQ = qH/1e2;
-
 for n=1:niter
 	sim.lennardjones("OO", [2.5, 1.0, 1.0, 1.0]);   
 	sim.sfcoulomb(cutoff);
-	sim.harmonicbond(0);
-	sim.harmonicangle(0);
+	sim.harmonicbond();
+	sim.harmonicangle();
 
 	sim.applythermostat();
 	ekin = sim.leapfrog();
@@ -50,14 +43,10 @@ for n=1:niter
 	if rem(n, 50)==0
 		if sim.natoms/sim.volume < dens0 
 			sim.scalebox(dens0, [1:3], 0.999);
-		elseif qnow < qH
-			sim.atoms.q(idx_H) += dQ;
-			sim.atoms.q(idx_O) -= 2*dQ;
-			qnow += dQ;
 		end
 
-		printf("\r It. no. %d, dens. %f, temp. %f, charge %f ", ... 
-			n, sim.natoms/sim.volume, ekin*2/(3*sim.natoms), qnow); 
+		printf("\r It. no. %d, dens. %f, temp. %f ", ... 
+			n, sim.natoms/sim.volume, ekin*2/(3*sim.natoms)); 
 		fflush(stdout);
 	end
 

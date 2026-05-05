@@ -45,9 +45,9 @@ for n=1:nloops
 	epot(n) = sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
 	
 	# Calcuate the intra-molecular forces
-	epot(n) += sim.harmonicbond(0);
-	epot(n) += sim.harmonicangle(0);
-	epot(n) += sim.ryckbell(0);
+	epot(n) += sim.harmonicbond();
+	epot(n) += sim.harmonicangle();
+	epot(n) += sim.ryckbell();
 
 	# Apply Nose-Hoover thermostat
 	sim.applythermostat();

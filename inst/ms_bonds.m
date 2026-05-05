@@ -38,8 +38,8 @@ classdef ms_bonds < handle
 		## Returns the total potential energy 	
 		##
 		## Example:
-		## >> epot = sim.bonds.harmonic(sim.atoms, 0)
-		function epot = harmonic(this, atoms, btype)
+		## >> epot = sim.bonds.harmonic(sim.atoms)
+		function epot = harmonic(this, atoms, btype=0)
 			epot = ms_harmonic(atoms.f, atoms.r, this.nbonds, btype, 
 								this.btypes, this.springs, this.l0, this.pidx, atoms.lbox, atoms.natoms);	
 		end
