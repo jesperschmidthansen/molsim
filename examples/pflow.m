@@ -3,7 +3,7 @@ clear all;
 addpath("../inst/"); addpath("../src/"); 
 
 # Number of MD loops, cutoff, desired fluis density. A WCA fluid
-nloops = 1e5; cutoff = 2.0^(1/6); rhoFluid = 0.7;
+nloops = 1e4; cutoff = 2.0^(1/6); rhoFluid = 0.7;
 
 # Instance of molsim object and setting cutoff
 sim = molsim();
@@ -34,6 +34,8 @@ for n=1:nloops
 	sim.lennardjones("WF", [cutoff, 1.0, 1.0, 1.0]);   
 	sim.lennardjones("WW", [cutoff, 1.0, 1.0, 1.0]);
 
+	#sim.ljexclude('D', [cutoff, 1.0,1.0,1.0]);
+	 
 	# Aply spring force to wall atoms   
 	sim.atoms.tether('W', 500);
 

@@ -265,6 +265,16 @@ classdef molsim < handle
 
 			[epot, Ppot] = this.pairforce.ljcsf(this.atoms, atypes, params);
 		end
+
+		function [epot Ppot] = ljexclude(this, excltype, params)
+		
+			if this.pairforce.first_call || this.pairforce.first_call_simulation  
+				this.doautosave(this.integrator.sidx);
+			end
+
+			[epot, Ppot] = this.pairforce.ljexclude(this.atoms, excltype, params);
+
+		end
  
 		## Usage: harmonicbond(bond type)
 		##

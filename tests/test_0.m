@@ -12,7 +12,7 @@ function [ekin, epot] = test_0()
 
 	ekin = zeros(1, niter); epot = zeros(1, niter); P = zeros(3,3);
 	for n=1:niter
-		[epot(n) Pconf] = sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
+		[epot(n) Pconf] = sim.pairforce.lj(sim.atoms, 'D', [2.5, 1.0, 1.0, 1.0]);   
 		[ekin(n) Pkin] = sim.integrator.lf(sim.atoms, sim.pairforce);
 
 		P = P + Pconf + Pkin;		
