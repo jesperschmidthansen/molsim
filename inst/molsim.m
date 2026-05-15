@@ -108,39 +108,23 @@ classdef molsim < handle
 	
 			# Bonds
 			if binfo != -1
-
 				nbonds = rows(binfo); 
-				
 				this.bonds = ms_bonds(nbonds);
 				this.bonds.pidx = binfo(:,1:2) + 1;
-				# Bond type is currently 0 since only one type is supported
-				# In future this can be set to binfo(:,3);	
-				this.bonds.btypes = 0; 		
 			end
 			
 			# Angles
 			if ainfo != -1
-				
 				nangles = rows(ainfo);
-				
 				this.angles = ms_angles(nangles);
 				this.angles.pidx = ainfo(:,1:3) + 1;
-				# Angle type is currently 0 since only one type is supported
-				# In future this can be set to ainfo(:,3);	
-				this.angles.atypes = 0;			
 			end 
-
 		
 			# Dihedral
 			if dinfo != -1
-				
 				ndihedrals = rows(dinfo);
-			
 				this.dihedrals = ms_dihedrals(ndihedrals);
 				this.dihedrals.pidx = dinfo(:,1:4) + 1;
-				# Diheadral type is currently 0 since only one type is supported
-				# In future this can be set to dinfo(:,3);	
-				this.dihedrals.dtypes = 0;			
 			end
 
 		end

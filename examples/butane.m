@@ -1,4 +1,7 @@
 
+# Simulation of Ryckaert-Bellmann butane model 
+# System configuration is load from the file butane_config_system.xyz and is calibrated  
+
 clear all;
 
 # Remove if script is run after package installation 
@@ -39,24 +42,21 @@ end
 sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 
 # Main MD loop
-ekin = zeros(nloops,1); epot = zeros(nloops,1);
 for n=1:nloops
 	# Calculate the pair forces 	
-	epot(n) = sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
+	sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
 	
 	# Calcuate the intra-molecular forces
-	epot(n) += sim.harmonicbond();
-	epot(n) += sim.harmonicangle();
-	epot(n) += sim.ryckbell();
+	sim.harmonicbond();
+	sim.harmonicangle();
+	sim.ryckbell();
 
 	# Apply Nose-Hoover thermostat
 	sim.applythermostat();
-	# Integrate forward in time
-	ekin(n) = sim.leapfrog();
 	
-	# Rescale simulation box to obtain desired density
-	if rem(n, 10)==0
-		sim.scalebox(dens0);
-	end
+	# Integrate forward in time
+	sim.leapfrog();
 
+	# Here you can call a sampler or collect data
 end
+

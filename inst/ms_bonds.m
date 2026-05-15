@@ -40,7 +40,7 @@ classdef ms_bonds < handle
 		## Example:
 		## >> epot = sim.bonds.harmonic(sim.atoms)
 		function epot = harmonic(this, atoms, btype=0)
-			epot = ms_harmonic(atoms.f, atoms.r, this.nbonds, btype, 
+			epot = ms_harmonic(atoms.f, atoms.r, this.nbonds, 0, 
 								this.btypes, this.springs, this.l0, this.pidx, atoms.lbox, atoms.natoms);	
 		end
 	

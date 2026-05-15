@@ -233,6 +233,18 @@ classdef ms_atoms < handle
 			this.resetmom();
 		end
 
+		## Usage: scalevels(temperature);
+		##
+		## Scales velocities to given target temperature. Mostly for calibration.
+		function scalevels(this, temperature)
+
+        	total_ekin =  0.5*sum(sum(this.v.^2').*this.m');
+        	Tnow = 2/3*total_ekin/this.natoms;    
+        	lambda = sqrt(temperature/Tnow);
+        	this.v = lambda.*this.v;
+
+		end
+
 		## Usage: [distance dr] = getdist(i, j)
 		##
 		## Returns the distance and the position vector between atoms with indices i and j  
