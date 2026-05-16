@@ -45,7 +45,7 @@ for n=1:niter
 	sim.lennardjones("OO", [2.5, 1.0, 1.0, 1.0]);   
 	sim.sfcoulomb(cutoff);
 	sim.harmonicbond();
-	sim.harmonicangle();
+	sim.cossqangle();
 
 	ekin = sim.leapfrog();
 	sim.atoms.scalevels(temp0);

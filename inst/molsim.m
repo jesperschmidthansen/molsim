@@ -274,8 +274,8 @@ classdef molsim < handle
 		## Calculates the angle forces using a harmonic angle potential
 		##
 		## Example: see butane.m
-		function epot = harmonicangle(this)
-			epot = this.angles.harmonic(this.atoms);
+		function epot = cossqangle(this)
+			epot = this.angles.cossq(this.atoms);
 		end
 
 		## Usage: ryckbell(dihed. type)

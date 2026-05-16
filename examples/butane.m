@@ -48,7 +48,7 @@ for n=1:nloops
 	
 	# Calcuate the intra-molecular forces
 	sim.harmonicbond();
-	sim.harmonicangle();
+	sim.cossqangle();
 	sim.ryckbell();
 
 	# Apply Nose-Hoover thermostat

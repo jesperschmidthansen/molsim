@@ -62,7 +62,7 @@ function [dist _angles dihedrals] = test_5()
 	for n=1:niter
 		epot(n) = sim.pairforce.lj(sim.atoms, "AA", [2.5, 1.0, 1.0, 1.0]);   
 		epot(n) = epot(n) + sim.bonds.harmonic(sim.atoms, 0);
-		epot(n) = epot(n) + sim.angles.harmonic(sim.atoms, 0);
+		epot(n) = epot(n) + sim.angles.cossq(sim.atoms, 0);
 		epot(n) = epot(n) + sim.dihedrals.ryckbell(sim.atoms, 0);
 
 		ekin(n) = sim.integrator.lf(sim.atoms, sim.pairforce);
