@@ -98,8 +98,8 @@ sim.integrator.dt = 5e-4; # Default is 5e-3
 molsim includes two different thermostats. The Nose-Hoover thermostat and a simple relaxation-type
 thermostat. The thermostat type is set before the main MD-loop
 <pre></code>
-molsim.setthermostat(\<type of thermostat\>, \<atom types\>, \<target temperature\>, \<relaxation parameter\>);
-molsim.setthermostat(\<type of thermostat\>, \<target temperature\>, \<relaxation parameter\>);
+molsim.setthermostat(\< type of thermostat \>, \< atom types \>, \< target temperature \>, \< relaxation parameter \>);
+molsim.setthermostat(\< type of thermostat \>, \< target temperature \>, \< relaxation parameter \>);
 </code></pre>
 The thermostat type can be "nh" or "relax". If atom type is not specified, the thermostat is applied
 to all atoms. See method help text for relaxation parameter. To apply the thermostat you call 
