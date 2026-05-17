@@ -3,7 +3,8 @@
 
 UNDER DEVELOPMENT 
 
-This text is not meant to introduce molecular dynamics; such introductions can be found in many standard books. In brief, the basic idea is to solve the classical 
+This text is not meant to introduce molecular dynamics; such introductions can be found in many standard books. 
+In brief, the basic idea is to solve the classical 
 equation of motion of an ensemble of interacting particles. In the simplest form this means solving (numerically) Newton's second law
 
 $$
@@ -41,6 +42,8 @@ for n=1:1e4
 	 sim.leapfrog();
 end
 </code></pre>
+
+Please see the example folder, where different and more complicated simulations are shown.
 
 <h3>Force field model</h3>
 The force is given by the gradient of the potential energy function $U$ by $\mathbf{f} = - \nabla U$. 
@@ -84,6 +87,8 @@ The table shows the terms
 </tr>
 </table>
 
+Notice that the different terms can be mapped to and from other force fields or have approximated similar behavior around the minimum energies. 
+
 <h3>Integrator and thermostats</h3>
 Currently, molsim only includes the leap-frog integrator. The call is simply
 <pre><code>
@@ -108,15 +113,28 @@ molsim.applythermostat();
 </code></pre>
 in the main MD-loop. 
 
-<h3>Setting the configuration, saving and loading</h3>
-
+<h3>Setting and saving the configuration</h3>
+There are two ways to set the (initial) configuration
 <pre><code>
-setconf -> setconf([Nx, Ny, Nz], [Lx, Ly, Lz], temperature)
-
-        -> setconf(filename) -> xyz format
-                             
-                              -> mat format
+molsim.setconf([Nx, Ny, Nz], [Lx, Ly, Lz], temperature);
+molsim.setconf(filename);
 </code></pre>
+1: In the first way, the user specifies the number of atoms and simulation box length in each of
+the three dimensions, as well as provide an initial kinetic temperature which defines the initial
+atom velocities. Mass, type, and charge are set to 1, 'A', and 0, respectively; these can be set
+after the call to setconf.
+
+2: The user can set the configuration from a file; this file must be in either xyz-format or
+mat-format. If the mat-format is used, it is strongly recommended that the configuration has been
+saved using molsim's save functionality.
+
+To save a configuration you can use the save method
+<pre></code>
+molsim.save(filename);
+</code></pre> 
+where filename as the extension .xyz or .mat. The mat-format is recommended as this saves additional
+informations that are useful for data analysis. The xyz-format
+enables the user to visualize the system with external tools like VMD and Ovito.
 
 <h3>Using molconf</h3>
 
