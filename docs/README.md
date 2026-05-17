@@ -108,9 +108,15 @@ molsim.applythermostat();
 </code></pre>
 in the main MD-loop. 
 
+<h3>Setting the configuration, saving and loading</h3>
+```sequence
+Alice->Bob: Hello Bob, how are you?
+Note right of Bob: Bob thinks
+Bob-->Alice: I am good thanks!
+```
+
 <h3>Setting up a configuration</h3>
 
-<h3>Saving</h3>
 
 <h3>Why MEX?</h3>
 <p>GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
