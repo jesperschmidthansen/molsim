@@ -109,13 +109,16 @@ molsim.applythermostat();
 in the main MD-loop. 
 
 <h3>Setting the configuration, saving and loading</h3>
-```sequence
-Alice->Bob: Hello Bob, how are you?
-Note right of Bob: Bob thinks
-Bob-->Alice: I am good thanks!
-```
 
-<h3>Setting up a configuration</h3>
+<pre><code>
+setconf -> setconf([Nx, Ny, Nz], [Lx, Ly, Lz], temperature)
+
+        -> setconf(filename) -> xyz format
+                             
+                              -> mat format
+</code></pre>
+
+<h3>Using molconf</h3>
 
 
 <h3>Why MEX?</h3>
