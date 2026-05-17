@@ -339,6 +339,14 @@ classdef molsim < handle
 			end
 		end
 
+		## Usage: save(filename)
+		##
+		## Saves the current configuration to filename. If the file exists it is
+		## overwritten.
+		function save(this, filename)
+			this.atoms.save(filename);
+		end
+
 		## Usage: setautosave(steps per save)
 		##
 		## Sets autosaver which saves simulation snaps shot of 
@@ -346,7 +354,7 @@ classdef molsim < handle
 		## useful for post simulation data analysis.
 		##
 		## The autosaver outputs a compressed file 'molsim.zip' containing data files 
-		## 'molsim-%06.mat" with variabes 'time', 'r', 'v', 'f', 'bxcrs'.    
+		## 'molsim-%06.mat" with variables 'time', 'r', 'v', 'f', 'bxcrs'.    
 		##
 		## If a file 'molsim.zip' exists in the current directory it will be deleted.
 		##

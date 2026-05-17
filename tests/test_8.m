@@ -24,7 +24,7 @@ function test_8()
 	plot(index, ekin, ";ekin;", index, epot, ";epot;", index, epot+ekin, ";etot;")
 	hold on;
 
-	sim.atoms.save("tmp.mat"); clear sim;
+	sim.save("tmp.mat"); clear sim;
 	sim = molsim();	sim.setconf("tmp.mat");
 
 	tic();

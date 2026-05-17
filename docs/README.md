@@ -136,6 +136,18 @@ where filename as the extension .xyz or .mat. The mat-format is recommended as t
 informations that are useful for data analysis. The xyz-format
 enables the user to visualize the system with external tools like VMD and Ovito.
 
+You can also autosave;  the autosaver saves simulation snaps shot of time, configuration space, 
+force and simulation box crossing. This is useful for post simulation data analysis. The autosaver outputs 
+a compressed file 'molsim.zip' containing data files  'molsim-%06.mat" with variables 
+'time', 'r', 'v', 'f', 'bxcrs'.  If a file 'molsim.zip' exists in the current directory it will be deleted.
+The autosaver will slow down the execution time. The autosaver is set before the main MD-loop
+
+<pre><code>
+sim = molsim();
+sim.setautosave(100); # Save every 100 time steps
+</code></pre>
+
+
 <h3>Using molconf</h3>
 
 
