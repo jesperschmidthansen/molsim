@@ -154,7 +154,7 @@ This function is found in the resource/setup/ directory. The call to molconf is
 
 <pre><code>
 molconf(single molecule xyz-file, single molecule top-file, [Nx, Ny, Nz], offset, verbose)
-</code></code>
+</code></pre>
 
 molconf generates a system configuration file and a topology file from single molecule files. The
 function saves 'configuration.xyz' and 'topology.mat' for the system; if these exists they are overwritten. 
