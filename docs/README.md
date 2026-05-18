@@ -121,8 +121,8 @@ molsim.setconf(filename);
 </code></pre>
 1: In the first way, the user specifies the number of atoms and simulation box length in each of
 the three dimensions, as well as provide an initial kinetic temperature which defines the initial
-atom velocities. Mass, type, and charge are set to 1, 'A', and 0, respectively; these can be set
-after the call to setconf.
+atom velocities. Masses, types, and charges are all set to 1, 'A', and 0, respectively; these can be set
+after the call to setconf. The atoms are positioned on a simple lattice. 
 
 2: The user can set the configuration from a file; this file must be in either xyz-format or
 mat-format. If the mat-format is used, it is strongly recommended that the configuration has been
@@ -148,7 +148,77 @@ sim.setautosave(100); # Save every 100 time steps
 </code></pre>
 
 
-<h3>Using molconf</h3>
+<h3>Using molconf and topology files</h3>
+When simulating a molecular system, it is recommended to setup the initial configuration with the molconf tool.
+This function is found in the resource/setup/ directory. The call to molconf is
+
+<pre><code>
+molconf(single molecule xyz-file, single molecule top-file, [Nx, Ny, Nz], offset, verbose)
+</code></code>
+
+molconf generates a system configuration file and a topology file from single molecule files. The
+function saves 'configuration.xyz' and 'topology.mat' for the system; if these exists they are overwritten. 
+
+<p>
+The user must provide the single molecule files. The single molecule xyz-file must be on the form
+<pre><code>
+Number of atoms in molecule
+Comment
+Type x-position y-position z-position mass charge
+Type x-position y-position z-position mass charge
+Type x-position y-position z-position mass charge
+...
+</code></pre>
+The single molecule top-file is divided into sections describing bonds, angles, and dihedrals. It
+must be on the form
+<pre><code>
+[ section ]
+; Comment
+0 atom-index atom-index ... 0
+0 atom-index atom-index ... 0
+0 atom-index atom-index ... 0
+...
+</code></pre>
+Notice in order atom-index starts from zero.  
+
+Example for butane is listed below. 
+</p>
+
+<table>
+ <tr> <td> xyz-file </td><td> top-file</td></tr>
+<tr> <td>
+<pre><code>
+4
+Butane molecule 
+C 0.000 0.000 0.000 1.0 0.0
+C 0.320 0.229 0.000 1.0 0.0
+C 0.640 0.000 0.000 1.0 0.0
+C 0.960 0.229 0.000 1.0 0.0
+</code></pre>
+</td>
+
+<td>
+ 
+<pre><code>
+[ bonds ]
+; 
+0 0 1 0
+0 1 2 0
+0 2 3 0
+
+[ angles ]
+;
+0 0 1 2 0
+0 1 2 3 0
+
+[ dihedrals ]
+;
+0 0 1 2 3 0
+</code></pre>
+</td>
+</table>
+</td>
+
 
 
 <h3>Why MEX?</h3>
