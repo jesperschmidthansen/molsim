@@ -2,7 +2,7 @@
 <body>
 
 UNDER DEVELOPMENT 
-
+<h3>Basic idea</h3>
 This text is not meant to introduce molecular dynamics; such introductions can be found in many standard books. 
 In brief, the basic idea is to solve the classical 
 equation of motion of an ensemble of interacting particles. In the simplest form this means solving (numerically) Newton's second law
@@ -157,7 +157,10 @@ molconf(single molecule xyz-file, single molecule top-file, [Nx, Ny, Nz], offset
 </code></pre>
 
 molconf generates a system configuration file and a topology file from single molecule files. The
-function saves 'configuration.xyz' and 'topology.mat' for the system; if these exists they are overwritten. 
+molecules are positioned on a simple lattice with dimension Nx x Ny x Nz 
+with a spacing specified by the input variable offset (default is 10). Atoms are given random
+velocities. Function saves 'configuration.xyz' and 'topology.mat' for the system; if these exists 
+they are overwritten. 
 
 <p>
 The user must provide the single molecule files. The single molecule xyz-file must be on the form
@@ -218,15 +221,18 @@ C 0.960 0.229 0.000 1.0 0.0
 </td>
 </table>
 </td>
-
+See the folder resources/molconf for more examples.
 
 
 <h3>Why MEX?</h3>
-<p>GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience is that the pure C MEX interface to produces faster running binaries. This is perhaps due to DLD's call-by-value interface giving an additional copying overhead.    
+<p>GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience 
+is that the pure C MEX interface produces faster running binaries. This is perhaps due to DLD's call-by-value 
+interface giving an additional copying overhead.    
 </p>
 
 <p>
-Test: The functions below shows a DLD and a MEX version of a function that calculates the sum of an array and updates the array with a number; this is a relevant task in molecular dynamics. 
+Test: The functions below shows a DLD and a MEX version of a function that calculates the sum of an array 
+and updates the array with a number; this is a relevant task in molecular dynamics. 
 <table>
  <tr> <td> DLD msum_oct.cpp </td><td>MEX msum_mex.c</td></tr>
 <tr>
@@ -299,7 +305,8 @@ DEFUN_DLD(msum_oct, args, ,""){
 >> for n=1:40; tic(); sumA = msum_oct(A); s(n) = toc(); end;
 >> sum(s), mean(s), std(s)
 </code></pre>
-This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up depends on the array size, hardware, optimization flags, etc.   
+This shows a speed-up of a factor of approximately 2 on the computers I have tried. The actual speed-up 
+depends on the array size, hardware, optimization flags, etc.   
 </p>
 </body>
 </html>
