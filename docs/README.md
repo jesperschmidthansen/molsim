@@ -225,7 +225,9 @@ See the folder resources/molconf for more examples.
 
 
 <h3>Why MEX?</h3>
-<p>GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience 
+<p>
+molsim is based on a series of C MEX functions for the computational intensive tasks. 
+GNU Octave offers a great C++ interface with the dynamically linked functions (DLDs). However, my experience 
 is that the pure C MEX interface produces faster running binaries. This is perhaps due to DLD's call-by-value 
 interface giving an additional copying overhead.    
 </p>
