@@ -104,4 +104,14 @@ molsim-2.0.0
 
   IMPORTANT: Version 2.0.0 and higher is not compatible with versions 1.X.Y.
 
+molsim-2.1.0
+------------
+
+  * Added documentation in doc/
+  * Added pflow eksample
+  * Removed type specifier for intra-molecular interactions
+  * Added specialised pair forces for optimization (ms_pairforce.ljexclude and ms_pairforce.ljcsf)
+  * Added timer 
+  * Added autosaver
+
 

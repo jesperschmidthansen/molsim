@@ -73,7 +73,7 @@ The table shows the terms
 </tr>
 <tr><td> $U_{\mathrm{bonds}} =\frac{1}{2} \sum_{\mathrm{bonds}} k_{s}(r_{ij} - l_0)^2$ </td>
 <td> $k_s$, $l_0$ </td>
-<td> harmonicbond() (params set before call) </td>
+<td> harmonicbond() (parameters set before call) </td>
 </tr>
 <tr> 
  <td> $U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
@@ -88,6 +88,9 @@ The table shows the terms
 </table>
 
 Notice that the different terms can be mapped to and from other force fields or have approximated similar behavior around the minimum energies. 
+
+IMPORTANT: Currently, Coulomb interactions are calculated using the shifted-force method. This cannot be applied to confined/interfacial systems,
+and must be tested with care. See for example Hansen et al. J. Phys. Chem. B, 116:5738 (2012).     
 
 <h3>Integrator and thermostats</h3>
 Currently, molsim only includes the leap-frog integrator. The call is simply
