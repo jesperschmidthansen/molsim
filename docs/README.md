@@ -59,31 +59,31 @@ The table below lists the functional forms and how to call the force calculation
 <table>
  <tr> <td> </td> <td> Potential function </td> <td> User supplied parameters </td> <td> Method </td> </tr>
  <tr>
-  <td> $U_\mathrm{lattice} </td>  <td> \frac{1}{2}\sum_\mathrm{sites}k_0 (\mathbf{r}_i - \mathbf{r}_\text{lattice})^2$  </td>
+  <td> $U_\mathrm{lattice}$ </td>  <td> $\frac{1}{2}\sum_\mathrm{sites}k_0 (\mathbf{r}_i - \mathbf{r}_\text{lattice})^2$  </td>
  <td> $k_0$</td>
  <td> atoms.tether(atom type, $k_0$) </td>
  </tr>
  <tr>
-  <td>$U_\mathrm{vWaals}</td> <td>  4\sum_{i,j \, \mathrm{pairs}} \epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$ </td>
+  <td>$U_\mathrm{vWaals}$</td> <td>  $4\sum_{i,j \, \mathrm{pairs}} \epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$ </td>
   <td> $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$</td>
   <td> lennardjones(atoms types, [ $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$ ]) </td>
  </tr> 
 <tr> 
- <td> $U_{\mathrm{coulomb}}</td> <td> \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}$</td> 
+ <td> $U_{\mathrm{coulomb}}$</td> <td> $\sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}$</td> 
 <td> $r_\text{cutoff}$ </td>
 <td> sfcoulomb($r_\text{cutoff}$) </td>
 </tr>
-<tr><td> $U_{\mathrm{bonds}} </td> <td> \frac{1}{2} \sum_{\mathrm{bonds}} k_{s}(r_{ij} - l_0)^2$ </td>
+<tr><td> $U_{\mathrm{bonds}}$ </td> <td> $\frac{1}{2} \sum_{\mathrm{bonds}} k_{s}(r_{ij} - l_0)^2$ </td>
 <td> $k_s$, $l_0$ </td>
 <td> harmonicbond() (parameters set before call) </td>
 </tr>
 <tr> 
- <td> $U_{\mathrm{angles}}</td> <td> \frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
+ <td> $U_{\mathrm{angles}}$</td> <td> $\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
 <td> $k_\theta$, $\theta_0$ </td>
 <td> cossqangle() (parameters set before call)</td>
 </tr>
 <tr> 
- <td> $U_\mathrm{torsion}</td> <td> \sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)$ </td>
+ <td> $U_\mathrm{torsion}$</td> <td> $\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)$ </td>
  <td> $c_n$ </td>
  <td>ryckbell() (parameters set before call)</td>
 </tr>
