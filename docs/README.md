@@ -2,7 +2,7 @@
 <body>
 
 UNDER DEVELOPMENT 
-<h3>Basic idea</h3>
+<h3>Introduction</h3>
 This text is not meant to introduce molecular dynamics; such introductions can be found in many standard books. 
 In brief, the basic idea is to solve the classical 
 equation of motion of an ensemble of interacting particles. In the simplest form this means solving (numerically) Newton's second law
@@ -16,22 +16,22 @@ where $\mathbf{r}_i, \mathbf{v}_i, \mathbf{p}_i$ and $\mathbf{f}_i$ are the part
 standard simulation we solve this set of differential equations by (i) evaluating the forces acting on the particles, and (ii) from this integrate forward in time. The following pseudo code lists the basic idea
 
 <pre><code>
-Set initial configuration: positions r and momenta p
+r,p <- Set initial configuration
  
-do (as many times as we want)
+do N times
    f <- calcforce(r)
    r, p <- integrate(f,p)
 done
 </pre></code>
 <p> The loop is here denoted the main MD-loop.</p>
 
-Below you can see how this is implemented in molsim
+Below you can see how this idea is implemented in molsim
 <pre><code>
 # Instance of molsim object
 sim = molsim();
 
 # Set number of particles 10x10x10 and simulation box lengths to 10.557 in all three directions. 
-# Temperature is initially set to 1.0
+# Set velocities such that kinetic temperature is initially 1.0
 sim.setconf([10,10,10], [10.557, 10.557, 10.557], 1.0);
 
 # Main MD loop
@@ -43,57 +43,61 @@ for n=1:1e4
 end
 </code></pre>
 
+<p>
 Please see the example folder, where different and more complicated simulations are shown.
+</p>
 
 <h3>Force field model</h3>
-The force is given by the gradient of the potential energy function $U$ by $\mathbf{f} = - \nabla U$. 
-Currently, the energy function in molsim is given by 
+The force is given by the gradient of the potential energy function $U$ by $\mathbf{f} = - \nabla U$. molsim 
+supports six different forces 
 
 $$
  U(\mathbf{r}_i, r_{ij}, \ldots) =  U_\mathrm{lattice} + U_\mathrm{vWaals} + U_{\mathrm{coulomb}} + U_\mathrm{bonds} + U_\mathrm{angles} +  U_\mathrm{torsion}
 $$
 
-The table shows the terms 
+The table below lists the functional forms and how to call the force calculation in Octave
 <table>
- <tr> <td> Potential function </td> <td> User supplied parameters </td> <td> Method </td> </tr>
+ <tr> <td> </td> <td> Potential function </td> <td> User supplied parameters </td> <td> Method </td> </tr>
  <tr>
-  <td> $U_\mathrm{lattice} =  \frac{1}{2}\sum_\mathrm{sites}k_0 (\mathbf{r}_i - \mathbf{r}_\text{lattice})^2$  </td>
+  <td> $U_\mathrm{lattice} </td>  <td> \frac{1}{2}\sum_\mathrm{sites}k_0 (\mathbf{r}_i - \mathbf{r}_\text{lattice})^2$  </td>
  <td> $k_0$</td>
  <td> atoms.tether(atom type, $k_0$) </td>
  </tr>
  <tr>
-  <td>$U_\mathrm{vWaals} =  4\sum_{i,j \, \mathrm{pairs}} \epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$ </td>
+  <td>$U_\mathrm{vWaals}</td> <td>  4\sum_{i,j \, \mathrm{pairs}} \epsilon\left[\left(\frac{\sigma}{r_{ij}}\right)^{12} - a_w \left(\frac{\sigma}{r_{ij}}\right)^{6}\right]$ </td>
   <td> $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$</td>
   <td> lennardjones(atoms types, [ $r_\text{cutoff}$, $\epsilon$, $\sigma$, $a_w$ ]) </td>
  </tr> 
 <tr> 
- <td> $U_{\mathrm{coulomb}} = \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}$</td> 
+ <td> $U_{\mathrm{coulomb}}</td> <td> \sum_{i,j \, \mathrm{pairs}}\frac{q_iq_j}{r_{ij}}$</td> 
 <td> $r_\text{cutoff}$ </td>
 <td> sfcoulomb($r_\text{cutoff}$) </td>
 </tr>
-<tr><td> $U_{\mathrm{bonds}} =\frac{1}{2} \sum_{\mathrm{bonds}} k_{s}(r_{ij} - l_0)^2$ </td>
+<tr><td> $U_{\mathrm{bonds}} </td> <td> \frac{1}{2} \sum_{\mathrm{bonds}} k_{s}(r_{ij} - l_0)^2$ </td>
 <td> $k_s$, $l_0$ </td>
 <td> harmonicbond() (parameters set before call) </td>
 </tr>
 <tr> 
- <td> $U_{\mathrm{angles}}=\frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
+ <td> $U_{\mathrm{angles}}</td> <td> \frac{1}{2}\sum_{\mathrm{angles}} k_{\theta} (\cos(\theta) - \cos(\theta_0))^2$ </td>
 <td> $k_\theta$, $\theta_0$ </td>
 <td> cossqangle() (parameters set before call)</td>
 </tr>
 <tr> 
- <td> $U_\mathrm{torsion}=\sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)$ </td>
+ <td> $U_\mathrm{torsion}</td> <td> \sum_{\mathrm{angles}} \sum_{n=0}^5 c_n \cos^n(\pi-\phi)$ </td>
  <td> $c_n$ </td>
  <td>ryckbell() (parameters set before call)</td>
 </tr>
 </table>
 
-Notice that the different terms can be mapped to and from other force fields or have approximated similar behavior around the minimum energies. 
+Notice that often the different potential functions can be mapped to and from other force field
+potentials or, at least, they have approximated similar behavior around the minimum energies. 
+
 
 IMPORTANT: Currently, Coulomb interactions are calculated using the shifted-force method. This cannot be applied to confined/interfacial systems,
-and must be tested with care. See for example Hansen et al. J. Phys. Chem. B, 116:5738 (2012).     
+and must in general be tested with care. See for example Hansen et al. J. Phys. Chem. B, 116:5738 (2012).     
 
 <h3>Integrator and thermostats</h3>
-Currently, molsim only includes the leap-frog integrator. The call is simply
+Currently, molsim applies the leap-frog integrator. The call is simply
 <pre><code>
 molsim.leapfrog();
 </code></pre>
@@ -139,11 +143,12 @@ where filename as the extension .xyz or .mat. The mat-format is recommended as t
 informations that are useful for data analysis. The xyz-format
 enables the user to visualize the system with external tools like VMD and Ovito.
 
-You can also autosave;  the autosaver saves simulation snaps shot of time, configuration space, 
-force and simulation box crossing. This is useful for post simulation data analysis. The autosaver outputs 
-a compressed file 'molsim.zip' containing data files  'molsim-%06.mat" with variables 
-'time', 'r', 'v', 'f', 'bxcrs'.  If a file 'molsim.zip' exists in the current directory it will be deleted.
-The autosaver will slow down the execution time. The autosaver is set before the main MD-loop
+You can also autosave;  the autosaver saves simulation snaps shot of configuration space, 
+force, time, and simulation box crossing. This is useful for post simulation data analysis. The autosaver outputs 
+a compressed file 'molsim.zip' containing data files on the format 'molsim-%06.mat" with variables  
+'r', 'v', 'f', 'time', 'bxcrs'.  If a file 'molsim.zip' exists in the current directory it will be deleted.
+The autosaver will slow down the execution time depending on how saving frequency. 
+The autosaver is set before the main MD-loop
 
 <pre><code>
 sim = molsim();
@@ -168,8 +173,8 @@ they are overwritten.
 <p>
 The user must provide the single molecule files. The single molecule xyz-file must be on the form
 <pre><code>
-Number of atoms in molecule
-Comment
+<Number of atoms in molecule>
+<Comment>
 Type x-position y-position z-position mass charge
 Type x-position y-position z-position mass charge
 Type x-position y-position z-position mass charge
@@ -179,13 +184,14 @@ The single molecule top-file is divided into sections describing bonds, angles, 
 must be on the form
 <pre><code>
 [ section ]
-; Comment
+; <Comment>
 0 atom-index atom-index ... 0
 0 atom-index atom-index ... 0
 0 atom-index atom-index ... 0
 ...
 </code></pre>
-Notice in order atom-index starts from zero.  
+Notice in order atom-index starts from zero for compatibility with other simulation tools. NOTE:
+This choice of indexing may change in the future. 
 
 Example for butane is listed below. 
 </p>
