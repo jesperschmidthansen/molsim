@@ -27,6 +27,8 @@ classdef ms_atoms < handle
 		pv, pa;
 		# Simulation box crosses
 		bxcrs;
+		# Molecule index
+		molidx;
 	end
 
 	methods
@@ -122,7 +124,7 @@ classdef ms_atoms < handle
 			this.update_nblist = true;
 			this.max_nnb = 3000; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
 			this.max_exclude = 20; this.exclude = -1*int32(ones(natoms, this.max_exclude));
-	
+			
 		end	
 	
 		## Usage: save(filename);

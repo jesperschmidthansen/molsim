@@ -38,7 +38,6 @@ classdef molsim < handle
 
 		# Timer
 		nloops; tic;
-
 	end
 
 	methods
@@ -82,6 +81,7 @@ classdef molsim < handle
 			# Minimal required sub-classes for a simulatios 
 			this.integrator = ms_integrator(); 
 			this.pairforce = ms_pairforce(); 
+
 		end
 
 		## Usage: settop(file name)
@@ -105,7 +105,16 @@ classdef molsim < handle
 		
 			this.nmols = nmols;
 			this.atom_idxs = atom_idxs;
-	
+			
+			# Assigning mol idx til atoms 
+			this.atoms.molidx = -1*ones(this.natoms, 1);
+			for n=1:this.nmols
+				for m=1:length(this.atom_idxs(n,:))
+					aidx = this.atom_idxs(n,m);
+					this.atoms.molidx(aidx) = n;
+				end
+			end
+
 			# Bonds
 			if binfo != -1
 				nbonds = rows(binfo); 
