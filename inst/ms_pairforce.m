@@ -66,7 +66,7 @@ classdef ms_pairforce < handle
 		## >> epot = sim.prforce.lj(sim.atoms, "AB", [2.5, 1.0, 1.0, 1.0]);
 		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
 			this.iteration_start(atoms, ljparams(1));
-			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
+			[epot Pconf PconfMol] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms, atoms.molidx);
 		end	
 
 		function [epot Pconf] = ljcsf(this, atoms, ptypes, params)

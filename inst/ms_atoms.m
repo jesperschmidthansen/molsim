@@ -124,7 +124,8 @@ classdef ms_atoms < handle
 			this.update_nblist = true;
 			this.max_nnb = 3000; this.nblist = -1*int32(ones(natoms, this.max_nnb)); 
 			this.max_exclude = 20; this.exclude = -1*int32(ones(natoms, this.max_exclude));
-			
+	
+			this.molidx = -1*ones(natoms,1);
 		end	
 	
 		## Usage: save(filename);

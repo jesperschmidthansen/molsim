@@ -107,7 +107,6 @@ classdef molsim < handle
 			this.atom_idxs = atom_idxs;
 			
 			# Assigning mol idx til atoms 
-			this.atoms.molidx = -1*ones(this.natoms, 1);
 			for n=1:this.nmols
 				for m=1:length(this.atom_idxs(n,:))
 					aidx = this.atom_idxs(n,m);
