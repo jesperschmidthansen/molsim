@@ -19,6 +19,7 @@ DEFUN_DLD(ms_calcmolvel, args, ,HELPTXT){
 	int nmols = natoms/nuau;
 	
 	Matrix molVel(nmols, 3);
+	Matrix Pkin(3, 3, 0.0);
 
 	for ( int n=0; n<nmols; n++ ){
 		
@@ -33,10 +34,16 @@ DEFUN_DLD(ms_calcmolvel, args, ,HELPTXT){
 			}
 		}	
 		
-		for ( int k=0; k<3; k++ ) molVel(n,k) = molVel(n,k)/mass;
+		for ( int k=0; k<3; k++ ) {
+			molVel(n,k) = molVel(n,k)/mass;
+			for ( int kk=0; kk<3; kk++ ) 
+				Pkin(k, kk) += mass*molVel(n,k)*molVel(n,kk);
+		}
+
 	}	
 	
 	retval.append(molVel);
+	retval.append(Pkin);
 
 	return retval;
 }

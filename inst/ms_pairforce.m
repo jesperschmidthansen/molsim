@@ -52,7 +52,7 @@ classdef ms_pairforce < handle
 	
 		end
 
-		## Usage: [epot Pconf] = lj(atoms, atom types, parameters)
+		## Usage: [epot Pconf PconfMol] = lj(atoms, atom types, parameters)
 		##
 		## Calculates the forces acting between atoms using the Lennard-Jones pair interaction
 		## potential. Returns the total potentual  energy and configurational pressure contribution
@@ -64,7 +64,7 @@ classdef ms_pairforce < handle
 		## 
 		## Example: 
 		## >> epot = sim.prforce.lj(sim.atoms, "AB", [2.5, 1.0, 1.0, 1.0]);
-		function [epot Pconf] = lj(this, atoms, ptypes, ljparams)
+		function [epot Pconf PconfMol] = lj(this, atoms, ptypes, ljparams)
 			this.iteration_start(atoms, ljparams(1));
 			[epot Pconf PconfMol] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms, atoms.molidx);
 		end	
