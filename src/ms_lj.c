@@ -7,17 +7,16 @@
 
 //void _lj_brute(double *epot, double *f, double *r, const double cf, const double lbox[3], const unsigned npart);
 
-void  _lj_neighb(double *epot, double *force, double *pconf, double *pconf_mol,
+void _lj_neighb(double *epot, double *force, double *pconf,
 	   			const double *pos, const char *ptypes, const double *param, 
-				const double *lbox, const char *types, const int *neighb_list, const unsigned npart, int *molidx); 
+				const double *lbox, const char *types, const int *neighb_list, const unsigned npart); 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 3 || nrhs != 9 )
+	if ( nlhs > 3 || nrhs != 8 )
 		mexErrMsgTxt("Input error for lj");
 
-	double epot = 0.0f;
-	
+
 	double *f = mxGetPr(prhs[0]);
 	char *ptypes = (char *)mxGetData(prhs[1]);
 	double *params = mxGetPr(prhs[2]);
@@ -26,29 +25,23 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	int *neighb_list = (int*)mxGetData(prhs[5]);
 	double *lbox = mxGetPr(prhs[6]);
 	unsigned int npart = (unsigned int)mxGetScalar(prhs[7]);
-	int *molidx = (int*)mxGetData(prhs[8]);	
 
-	// Atomix pressure	
+	// Potential energy
+	double epot = 0.0f;
+	
+	// Atomic config pressure	
 	plhs[1] = mxCreateDoubleMatrix(3,3, mxREAL);
 	double *ptr_1 = (double *)mxGetPr(plhs[1]);
 	for ( int k=0; k<3; k++ )
 		for ( int kk=0; kk<3; kk++ ) ptr_1[k*3+kk]=0.0; 
 
-	// Mol. pressure
-	plhs[2] = mxCreateDoubleMatrix(3,3, mxREAL);
-	double *ptr_2 = (double *)mxGetPr(plhs[2]);
-	for ( int k=0; k<3; k++ )
-		for ( int kk=0; kk<3; kk++ ) ptr_2[k*3+kk]=0.0; 
-
-	_lj_neighb(&epot, f, ptr_1, ptr_2, r, ptypes, params, lbox, types, neighb_list, npart, molidx);
-
+	// Calculate forces 
+	_lj_neighb(&epot, f, ptr_1, r, ptypes, params, lbox, types, neighb_list, npart);
+	
+	// Normalizing wrt volume
 	const double ivol = 1.0/(lbox[0]*lbox[1]*lbox[2]);
-	for ( int k=0; k<3; k++){
-		for ( int kk=0; kk<3; kk++ ) {
-			ptr_1[k*3+kk] = ptr_1[k*3+kk]*ivol; 
-			ptr_2[k*3+kk] = ptr_2[k*3+kk]*ivol;
-		}	
-	}
+	for ( int k=0; k<3; k++)
+		for ( int kk=0; kk<3; kk++ ) ptr_1[k*3+kk] = ptr_1[k*3+kk]*ivol; 
 	
 	plhs[0] = mxCreateDoubleScalar(epot);
 
@@ -56,9 +49,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 // ptypes length 2 - interaction
 // types length npart - particles' type
-void  _lj_neighb(double *epot, double *force, double *pconf, double *pconf_mol,
-	   			const double *pos, const char *ptypes, const double *param, 
-				const double *lbox, const char *types, const int *neighb_list, const unsigned npart, int *molidx) {
+void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, const char *ptypes, const double *param, 
+				const double *lbox, const char *types, const int *neighb_list, const unsigned npart) {
 	int i1, i2, n, k, kk;
 	double r2, ft, f[3], r[3], rri, rri3;
 	const double cf = param[0], eps=param[1], sigma=param[2], aw=param[3];
@@ -73,7 +65,7 @@ void  _lj_neighb(double *epot, double *force, double *pconf, double *pconf_mol,
 
 #pragma omp parallel for schedule(dynamic)			\
 		private(i1, n, i2, k, kk, r, r2, ft, f, rri, rri3)	\
-		reduction(+:epot[:1], force[:lvec], pconf[:9], pconf_mol[:9]) 
+		reduction(+:epot[:1], force[:lvec], pconf[:9]) 
 	for (i1=0; i1<npart; i1++){
 
 		if ( types[i1] != ptypes[0] && types[i1] != ptypes[1] ) continue;
@@ -111,20 +103,14 @@ void  _lj_neighb(double *epot, double *force, double *pconf, double *pconf_mol,
 					for ( k=0; k<3; k++ )
 						for ( kk=0; kk<3; kk++ ) pconf[k*3+kk] += f[k]*r[kk];
 					
-					if ( molidx[i2] != molidx[i1] ){
-						for ( k=0; k<3; k++ )
-							for ( kk=0; kk<3; kk++ ) pconf_mol[k*3+kk] += f[k]*r[kk];
-
-					}
-				
-
 				}
+
 			}
 			n++;
-		}
+		}	
 	}
-
 }
+
 /*
 void _lj_brute(double *epot, double *f, double *r, const double cf, const double lbox[3], const unsigned npart){
 	double dr[3], fij[3];

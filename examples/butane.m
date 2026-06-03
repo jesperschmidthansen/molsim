@@ -1,7 +1,6 @@
 
 # Simulation of Ryckaert-Bellmann butane model 
 # System configuration is load from the file butane_config_system.xyz and is calibrated  
-# Example of calculating viscosity from molecular stress tensor
 
 clear all;
 
@@ -9,7 +8,7 @@ clear all;
 addpath("../inst/"); addpath("../src/");  
 
 # Variables holding number of MD loops, time step size, simulation temperature and density 
-nloops = 1e5; dt = 1e-3;
+nloops = 1e2; dt = 1e-3;
 temp0 = 3.0; dens0 = 1.49;
 
 # Instance of molsim 
@@ -46,7 +45,7 @@ sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 stress = zeros(nloops/10, 3); counter = 1;
 for n=1:nloops
 	# Calculate the pair forces 	
-	[~, ~, Pconf] = sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
+	sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   
 	
 	# Calcuate the intra-molecular forces
 	sim.harmonicbond();
@@ -60,20 +59,5 @@ for n=1:nloops
 	sim.leapfrog();
 
 	# Here you can call a sampler or collect data
-	if rem(n,10)==0
-		[~, Pkin] = sim.getmolvel();
-		Pkin = 4.0/sim.volume.*Pkin;
-		P = Pkin + Pconf;
-		Psym = 0.5*(P + P.');
-		stress(counter,:) = [Psym(1,2), Psym(1,3), Psym(2,3)];	counter++;
-	end
-
 end
-
-t = linspace(0, rows(stress)*10*dt, rows(stress));
-css = ms_evcorr(stress(:,1), stress(:,1)) +  ms_evcorr(stress(:,2), stress(:,2)) + ...
- 								ms_evcorr(stress(:,3), stress(:,3));
-
-css = css./(temp0*3.0);
-plot(t, cumtrapz(t, css)); 
 

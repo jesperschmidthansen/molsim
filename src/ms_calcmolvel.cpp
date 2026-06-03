@@ -33,12 +33,13 @@ DEFUN_DLD(ms_calcmolvel, args, ,HELPTXT){
 				molVel(n, k) += atomVel(iadx, k)*atomMass(iadx);			
 			}
 		}	
-		
-		for ( int k=0; k<3; k++ ) {
-			molVel(n,k) = molVel(n,k)/mass;
+	
+		for ( int k=0; k<3; k++ ) molVel(n,k) = molVel(n,k)/mass;
+	
+		for ( int k=0; k<3; k++ ) 
 			for ( int kk=0; kk<3; kk++ ) 
 				Pkin(k, kk) += mass*molVel(n,k)*molVel(n,kk);
-		}
+		
 
 	}	
 	

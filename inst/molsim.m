@@ -214,13 +214,13 @@ classdef molsim < handle
 		## >> sim = molsim();
 		## >> sim.setconf([10,10,10],[11, 11, 23], 1.0);
 		## >> [epot, Pconf] = sim.lennardjones("AA", [2.5,1.0,1.0,0.0]);
-		function [epot, Pconf, PconfMol] = lennardjones(this, atypes, params)
+		function [epot, Pconf] = lennardjones(this, atypes, params)
 			
 			if this.pairforce.first_call || this.pairforce.first_call_simulation  
 				this.doautosave(this.integrator.sidx);
 			end
 
-			[epot, Pconf, PconfMol] = this.pairforce.lj(this.atoms, atypes, params);		
+			[epot, Pconf] = this.pairforce.lj(this.atoms, atypes, params);		
 		end
 
 		## Usage: sfcoulomb(cutoff)
