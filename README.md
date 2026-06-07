@@ -49,14 +49,15 @@ from this. Matlab compatibility is not a priority.
 - [X] Feature: A set of molecular and atomic configurations 
 - [X] Feature: Molecular class for infrastructure (contained in molsim class)
 - [X] Feature: DPD support (initiated)
-- [ ] Feature: A doc/ directory (initially just a reference to examples/ directory?)
+- [X] Feature: A doc/ directory (initially just a reference to examples/ directory?)
 - [ ] Revision: Class properties access. Should these be different from public?
 - [ ] Revision: Define class constants with correct properties (Constant=true)
 - [ ] Revision: All classes should have a disp method
 - [ ] Revision: Consider whether methods should have specified properties
 - [X] Revision: Naming conventions (at the moment none)  
 - [X] Revision: ms_molconfig is a mess...  
-- [ ] Revision: Thermostating is hand-held at the moment, should be fixed
+- [X] Revision: Thermostating is hand-held at the moment, should be fixed
+- [ ] Revision: atom_idxs, molidx, etc., agree on a starting index (0 or 1?) 
 
 </body>
 </html>

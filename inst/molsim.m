@@ -27,7 +27,7 @@ classdef molsim < handle
 		natoms;
 		lbox; volume;
 
-		# Molecule info
+		# Molecule info , Atom idx 1, ... natoms.
 		nmols; atom_idxs; 
 
 		# No. threads 

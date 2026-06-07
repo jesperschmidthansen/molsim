@@ -8,7 +8,7 @@ clear all;
 addpath("../inst/"); addpath("../src/");  
 
 # Variables holding number of MD loops, time step size, simulation temperature and density 
-nloops = 1e2; dt = 1e-3;
+nloops = 1e4; dt = 1e-3;
 temp0 = 3.0; dens0 = 1.49;
 
 # Instance of molsim 
@@ -42,7 +42,6 @@ end
 sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
 
 # Main MD loop
-stress = zeros(nloops/10, 3); counter = 1;
 for n=1:nloops
 	# Calculate the pair forces 	
 	sim.lennardjones("CC", [2.5, 1.0, 1.0, 1.0]);   

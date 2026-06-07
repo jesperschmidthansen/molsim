@@ -19,7 +19,7 @@ classdef ms_atoms < handle
 		r0; rl;
 		# Number of atoms and simulation box length 
 		natoms,	lbox;
-		# Neighbourlist etc
+		# Neighbourlist etc. Atom idx 0,..., natoms-1
 		nblist, max_nnb, update_nblist;
 		# Pair interaction exclusion list
 		exclude, max_exclude;
@@ -27,7 +27,7 @@ classdef ms_atoms < handle
 		pv, pa;
 		# Simulation box crosses
 		bxcrs;
-		# Molecule index
+		# Molecule index. Molecule idx 1,..., nmols
 		molidx;
 	end
 
