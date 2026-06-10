@@ -58,6 +58,6 @@ from this. Matlab compatibility is not a priority.
 - [X] Revision: ms_molconfig is a mess...  
 - [X] Revision: Thermostating is hand-held at the moment, should be fixed
 - [ ] Revision: atom_idxs, molidx, etc., agree on a starting index (0 or 1?) 
-
+- [ ] Revision: Type checking in the mex files (URGENT)
 </body>
 </html>
