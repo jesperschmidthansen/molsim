@@ -32,8 +32,8 @@ classdef ms_integrator < handle
 		## Returns kinetic energy and kinetic part of the pressure 
 		function [ekin Pkin]= lf(this, atoms, interactions)
 			
-			[ekin Pkin] = ms_leapfrog(atoms.v, atoms.r, atoms.f, atoms.m, atoms.bxcrs, 
-										atoms.lbox, atoms.natoms, this.dt);					
+			[ekin Pkin] = ms_leapfrog(atoms.v, atoms.r, atoms.f, ...
+										atoms.m, atoms.bxcrs, atoms.lbox, this.dt);					
 			
 			interactions.first_call = true;	
 			this.sidx++;
