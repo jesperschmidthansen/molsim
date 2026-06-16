@@ -78,7 +78,7 @@ classdef molsim < handle
 			# Default no. of threads
 			this.nthreads = 4;
 
-			# Minimal required sub-classes for a simulatios 
+			# Minimal required sub-classes for a simulation 
 			this.integrator = ms_integrator(); 
 			this.pairforce = ms_pairforce(); 
 
@@ -381,6 +381,10 @@ classdef molsim < handle
 				delete("molsim*.mat");
 			end
 
+			if exist("molsim.zip")
+				delete("molsim.zip");
+			end
+
 		end	
 
 		## Usage: doautosave(iteration index)
@@ -391,10 +395,11 @@ classdef molsim < handle
 			if this.autosave && rem(n, this.stprsave)==0
 				filename = sprintf("molsim-%06d.mat", this.saveid);
 
-				r = this.atoms.r; v = this.atoms.v; f = this.atoms.f; bxcrs = this.atoms.bxcrs; 
+				r = this.atoms.r; v = this.atoms.v; f = this.atoms.f; t = this.atoms.t; 	
+				bxcrs = this.atoms.bxcrs; lbox = this.lbox;				
 				time = this.integrator.sidx*this.integrator.dt;
 
-				save(filename, "time", "r", "v", "f", "bxcrs");	
+				save(filename, "time", "r", "v", "f", "bxcrs", "t", "lbox");	
 
 				if exist("molsim.zip") 
 					unzip("molsim.zip");

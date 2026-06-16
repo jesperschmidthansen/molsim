@@ -76,7 +76,7 @@ classdef ms_atoms < handle
 				elseif strcmp(format, "mat")
 					load(fnameOrSize);					
 					this.r = r; this.v = v; this.f = f; this.m = m; this.q = q; this.t = t; 
-					this.rl = rl; this.r0 = r0; this.bxcrs = bxcrs;
+					this.rl = rl; this.r0 = r0; this.bxcrs = bxcrs; this.molidx = molidx;
 					this.natoms = natoms; this.lbox = lbox; 
 				else
 					error("Format not supported");
@@ -159,9 +159,10 @@ classdef ms_atoms < handle
 			elseif strcmp(format, "mat")		
 				r = this.r; v = this.v; f = this.f; m = this.m; q = this.q; t = this.t; 
 				rl = this.rl; r0 = this.r0; bxcrs = this.bxcrs; 
-				natoms = this.natoms; lbox = this.lbox; 				
+				natoms = this.natoms; lbox = this.lbox; molidx = this.molidx;				
 				
-				save(filename, "r", "v", "f", "m", "q", "t", "rl", "r0", "natoms", "lbox", "bxcrs");	
+				save(filename, "r", "v", "f", "m", "q", "t", "rl", "r0", ...
+					"natoms", "lbox", "bxcrs", "molidx");	
 			else
 				error("Format not supported");
 			end
