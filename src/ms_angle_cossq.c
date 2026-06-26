@@ -2,26 +2,26 @@
 #include "ms_misc.h"
 #include <math.h>
 
+#define HELPTXT "Usage: epot = ms_angle_cossq(force, pos, angle type, all angle types, spring, zero force angle, part. idxs, lbox)"
 	
 double _cossq(double *f, double *r, unsigned nangles, int ttype, double *atypes, double *pidx, double *lbox, 
 		double *angles0, double *ks, unsigned npart);
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 1 || nrhs != 10 )
-		mexErrMsgTxt("Input error for cossq");
+	if ( nlhs > 1 || nrhs != 8 ) mexErrMsgTxt(HELPTXT);
 
 	double *f = mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
-	unsigned int nangles = (unsigned int)mxGetScalar(prhs[2]);
-	int this_type = (int)mxGetScalar(prhs[3]);
-	double *atypes = mxGetData(prhs[4]);
-	double *ksprings = mxGetPr(prhs[5]);
-	double *angles = mxGetPr(prhs[6]);
-	double *pidx = mxGetPr(prhs[7]);
-	double *lbox = mxGetPr(prhs[8]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[9]);
+	int this_type = (int)mxGetScalar(prhs[2]);
+	double *atypes = mxGetData(prhs[3]);
+	double *ksprings = mxGetPr(prhs[4]);
+	double *angles = mxGetPr(prhs[5]);
+	double *pidx = mxGetPr(prhs[6]);
+	double *lbox = mxGetPr(prhs[7]);
 
+	unsigned int npart = mxGetM(prhs[0]);
+	unsigned int nangles = mxGetM(prhs[6]);
 	 
 	double epot = _cossq(f, r, nangles, this_type, atypes, pidx, lbox, angles, ksprings, npart);  
 

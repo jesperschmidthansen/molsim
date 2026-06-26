@@ -1,17 +1,18 @@
 #include "mex.h"
 #include "ms_misc.h"
 
+#define HELPTXT "Usage: maxdrsq = ms_calcdr2(pos, pos0, lbox)"
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 		
-	if ( nlhs > 1 || nrhs != 4 )
-		mexErrMsgTxt("Input error for calcdr2");
+	if ( nlhs > 1 || nrhs != 3 ) mexErrMsgTxt(HELPTXT);
 
 	double *r = mxGetPr(prhs[0]);
 	double *r0 = mxGetPr(prhs[1]);
 	double *lbox = mxGetPr(prhs[2]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[3]);
+
+	unsigned int npart = mxGetM(prhs[0]);
 
 	double maxdr2 = 0.0f;
 	for ( unsigned n=0; n<npart; n++ ){

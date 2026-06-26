@@ -41,8 +41,7 @@ classdef ms_angles < handle
 		## >> epot = sim.angles.harmonic(sim.atoms)
 		function epot = cossq(this, atoms, atype=0)
 		
-			epot = ms_angle_cossq(atoms.f, atoms.r, this.nangles, atype, this.atypes, this.springs,
-										this.a0, this.pidx, atoms.lbox, atoms.natoms);
+			epot = ms_angle_cossq(atoms.f, atoms.r, atype, this.atypes, this.springs, this.a0, this.pidx, atoms.lbox);
 												
 		end
 
