@@ -2,6 +2,7 @@
 #include "ms_misc.h"
 #include <math.h>
 
+#define HELPTXT "Usage: epot = ms_harmonic(force, pos, this type, all types, spring, bonb length, part. idxs, lbox)"
 
 double _harmonic(double *f, double *r, unsigned int nbonds, int ttype, double *btype, double *ks, 
 					double *lbond, double *pidx, double *lbox, unsigned npart);
@@ -9,19 +10,19 @@ double _harmonic(double *f, double *r, unsigned int nbonds, int ttype, double *b
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 1 || nrhs != 10 )
-		mexErrMsgTxt("Input error for harmonic");
+	if ( nlhs > 1 || nrhs != 8 ) mexErrMsgTxt(HELPTXT);
 
 	double *f = mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
-	unsigned int nbonds = (unsigned int)mxGetScalar(prhs[2]);
-	int this_type = (int)mxGetScalar(prhs[3]);
-	double *btypes = mxGetData(prhs[4]);
-	double *ksprings = mxGetPr(prhs[5]);
-	double *lbonds = mxGetPr(prhs[6]);
-	double *pidx = mxGetPr(prhs[7]);
-	double *lbox = mxGetPr(prhs[8]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[9]);
+	int this_type = (int)mxGetScalar(prhs[2]);
+	double *btypes = mxGetData(prhs[3]);
+	double *ksprings = mxGetPr(prhs[4]);
+	double *lbonds = mxGetPr(prhs[5]);
+	double *pidx = mxGetPr(prhs[6]);
+	double *lbox = mxGetPr(prhs[7]);
+
+	unsigned int npart = mxGetM(prhs[0]);
+	unsigned int nbonds = mxGetM(prhs[6]);
 
 	 
 	double epot = _harmonic(f, r, nbonds, this_type, btypes, ksprings, lbonds, pidx, lbox, npart);  

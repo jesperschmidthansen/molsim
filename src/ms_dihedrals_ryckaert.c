@@ -1,26 +1,27 @@
 #include "mex.h"
 #include "ms_misc.h"
 #include <math.h>
- 
+
+#define HELPTXT "Usage: epot = ms_dihedrals_ryckaert(force, pos, dihedral type, all types, coeffs, part. idxs, lbox)"
+
 double _ryckbell(double *force, double *r, unsigned ndihedrals, int ttype, double *dtypes, double *pidx, 
 		double *lbox, double *coeffs, unsigned npart);
 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 1 || nrhs != 9 )
-		mexErrMsgTxt("Input error for Ryckaert-Bellemann");
+	if ( nlhs > 1 || nrhs != 7 ) mexErrMsgTxt(HELPTXT);
 
 	double *f = mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);
-	unsigned int ndihedrals = (unsigned int)mxGetScalar(prhs[2]);
-	int this_type = (int)mxGetScalar(prhs[3]);
-	double *dtypes = mxGetData(prhs[4]);
-	double *coeffs = mxGetPr(prhs[5]);
-	double *pidx = mxGetPr(prhs[6]);
-	double *lbox = mxGetPr(prhs[7]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[8]);
-
+	int this_type = (int)mxGetScalar(prhs[2]);
+	double *dtypes = mxGetData(prhs[3]);
+	double *coeffs = mxGetPr(prhs[4]);
+	double *pidx = mxGetPr(prhs[5]);
+	double *lbox = mxGetPr(prhs[6]);
+	
+	unsigned int ndihedrals = mxGetM(prhs[5]);
+	unsigned int npart = mxGetM(prhs[0]);
 	
 	double epot = _ryckbell(f, r, ndihedrals, this_type, dtypes, pidx, lbox, coeffs, npart);
 

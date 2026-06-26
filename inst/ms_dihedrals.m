@@ -43,8 +43,7 @@ classdef ms_dihedrals < handle
 		## >> epot = sim.dihedrals.ryckbell(sim.atoms)
 		function epot = ryckbell(this, atoms, dtype=0)
 	
-			epot = ms_dihedrals_ryckaert(atoms.f, atoms.r, this.ndihedrals, dtype, this.dtypes, this.coeffs, 
-												this.pidx, atoms.lbox, atoms.natoms);
+			epot = ms_dihedrals_ryckaert(atoms.f, atoms.r, dtype, this.dtypes, this.coeffs, this.pidx, atoms.lbox);
 	 							
 		end
 
