@@ -8,6 +8,8 @@
 
 #include "ms_misc.h"
 
+#define HELPTXT "Usage: ms_neighblist()" 
+
 void _build_cell_list(int *list, double *pos, unsigned *nsubbox, double *lsubbox, unsigned npart);
 void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *nsubbox, double cf, double *lbox,  
 											double skin, unsigned npart, unsigned max_nneighb, int *exclusion_list, unsigned max_exclusion);
@@ -16,11 +18,10 @@ bool _check_exclusion(int *exclusion_list, int idx_0, int idx_1, unsigned npart,
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
+	plhs[0] = mxCreateDoubleScalar(0.0);
+
 	// Input check
-	if ( nlhs > 0 || nrhs != 8 ){
-		mexErrMsgTxt("Input error for neighblist");
-		plhs[0] = mxCreateDoubleScalar(0.0);
-	}
+	if ( nlhs > 0 || nrhs != 7 ) mexErrMsgTxt(HELPTXT);
 
 	// Get the input variables	
 	int *neighb_list = (int *)mxGetPr(prhs[0]);
@@ -29,23 +30,22 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	double *lbox = mxGetPr(prhs[3]);
 	double cf = mxGetScalar(prhs[4]);
 	double skin = mxGetScalar(prhs[5]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[6]);
-	int *exclusion_list = (int *)mxGetPr(prhs[7]);
+	int *exclusion_list = (int *)mxGetPr(prhs[6]);
+
+	unsigned int npart = (unsigned int)mxGetM(prhs[1]);
 
 	// Calculate the cell grid
 	unsigned int ncells[3]; double lcells[3];
 	for ( int k=0; k<3; k++ ){
   		ncells[k] = (int)(lbox[k]/(cf + skin));
 		if ( ncells[k] < 3 )
-			fprintf(stderr, "Number of cells in %d direction less than three - BAILING OUT!", ncells[k]);
+			mexErrMsgTxt("Number of cells is less than three - BAILING OUT!");
   		lcells[k] = lbox[k]/ncells[k];
 	}
 	// Allocate/prepare for cell list build
 	int *cell_list = malloc(sizeof(int)*(npart + ncells[0]*ncells[1]*ncells[2]));
-	if ( cell_list == NULL ) {
-		fprintf(stderr, "Mem. allocation error\n");
-		exit(EXIT_FAILURE);
-	}
+	if ( cell_list == NULL ) 
+		mexErrMsgTxt("Memory allocation error - BAILING OUT!");
 
 	_build_cell_list(cell_list, r, ncells, lcells, npart);
 	_build_neighb_list(neighb_list, r, cell_list, ncells, cf, lbox, skin, npart, 
@@ -73,10 +73,8 @@ void _build_cell_list(int *cell_list, double *pos, unsigned *nsubbox, double *ls
 		unsigned i = (unsigned)(pos[n]/lsubbox[0]) + (unsigned)(pos[npart+n]/lsubbox[1])*nsubbox[0] +
 			(unsigned)(pos[2*npart+n]/lsubbox[2])*nsubbox2;
 
-		if ( i > length - 1 ) {
-			fprintf(stderr, "%s at %d: Index larger than array length", __func__, __LINE__);
-			exit(EXIT_FAILURE);
-		}
+		if ( i > length - 1 ) 
+			mexErrMsgTxt("Index larger than array length - BAILING OUT!");
 
 		cell_list[n+nsubbox3] = cell_list[i];
 		cell_list[i] = n;  
@@ -94,18 +92,16 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 	
 	size_t nbytes = sizeof(int)*npart;
 	int *index = malloc(nbytes); 
-	if ( index==NULL ){
-		fprintf(stderr, "%s at %d: Mem. allocation error", __func__, __LINE__);
-		exit(EXIT_FAILURE);
-	}
+	if ( index==NULL )
+		mexErrMsgTxt("Memory allocation error - BAILING OUT!");
+	
 	memset(index, 0, nbytes);
 
 	nbytes = sizeof(int)*(npart+1);
 	int *icc = malloc(nbytes); 
-	if ( icc==NULL ){
-		fprintf(stderr, "%s at %d: Mem. allocation error", __func__, __LINE__);
-		exit(EXIT_FAILURE);
-	}
+	if ( icc==NULL )
+		mexErrMsgTxt("Memory allocation error - BAILING OUT!");
+	
 	memset(icc, 0, nbytes);
 	
 	unsigned nsubbox2 = nsubbox[1]*nsubbox[0]; 
@@ -175,10 +171,8 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 										index[j1]++;
 									}	  
 									
-									if ( index[j1] == (int)max_nneighb ){
-										fprintf(stderr, "Found too many neighbours - Bailing out!");
-										exit(EXIT_FAILURE);
-									}
+									if ( index[j1] == (int)max_nneighb )
+										mexErrMsgTxt("Found too many neighbours - Bailing out!");
 								}
 							}		
 							// Get next particle in list for cell m2 

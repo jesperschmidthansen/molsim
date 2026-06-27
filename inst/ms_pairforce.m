@@ -43,7 +43,7 @@ classdef ms_pairforce < handle
 				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.lbox);
 				if this.first_call_simulation || dr2 > this.skin*this.skin 
 					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, 
-									this.skin, atoms.natoms, atoms.exclude);
+									this.skin, atoms.exclude);
 					this.neighb_updates ++;
 				end
 				this.first_call = false;
@@ -68,8 +68,7 @@ classdef ms_pairforce < handle
 
 			this.iteration_start(atoms, ljparams(1));
 
-			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, ...
-									atoms.t, atoms.nblist, atoms.lbox);
+			[epot Pconf] = ms_lj(atoms.f, ptypes, ljparams, atoms.r, atoms.t, atoms.nblist, atoms.lbox);
 
 		end	
 
@@ -77,7 +76,7 @@ classdef ms_pairforce < handle
 			maxcutoff = max(params(1), params(end));		
 			this.iteration_start(atoms, maxcutoff);
 			
-			[epot Pconf] = ms_ljcsf(atoms.f, ptypes, params, atoms.r, atoms.q, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms); 	
+			[epot Pconf] = ms_ljcsf(atoms.f, ptypes, params, atoms.r, atoms.q, atoms.t, atoms.nblist, atoms.lbox); 	
 		end
 
 		function [epot Pconf] = ljexclude(this, atoms, excludetype, params)
@@ -102,7 +101,7 @@ classdef ms_pairforce < handle
 
 		function epot = dpd(this, atoms, ptypes, params, temperature)
 			this.iteration_start(atoms, params(1));
-			epot = ms_dpd(atoms.f, atoms.r, atoms.v, ptypes, params, temperature, atoms.lbox, atoms.t, atoms.nblist, atoms.natoms);
+			epot = ms_dpd(atoms.f, atoms.r, atoms.v, ptypes, params, temperature, atoms.lbox, atoms.t, atoms.nblist);
 		end
 	
 	end 

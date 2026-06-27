@@ -9,8 +9,7 @@ void _leapfrog(double *ekin, double *Pkin, double *v, double *r, double *f, doub
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	
-	if ( nlhs > 2 || nrhs != 7 )
-		mexErrMsgTxt(HELPTXT);
+	if ( nlhs > 2 || nrhs != 7) mexErrMsgTxt(HELPTXT);
 
 	double *v = mxGetPr(prhs[0]);
 	double *r = mxGetPr(prhs[1]);

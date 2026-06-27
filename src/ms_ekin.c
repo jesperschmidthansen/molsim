@@ -1,17 +1,18 @@
 #include "mex.h"
 #include <math.h>
 
+#define HELPTXT "Usage: ekin = ms_ekin(vel, particle types, all types, all mass)"
+
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	
-	if ( nlhs > 1 || nrhs != 5 ){
-		mexErrMsgTxt("Input error for ekin");
-	}
+	if ( nlhs > 1 || nrhs != 4 ) mexErrMsgTxt("HELPTXT");
 
 	double *v = mxGetPr(prhs[0]);
 	char ptype = (char)mxGetScalar(prhs[1]);
-	unsigned npart = (unsigned)mxGetScalar(prhs[2]); 
-	char *types = (char*)mxGetPr(prhs[3]);
-	double *mass = mxGetPr(prhs[4]);
+	char *types = (char*)mxGetPr(prhs[2]);
+	double *mass = mxGetPr(prhs[3]);
+
+	unsigned npart = (unsigned)mxGetM(prhs[0]); 
 
 	double ekin = 0.0f;	
 	for ( unsigned n=0; n<npart; n++ ){

@@ -66,12 +66,12 @@ classdef ms_thermostat < handle
 		function nosehoover(this, atoms, dt)
 
 			if this.ntypes == -1 # We thermostate all atoms
-				ekin = ms_nosehoover_all(atoms.f, this.xi, atoms.v, atoms.natoms, atoms.m);
+				ekin = ms_nosehoover_all(atoms.f, this.xi, atoms.v, atoms.m);
 				this.xi = this.xi + dt/this.tauQ*(2/3*ekin - atoms.natoms*this.temperature);
 			else # We thermostat types WARNING: Not momentum conserving
 				for n=1:this.ntypes
 					numthistype = length( find(atoms.t==this.types(n)) );
-					ekin = ms_nosehoover(atoms.f, this.xi(n), atoms.v, this.types(n), atoms.natoms, atoms.t, atoms.m);
+					ekin = ms_nosehoover(atoms.f, this.xi(n), atoms.v, this.types(n), atoms.t, atoms.m);
 					this.xi(n) = this.xi(n) + dt/this.tauQ(n)*(2./3.*ekin - numthistype*this.temperature(n));
 				end
 			end

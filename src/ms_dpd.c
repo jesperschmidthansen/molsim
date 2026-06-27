@@ -4,13 +4,14 @@
 
 #include "ms_misc.h"
 
+#define HELPTXT "Usage epot = ms_dpd(force, pos, vel, interaction types, params, temperature, lbox, all types, neigh. list)"
+
 void _dpd_neighb(double *epot, double *force, const double *pos, const double *vel, const char *ptypes, const double *param, 
 				const double temperature, const double *lbox, const char *types, const int *neighb_list, const unsigned npart);
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 1 || nrhs != 10  )
-		mexErrMsgTxt("Input error for lj");
+	if ( nlhs > 1 || nrhs != 9 )	mexErrMsgTxt(HELPTXT);
 
 	double epot = 0.0f;
 	
@@ -23,7 +24,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	double *lbox = mxGetPr(prhs[6]);
 	char *types = (char*)mxGetData(prhs[7]);
 	int *neighb_list = (int*)mxGetData(prhs[8]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[9]);
+
+	unsigned int npart = mxGetM(prhs[0]);
 		
 	_dpd_neighb(&epot, f, r, v, ptypes, params, temperature, lbox, types, neighb_list, npart);
 	
@@ -54,15 +56,15 @@ void _dpd_neighb(double *epot, double *force, const double *pos, const double *v
 
 		if ( types[i1] != ptypes[0] && types[i1] != ptypes[1] ) continue;
 
+
 		n = 0;
 		while ( 1 ) {
 
 			i2 = neighb_list[n*npart + i1];
 
 			if ( i2 == -1 ) break; 
-		
-			if ( (types[i1] == ptypes[0] && types[i2] == ptypes[1]) || 
-					(types[i1] == ptypes[1] && types[i2] == ptypes[0]) ){
+				
+			if ( types[i2] == ptypes[0] || types[i2] == ptypes[1] ){	
 	
 				r2 = 0.0;
 				for ( k=0; k<3; k++ ){

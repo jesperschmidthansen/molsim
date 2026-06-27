@@ -6,14 +6,15 @@
 
 #include "ms_misc.h"
 
+#define HELPTXT "Usage: [epot Pconf] = ms_ljsf(force, interaction type, params, pos, charges, all types, neighblist, lbox)"
+
 void  _ljsf(double *epot, double *force, double *pconf, const double *pos, const double *z, const char *ptypes, const double *param, 
 					const double *lbox, const char *types, const int *neighb_list, const unsigned npart); 
 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 2 || nrhs != 9 )
-		mexErrMsgTxt("Input error for ljcsf");
+	if ( nlhs > 2 || nrhs != 8 ) mexErrMsgTxt(HELPTXT);
 
 	double epot = 0.0f;
 	
@@ -25,7 +26,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	char *types = (char*)mxGetData(prhs[5]);
 	int *neighb_list = (int*)mxGetData(prhs[6]);
 	double *lbox = mxGetPr(prhs[7]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[8]);
+	
+	unsigned int npart = mxGetM(prhs[0]);
 	
 	plhs[1] = mxCreateDoubleMatrix(3,3, mxREAL);
 	double *ptr = (double *)mxGetPr(plhs[1]);

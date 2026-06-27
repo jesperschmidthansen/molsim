@@ -1,18 +1,19 @@
 #include "mex.h"
 #include <math.h>
 
+#define HELPTXT "Usage: ekin = ms_nosehoove_all(force, xi, vel, mass)"
+
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	
-	if ( nlhs > 1 || nrhs != 5 ){
-		mexErrMsgTxt("Input error for nose_hoover_all");
-	}
+	if ( nlhs > 1 || nrhs != 4 ) mexErrMsgTxt(HELPTXT);
+
 
 	double *f = mxGetPr(prhs[0]);
 	double xi = mxGetScalar(prhs[1]);
 	double *v = mxGetPr(prhs[2]);
-	unsigned npart = (unsigned)mxGetScalar(prhs[3]); 
-	double *mass = mxGetPr(prhs[4]);
+	double *mass = mxGetPr(prhs[3]);
 
+	unsigned npart = (unsigned)mxGetM(prhs[0]);	
 
 	double ekin = 0.0f;	
 	for ( unsigned n=0; n<npart; n++ ){
