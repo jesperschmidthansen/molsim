@@ -75,9 +75,8 @@ void  _ljsf(double *epot, double *force, double *pconf, const double *pos, const
 
 			if ( i2 == -1 ) break; 
 		
-			if ( (types[i1] == ptypes[0] && types[i2] == ptypes[1]) || 
-					(types[i1] == ptypes[1] && types[i2] == ptypes[0]) ){
-				
+			if ( types[i2] == ptypes[0] || types[i2] == ptypes[1] ){	
+	
 				r2 = 0.0;
 				for ( k=0; k<3; k++ ){
 					r[k] = pos[k*npart + i1] - pos[k*npart + i2];

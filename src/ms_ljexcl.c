@@ -6,14 +6,15 @@
 
 #include "ms_misc.h"
 
+#define HELPTXT "Usage: [epot Pconf] = ms_ljexcl(force, exclude type, params, pos, all types, neighblist, lbox)"
+
 void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, const char *ptypes, const double *param, 
 					const double *lbox, const char *types, const int *neighb_list, const unsigned npart); 
 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
-	if ( nlhs > 2 || nrhs != 8 )
-		mexErrMsgTxt("Input error for ljexcl");
+	if ( nlhs > 2 || nrhs != 7 ) mexErrMsgTxt(HELPTXT);
 
 	double epot = 0.0f;
 	
@@ -24,7 +25,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	char *types = (char*)mxGetData(prhs[4]);
 	int *neighb_list = (int*)mxGetData(prhs[5]);
 	double *lbox = mxGetPr(prhs[6]);
-	unsigned int npart = (unsigned int)mxGetScalar(prhs[7]);
+
+	unsigned int npart = mxGetM(prhs[0]);
 	
 	plhs[1] = mxCreateDoubleMatrix(3,3, mxREAL);
 	double *ptr = (double *)mxGetPr(plhs[1]);
@@ -64,7 +66,6 @@ void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, 
 	for (i1=0; i1<npart; i1++){
 
 		if ( types[i1] == *excludetype ) continue;
-			//printf("%d %c %c\n", i1, types[i1], *excludetype);
 		
 		n = 0;
 		while ( 1 ) {
