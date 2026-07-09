@@ -81,7 +81,7 @@ classdef ms_pairforce < handle
 
 		function [epot Pconf] = ljexclude(this, atoms, excludetype, params)
 			this.iteration_start(atoms, params(1));
-			[epot Pconf] = ms_ljexcl(atoms.f, excludetype, params, atoms.r, atoms.t, atoms.nblist, atoms.lbox, atoms.natoms);
+			[epot Pconf] = ms_ljexcl(atoms.f, excludetype, params, atoms.r, atoms.t, atoms.nblist, atoms.lbox);
 		end	
 
 
