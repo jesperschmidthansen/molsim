@@ -8,12 +8,12 @@
 
 #include "ms_misc.h"
 
-#define HELPTXT "Usage: ms_neighblist()" 
+#define HELPTXT "Usage: ms_neighblist(neighb list, pos, pos0, lbox, maximum cutoff, skin, exclusion list)" 
 
 void _build_cell_list(int *list, double *pos, unsigned *nsubbox, double *lsubbox, unsigned npart);
 void _build_neighb_list(int *nighb_list, double *pos, int *cell_list, unsigned *nsubbox, double cf, double *lbox,  
 											double skin, unsigned npart, unsigned max_nneighb, int *exclusion_list, unsigned max_exclusion);
-bool _check_exclusion(int *exclusion_list, int idx_0, int idx_1, unsigned npart, unsigned max_exclusion);
+static inline bool _check_exclusion(int *exclusion_list, int idx_0, int idx_1, unsigned npart, unsigned max_exclusion);
 
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
@@ -83,6 +83,130 @@ void _build_cell_list(int *cell_list, double *pos, unsigned *nsubbox, double *ls
 }
 
 
+
+void _build_neighb_list(int *neighb_list, double *pos, int *cell_list,  unsigned *nsubbox,  double cf,
+    double *lbox,  double skin,  unsigned npart,   unsigned max_nneighb,  int *exclusion_list,  unsigned max_exclusion){
+    
+	static const int iofX[14] = {
+         0, 1, 1, 0,-1,
+         0, 1, 1, 0,-1,-1,-1, 0, 1
+    };
+
+    static const int iofY[14] = {
+         0, 0, 1, 1, 1,
+         0, 0, 1, 1, 1, 0,-1,-1,-1
+    };
+
+    static const int iofZ[14] = {
+         0, 0, 0, 0, 0,
+         1, 1, 1, 1, 1, 1, 1, 1, 1
+    };
+
+    const unsigned nx = nsubbox[0];
+    const unsigned ny = nsubbox[1];
+    const unsigned nz = nsubbox[2];
+
+    const unsigned nsubbox2 = nx * ny;
+    const unsigned nsubbox3 = nsubbox2 * nz;
+
+    const double cutoff = cf + skin;
+    const double cf2 = cutoff * cutoff;
+
+   for (int j = 0; j < (int)npart; ++j)
+        neighb_list[j] = -1;
+
+    int overflow = 0;
+    
+	#pragma omp parallel for collapse(3) schedule(static) reduction(|:overflow)
+    for (int m1Z = 0; m1Z < (int)nz; ++m1Z) {
+        for (int m1Y = 0; m1Y < (int)ny; ++m1Y) {
+            for (int m1X = 0; m1X < (int)nx; ++m1X) {
+
+                const unsigned m1 =  (unsigned)m1Z * nsubbox2 + (unsigned)m1Y * nx + (unsigned)m1X;
+
+                /*
+                 * Iterate directly through particles in the primary
+                 * cell. No temporary icc array is required.
+                 */
+                for (int j1 = cell_list[m1];
+                     j1 != -1;
+                     j1 = cell_list[j1 + nsubbox3]) {
+
+                    unsigned count = 0;
+
+                    for (unsigned offset = 0; offset < 14; ++offset) {
+
+                        int m2X = m1X + iofX[offset];
+                        int m2Y = m1Y + iofY[offset];
+                        int m2Z = m1Z + iofZ[offset];
+
+                        /*
+                         * Periodic wrapping of cell coordinates.
+                         * With the chosen 14 offsets, a single correction
+                         * in each direction is sufficient.
+                         */
+                        if (m2X >= (int)nx)	m2X -= (int)nx;
+                        else if (m2X < 0) m2X += (int)nx;
+
+                        if (m2Y >= (int)ny) m2Y -= (int)ny;
+                        else if (m2Y < 0) m2Y += (int)ny;
+
+                        if (m2Z >= (int)nz) m2Z -= (int)nz;
+                        else if (m2Z < 0) m2Z += (int)nz;
+
+                        const unsigned m2 = (unsigned)m2Z * nsubbox2 + (unsigned)m2Y * nx + (unsigned)m2X;
+
+                        for (int j2 = cell_list[m2];
+                             j2 != -1;
+                             j2 = cell_list[j2 + nsubbox3]) {
+
+                            /*
+                             * For the primary cell, reject self-pairs and
+                             * duplicate pairs before checking exclusions.
+                             */
+                            if (m1 == m2 && j2 <= j1)  continue;
+
+                            if (_check_exclusion(exclusion_list, j1, j2, npart, max_exclusion))
+                                continue;
+
+                            double dx = pos[j1] - pos[j2];
+	                        double dy = pos[npart + j1] - pos[npart + j2];
+	                        double dz = pos[2 * npart + j1] - pos[2 * npart + j2];
+
+                            _Wrap(dx, lbox[0]); _Wrap(dy, lbox[1]); _Wrap(dz, lbox[2]);
+
+                            const double drsq = dx * dx + dy * dy +  dz * dz;
+
+                            if (drsq >= cf2) continue;
+                            
+							if (count >= max_nneighb - 1) {
+                                overflow = 1;
+                                continue;
+                            }
+
+                            neighb_list[count * npart +
+                                        (unsigned)j1] = j2;
+
+                            ++count;
+                        }
+                    }
+
+                    //Always terminate this particle's neighbor list.
+                    neighb_list[count * npart + (unsigned)j1] = -1;
+                
+				}
+            }
+        }
+    }
+
+    /*
+     * MATLAB API calls must be made outside the OpenMP parallel region.
+     */
+    if (overflow)
+        mexErrMsgTxt("Found too many neighbours. Increase MAX_NNEIGHB.");
+}
+
+/*
 void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned *nsubbox, double cf, double *lbox,  
 											double skin, unsigned npart, unsigned max_nneighb, int *exclusion_list, unsigned max_exclusion){
 	
@@ -90,6 +214,10 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 	const int iofY[] = {0,0,1,1, 1,0,0,1,1, 1, 0,-1,-1,-1};
 	const int iofZ[] = {0,0,0,0, 0,1,1,1,1, 1, 1, 1, 1, 1}; 
 	
+	unsigned offset, m2;   
+	int j1, j2, m2X, m2Y, m2Z, k;
+	double dr, drsq;
+
 	size_t nbytes = sizeof(int)*npart;
 	int *index = malloc(nbytes); 
 	if ( index==NULL )
@@ -111,7 +239,6 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 
 	memset(neighb_list, -1, sizeof(int)*(npart*max_nneighb));
 
-	int j1;
 	for ( unsigned m1Z = 0; m1Z < nsubbox[2]; m1Z++ ){
 		for ( unsigned m1Y = 0; m1Y < nsubbox[1]; m1Y++ ) {
 			for ( unsigned m1X = 0; m1X < nsubbox[0]; m1X++ )  {
@@ -130,43 +257,44 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 					j1 = cell_list[j1+nsubbox3];
 				}
 
-//#pragma omp parallel for schedule(dynamic) private(offset, j1, m2X, m2Y, m2Z, m2, j2, r2, dr, k)
+				#pragma omp parallel for schedule(static) \
+			   	private(offset, j1, m2X, m2Y, m2Z, m2, j2, drsq, dr, k) \
 				for ( int i=0; i<nccell; i++ ){
 
 					j1 = icc[i];
 					// Over neighb. cells
-					for ( unsigned offset = 0; offset < 14; offset++ ) { 
+					for ( offset = 0; offset < 14; offset++ ) { 
 
-						int m2X = m1X + iofX[offset];    
+						m2X = m1X + iofX[offset];    
 						if ( m2X == (int)nsubbox[0] ) m2X = 0;    
 						else if ( m2X == -1 ) m2X = nsubbox[0]-1;    
 
-						int m2Y = m1Y + iofY[offset];    
+						m2Y = m1Y + iofY[offset];    
 						if ( m2Y == (int)nsubbox[1] )  m2Y = 0;    
 						else if ( m2Y == -1 ) m2Y = nsubbox[1]-1;    
 
-						int m2Z = m1Z + iofZ[offset];    
+						m2Z = m1Z + iofZ[offset];    
 						if ( m2Z == (int)nsubbox[2] ) m2Z = 0;    
 
 						// Neighb. cell index
-						unsigned m2 = m2Z*nsubbox2 + m2Y*nsubbox[0] + m2X;
+						m2 = m2Z*nsubbox2 + m2Y*nsubbox[0] + m2X;
 
 						// Head-index for nieghb. cell
-						int j2 = cell_list[m2];
+						j2 = cell_list[m2];
 					
 						// Loop over particles in neighb. cell
 						while ( j2 != -1 ) {
 
 							if ( !_check_exclusion(exclusion_list, j1, j2, npart, max_exclusion) ){
 								if ( m1 != m2 || j2 > j1 ) {
-									double dr2 = 0.0f;
-									for ( int k = 0; k<3; k++ ){
-										double dr = pos[k*npart + j1] - pos[k*npart + j2];
+									drsq = 0.0f;
+									for ( k = 0; k<3; k++ ){
+										dr = pos[k*npart + j1] - pos[k*npart + j2];
 										_Wrap( dr, lbox[k] );
-										dr2 += dr*dr;
+										drsq += dr*dr;
 									}
 
-									if ( dr2 < cf2 ) {
+									if ( drsq < cf2 ) {
 										neighb_list[index[j1]*npart + j1] = j2;
 										index[j1]++;
 									}	  
@@ -185,6 +313,7 @@ void _build_neighb_list(int *neighb_list, double *pos, int *cell_list, unsigned 
 	free(icc);
 	free(index);
 }
+*/
 
 bool _check_exclusion(int *exclusion_list, int idx_0, int idx_1, unsigned npart, unsigned max_exclusion){
 	

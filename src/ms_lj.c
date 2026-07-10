@@ -62,7 +62,7 @@ void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, 
 	const double sigmasqr = sigma*sigma;
 	const unsigned lvec = 3*npart;
 
-#pragma omp parallel for schedule(dynamic)			        \
+#pragma omp parallel for schedule(static)			        \
 		private(i1, n, i2, k, kk, r, r2, ft, f, rri, rri3)	\
 		reduction(+:epot[:1], force[:lvec], pconf[:9]) 
 	for (i1=0; i1<npart; i1++){
