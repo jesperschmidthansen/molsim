@@ -77,6 +77,7 @@ void  _lj_neighb(double *epot, double *force, double *pconf, const double *pos, 
 			if ( i2 == -1 ) break; 
 		
 			if ( atypes[i2] == itypes[0] || atypes[i2] == itypes[1] ){	
+				
 				r2 = 0.0;
 				for ( k=0; k<3; k++ ){
 					r[k] = pos[k*npart + i1] - pos[k*npart + i2];

@@ -12,9 +12,19 @@
 classdef ms_pairforce < handle
 
 	properties (Access=public) 
-		max_cutoff, skin;
+		# Maximum cut-off of all pair forces
+		max_cutoff;
+		
+		# Additional skin for the neighbour list 
+		skin;
+
+		# Number of neighbour list updates
 		neighb_updates;
+
+		# First call pair force call in iteration
 		first_call; 
+	
+		# First call pair force call in simulation
 		first_call_simulation;
 	end
 
@@ -24,7 +34,7 @@ classdef ms_pairforce < handle
 		##        prf = prforce(maximum cut off, skin);
 		##
 		## Returns an instance of the prforce class object.  
-		function this = ms_pairforce(max_cutoff=2.5, skin=0.5)
+		function this = ms_pairforce(max_cutoff=2.5, skin=0.25)
 			this.first_call = true;
 			this.first_call_simulation = true; 
 			this.max_cutoff = max_cutoff; this.skin = skin;
@@ -34,20 +44,24 @@ classdef ms_pairforce < handle
 	
 		function iteration_start(this, atoms, cutoff)
 		
-			if ( this.first_call_simulation && cutoff > this.max_cutoff )
+			if ( cutoff > this.max_cutoff )
 				error("There is a pair force with too large cutoff; change max_cutoff in prforce class");
 			end
 
-			if this.first_call # first_call set to true in integrator
+			# first_call set to 'true' in integrator
+			if this.first_call 
+
 				atoms.f = zeros(atoms.natoms, 3);
+
 				dr2 = ms_calcdr2(atoms.r, atoms.r0, atoms.lbox);
-				if this.first_call_simulation || dr2 > this.skin*this.skin 
+				if (  dr2 > this.skin*this.skin || this.first_call_simulation )
 					ms_neighblist(atoms.nblist, atoms.r, atoms.r0, atoms.lbox, this.max_cutoff, 
 									this.skin, atoms.exclude);
-					this.neighb_updates ++;
+					this.neighb_updates++;
+					this.first_call_simulation = false;
 				end
+
 				this.first_call = false;
-				this.first_call_simulation = false;
 			end
 	
 		end
