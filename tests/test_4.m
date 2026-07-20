@@ -1,15 +1,18 @@
 
-function test_4()
+function test_4(nthreads=4)
 
 	addpath("../inst/"); addpath("../src/");
 
 	niter = 1e3;
 	ndims = [10, 13, 15, 20, 25];
 	lbox = (ndims.^3./0.8).^(1/3);
+	
 
 	for m=1:length(ndims)
 		sim = molsim();
 		sim.setconf(ndims(m).*[1, 1, 1], lbox(m)*[1,1,1], 2.0); 
+		
+		sim.setnthreads(nthreads)
 
 		tic();
 		for n=1:niter
