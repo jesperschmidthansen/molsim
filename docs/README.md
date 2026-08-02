@@ -49,12 +49,12 @@ Please see the example folder, where different and more complicated simulations 
 
 You can always access the atomic details from the <code>molsim.atoms</code> member
 <table>
-<tr><td><code>molsim.atoms.r</code> </td> <td> npart times 3 array with positions </td>
-<tr><td><code>molsim.atoms.v</code> </td> <td> npart times 3 array with velocities </td>
-<tr><td><code>molsim.atoms.f</code> </td> <td> npart times 3 array with forces </td>
-<tr><td><code>molsim.atoms.m</code> </td> <td> npart times 1 array with masses </td>
-<tr><td><code>molsim.atoms.q</code> </td> <td> npart times 1 array with charges </td>
-<tr><td><code>molsim.atoms.t</code> </td> <td> npart times 1 character array with atom types </td>
+<tr><td><code>molsim.atoms.r</code> </td> <td> No. particles times 3 array with positions </td>
+<tr><td><code>molsim.atoms.v</code> </td> <td> No. particles times 3 array with velocities </td>
+<tr><td><code>molsim.atoms.f</code> </td> <td> No. particles times 3 array with forces </td>
+<tr><td><code>molsim.atoms.m</code> </td> <td> No. particles times 1 array with masses </td>
+<tr><td><code>molsim.atoms.q</code> </td> <td> No. particles times 1 array with charges </td>
+<tr><td><code>molsim.atoms.t</code> </td> <td> No. particles times 1 character array with atom types </td>
 </table>
 
 <h3>Force field model</h3>
