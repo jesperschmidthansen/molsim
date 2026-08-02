@@ -47,6 +47,16 @@ end
 Please see the example folder, where different and more complicated simulations are shown.
 </p>
 
+You can always access the atomic details from the <code>molsim.atoms</code> member
+<table>
+<tr><td><code>molsim.atoms.r</code> </td> <td> npart times 3 array with positions </td>
+<tr><td><code>molsim.atoms.v</code> </td> <td> npart times 3 array with velocities </td>
+<tr><td><code>molsim.atoms.f</code> </td> <td> npart times 3 array with forces </td>
+<tr><td><code>molsim.atoms.m</code> </td> <td> npart times 1 array with masses </td>
+<tr><td><code>molsim.atoms.q</code> </td> <td> npart times 1 array with charges </td>
+<tr><td><code>molsim.atoms.t</code> </td> <td> npart times 1 character array with atom types </td>
+</table>
+
 <h3>Force field model</h3>
 The force is given by the gradient of the potential energy function $U$ by $\mathbf{f} = - \nabla U$. molsim 
 supports six different forces 

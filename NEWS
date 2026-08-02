@@ -113,5 +113,6 @@ molsim-2.1.0
   * Added specialised pair forces for optimization (ms_pairforce.ljexclude and ms_pairforce.ljcsf)
   * Added timer 
   * Added autosaver
+  * Few optimizations
 
 
