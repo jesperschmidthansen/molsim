@@ -12,7 +12,7 @@
 classdef molsim < handle
 	
 	properties (Access=public)
-		# Classes
+		# Sub class members
 		atoms;
 		
 		integrator;  
@@ -33,7 +33,7 @@ classdef molsim < handle
 		# No. threads 
 		nthreads;
 
-		# Auto-saver - stepspersave - save id number
+		# Auto-saver on/off - stepspersave - save id number
 		autosave; stprsave; saveid;
 
 		# Timer
@@ -473,7 +473,28 @@ classdef molsim < handle
                      (nloops-n)/nloops*100, time_remain/60, int64(1/time_per_loop)) 
             fflush(stdout);
 		end
-	
+
+		function excludepair(this, excltype)
+			
+			switch (excltype)
+
+				case "molecules"
+					this.atoms.setexclusions("molecules")	
+				
+				case "bonds"
+					this.atoms.setexclusions("bonds", this.bonds.pidx); 		
+
+				case "angles"
+					this.atoms.setexclusions("angles", this.angles.pidx);
+
+				case "dihedrals"
+					this.atoms.setexclusions("dihedrals", this.dihedrals.pidx);
+			
+				otherwise
+					error("Not a valid exclude specifier");
+			end								
+		end
+
 	end
 
 end

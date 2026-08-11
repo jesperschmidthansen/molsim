@@ -38,8 +38,8 @@ for n=1:ndihedrals
 	sim.dihedrals.coeffs(n,:) = [15.5000,  20.3050, -21.9170, -5.1150,  43.8340, -52.6070]; 
 end
 
-# Exclude pair forces for atoms in same dihedral angle (here this is the same as the molecule) 
-sim.atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
+# Exclude pair forces for atoms in same molecule
+sim.excludepair("molecules");
 
 # Main MD loop
 for n=1:nloops

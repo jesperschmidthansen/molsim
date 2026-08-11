@@ -38,7 +38,9 @@ nangles = sim.angles.nangles;
 sim.angles.springs = kangle*ones(nangles,1); 
 sim.angles.a0 = angle*ones(nangles, 1);
 
-sim.atoms.setexclusions(sim.angles.pidx, "angles");
+# Exclude pair forces for atoms in same molecule
+sim.excludepair("molecules");
+
 
 # Main MD loop
 for n=1:niter

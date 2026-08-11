@@ -300,29 +300,37 @@ classdef ms_atoms < handle
 		## "angles", and "dihedrals".
 		##
 		## Examples  -  From bonds
+		## 
 		## >> sim.setbonds("bonds.top");
 		## >> atoms.setexclusions(sim.bonds.pidx, "bonds");
+		## 
 		## or from dihedrals
+		##
 		## >> sim.setdihedrals("dihedrals.top");
 		## >> atoms.setexclusions(sim.dihedrals.pidx, "dihedrals");
-		function setexclusions(this, exarray, specifier)
-				
-			nr = rows(exarray);	
-			counter = zeros(this.natoms,1);
-	
+		function setexclusions(this, specifier, exarray)
+			
+			if nargin==3	
+				nr = rows(exarray);	
+				counter = zeros(this.natoms,1);
+			end
+
 			switch (specifier)
 
 				case "bonds"
+
 					for n=1:nr
 						for m=1:2
 							idx(m) = exarray(n,m);
 						end
+						
 						counter(idx(1))++; this.exclude(idx(1), counter(idx(1))) = idx(2);					
 
 						counter(idx(2))++; this.exclude(idx(2), counter(idx(2))) = idx(1);
 					end
 	
 				case "angles"
+
 					for n=1:nr
 						for m=1:3
 							idx(m) = exarray(n,m);
@@ -339,6 +347,7 @@ classdef ms_atoms < handle
 					end
 
 				case "dihedrals"
+
 					for n=1:nr
 						for m=1:4
 							idx(m) = exarray(n,m);
@@ -360,7 +369,14 @@ classdef ms_atoms < handle
 						counter(idx(4))++; 	this.exclude(idx(4), counter(idx(4)))=idx(2);
 						counter(idx(4))++; 	this.exclude(idx(4), counter(idx(4)))=idx(3);
 					end
-
+			
+				case "molecules"
+					
+					for n=1:this.natoms
+						idxs = find( this.molidx == this.molidx(n) );						
+						this.exclude(n,1:length(idxs)) = idxs';	
+					end 
+						
 				otherwise
 					error("Not a valid exlusion specifier");	
 			end
