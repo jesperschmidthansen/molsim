@@ -8,7 +8,7 @@ function [epot, ekin] = mdstep(sim, ewald=false, cutoff=3.0, nloops = 1)
 		epot += sim.lennardjones("AB", [2.0^(1/6), 1.0, 1.0, 1.0]);   
 
 		if ewald
-			epot += ms_ewald(sim.atoms.f, sim.atoms.r, sim.atoms.q, sim.atoms.nblist, sim.lbox, [1, 3.0, 1]);
+			epot += sim.ewald([1, cutoff, 1]);
 		else	
 			epot += sim.sfcoulomb(3.0);
 		end
@@ -57,7 +57,6 @@ printf("Did eq.\n"); fflush(stdout);
 
 sim.setautosave(100);
 sim.thermostat.temperature = temp;
-
 # Main MD loop
 ekin = zeros(nloops,1); epot = zeros(nloops,1);
 for n=1:nloops

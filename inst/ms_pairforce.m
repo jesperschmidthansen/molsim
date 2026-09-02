@@ -113,10 +113,18 @@ classdef ms_pairforce < handle
 			[epot Pconf] = ms_sf(atoms.f, atoms.r, atoms.q, atoms.nblist, atoms.lbox, atoms.natoms, cutoff); 	
 		end
 
+
+		function epot = ewald(this, atoms, params)
+			this.iteration_start(atoms, params(2));
+			epot = ms_ewald(atoms.f, atoms.r, atoms.q, atoms.nblist, atoms.lbox, params, atoms.exclude);
+		end
+
+		
 		function epot = dpd(this, atoms, ptypes, params, temperature)
 			this.iteration_start(atoms, params(1));
 			epot = ms_dpd(atoms.f, atoms.r, atoms.v, ptypes, params, temperature, atoms.lbox, atoms.t, atoms.nblist);
 		end
+
 	
 	end 
 

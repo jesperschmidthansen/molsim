@@ -26,23 +26,48 @@
 #include "ms_misc.h"
 #include <float.h>
 
-#define HELPTXT ""
+#define HELPTXT "Usage: epot = ms_ewald(force, positions, charges, neighbour list, lbox, [alpha, cutoff, col. fac], exclusion list)"
 
-/***********************************************************************
- * Decide whether an interaction should be excluded.
- *
- * molecule[i] gives the molecule number to which particle i belongs.
- *
- * If exclude_same_molecule != 0, interactions between particles having
- * the same molecule number are excluded.
- ***********************************************************************/
-static inline int excluded_pair(int i,  int j,  const int *molecule,  int exclude_same_molecule){
+double _ewald_short_range(double *force, const double *pos,  const double *charges,  
+						const double *lbox,	double alpha,   double cutoff,  double coulomb,  
+		 				const int *neighb_list, int npart); 
+double _ewald_long_range(double *force, const double *pos, const double *q, const double *lbox,
+    					double alpha,  int kmax, double coulomb, int npart);
+double _ewald_remove_exclusion(double *force, double *pos, const double *charges, 
+								const int *exclusion_list, const int maxexcl, const double coulomb, const double alpha,
+								const double *lbox, const int npart);
 
-	if (!exclude_same_molecule || molecule == NULL)   return 0;
 
-    return molecule[i] == molecule[j];
+
+
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
+
+	if ( nrhs > 7 || nlhs > 1 ) mexErrMsgTxt(HELPTXT);
+
+	double epot = 0.0f;
+	
+	double *f = mxGetPr(prhs[0]);
+	double *r = mxGetPr(prhs[1]);
+	double *z = mxGetPr(prhs[2]);
+	int *neighb_list = (int*)mxGetData(prhs[3]);
+	double *lbox = mxGetPr(prhs[4]);
+	double *params = mxGetPr(prhs[5]);
+	int *exclusion_list = (int *)mxGetPr(prhs[6]);
+
+	int npart = mxGetM(prhs[0]);
+	int max_exclusion = mxGetN(prhs[6]);
+
+	double alpha = params[0]; 
+	double cutoff = params[1]; 
+	double coulomb = params[2];
+
+	epot = _ewald_short_range(f, r,  z, lbox, alpha,  cutoff,  coulomb,  neighb_list, npart);
+	epot += _ewald_long_range(f, r, z, lbox, alpha, 10 , coulomb, npart);
+	epot += _ewald_remove_exclusion(f, r, z,  exclusion_list, max_exclusion, coulomb, alpha, lbox, npart);
+
+	plhs[0] = mxCreateDoubleScalar(epot);
+
 }
-
 
 /***********************************************************************
  * REAL-SPACE EWALD CONTRIBUTION
@@ -74,7 +99,7 @@ static inline int excluded_pair(int i,  int j,  const int *molecule,  int exclud
  *
  * Notice that exclusion is made via exclusion list and the neighbour list
  ***********************************************************************/
-double ewald_short_range(double *force, const double *pos,  const double *charges,  
+double _ewald_short_range(double *force, const double *pos,  const double *charges,  
 						const double *lbox,	double alpha,   double cutoff,  double coulomb,  
 		 				const int *neighb_list, int npart){
 
@@ -195,7 +220,7 @@ double ewald_short_range(double *force, const double *pos,  const double *charge
  *
  * Returns the reciprocal + self + exclusion correction energy.
  ***********************************************************************/
-double ewald_long_range(double *force, const double *pos, const double *q, const double *lbox,
+double _ewald_long_range(double *force, const double *pos, const double *q, const double *lbox,
     					double alpha,  int kmax, double coulomb, int npart){
     const double volume = lbox[0]*lbox[1]*lbox[2];
     const double twopi = 2.0 * M_PI;
@@ -268,7 +293,7 @@ double ewald_long_range(double *force, const double *pos, const double *q, const
 	return retval;
 }
 
-    /*******************************************************************
+/*******************************************************************
      * Correction for excluded intramolecular pairs.
      *
      * Since these pairs were omitted from the real-space calculation,
@@ -278,173 +303,49 @@ double ewald_long_range(double *force, const double *pos, const double *q, const
      *
      * from the reciprocal result.
      *******************************************************************/
- /*
-double ewald_exclude_same_molecule(double *force, const double *pos, const double *charges, const int *neighb_list, 
-									const double *lbox, const double alpha, int npart){
 
-	int i, j, k, n;
-	const double two_alpha_over_sqrt_pi = 2.0 * alpha / sqrt(M_PI);
-	const double alpha2 = alpha*alpha;
-	double r[3], r2; 
+double _ewald_remove_exclusion(double *force, double *pos, const double *charges, 
+								const int *exclusion_list, const int maxexcl, const double coulomb, const double alpha,
+								const double *lbox, const int npart){
+	double dr[3];
+	double epot = 0.0;
 
-	for ( i=0; i<npart; i++ ){
 
-		if ( fabs(charges[i]) < DBL_EPSILON ) continue;
+	for ( int n=0; n<npart; n++ ){
+
+		for ( int j=0; j<maxexcl; j++ ){
 	
-		n = 0;
-		while (1){
-			j = neighb_list[n*npart + i];
-		
-			if ( j == -1 ) break; 
-
-				for ( k=0; k<3; k++ ){
-					r[k] = pos[k*npart + i] - pos[k*npart + j];
-					_Wrap( r[k], lbox[k] );
-				}
-		  
-				r2 = r[0]*r[0] + r[1]*r[1] + r[2]*r[2];
-
-				if ( r2 <= rc2 ) {
-
-					double rij = sqrt(r2);
+			int  m = exclusion_list[n + j*npart];
+			
+			if ( m == -1 ) break;	
 	
-					double inv_r  = 1.0 / rij;
-					double inv_r2 = 1.0 / r2;
-					double inv_r3 = inv_r * inv_r2;
+			for ( int k=0; k<3; k++ ){
+				dr[k] = pos[k*npart + n] - pos[k*npart + m];
+				_Wrap( dr[k], lbox[k] );
+		  	}
 
-					double ar = alpha * rij;
-					double erf_ar = erf(ar);
-					double exp_term = exp(-alpha2 * r2);
+		  	double r2 = dr[0]*dr[0] + dr[1]*dr[1] + dr[2]*dr[2];
+			double r = sqrt(r2);
+			double qq = coulomb*charges[n]*charges[m];
 
-					double qq = coulomb * charges[i] * charges[j];
+			double ar   = alpha*r;
+			double erfc_term = erf(ar);
+    		double exp_term  = exp(-ar*ar);
+			
+		    /* Energy correction */
+    		epot -= qq*erfc_term/r;
 
-					energy -= qq * erf_ar * inv_r;
+			double fscalar = qq * (erfc_term/(r2*r)- 2.0*alpha/sqrt(M_PI)*exp_term/r2);
+			
+			for ( int k=0; k<3; k++ ){
+				force[n + k*npart] += fscalar*dr[k];
+				force[m + k*npart] -= fscalar*dr[k];
+			}
 
-					double f = qq*(two_alpha_over_sqrt_pi*exp_term * inv_r2 - erf_ar * inv_r3);
+		}
+	}
 
-					for ( int k=0; k<3; k++ ){
-						double ft = f*r[k];
-						force[i + k*npart] += ft;
-						force[j + k*npart] -= ft;
-					}
-				
-				} // if r2<rc2
-
-			} // same mol
-		} // end neighb
-	} // end npart loop
-
-    return energy;
-}
-*/
-/*
-        for (int i = 0; i < npart - 1; ++i) {
-
-            for (int j = i + 1; j < npart; ++j) {
-
-                               Vec3 dr = {
-                    r[i].x - r[j].x,
-                    r[i].y - r[j].y,
-                    r[i].z - r[j].z
-                };
-
-                dr = minimum_image(dr, box);
-
-                double r2 =
-                    dr.x * dr.x +
-                    dr.y * dr.y +
-                    dr.z * dr.z;
-
-                if (r2 == 0.0)
-                    continue;
-
-                double rij = sqrt(r2);
-
-                double inv_r  = 1.0 / rij;
-                double inv_r2 = 1.0 / r2;
-                double inv_r3 = inv_r * inv_r2;
-
-                double ar = alpha * rij;
-                double erf_ar = erf(ar);
-                double exp_term = exp(-alpha2 * r2);
-
-                double qq = coulomb * q[i] * q[j];
-
-                //
-                energy -= qq * erf_ar * inv_r;
-
-                //
-                 // Force associated with
-                 //
-                 // U_corr = -q_i q_j erf(alpha*r)/r
-                 //
-                 // F_corr =
-                 //
-                 // q_i q_j [
-                 //   2 alpha/sqrt(pi) exp(-alpha^2 r^2)/r^2
-                 //  - erf(alpha*r)/r^3
-                 // ] r_ij
-                 
-                double f =
-                    qq * (
-                        two_alpha_over_sqrt_pi *
-                        exp_term * inv_r2
-                        -
-                        erf_ar * inv_r3
-                    );
-
-                force[i].x += f * dr.x;
-                force[i].y += f * dr.y;
-                force[i].z += f * dr.z;
-
-                force[j].x -= f * dr.x;
-                force[j].y -= f * dr.y;
-                force[j].z -= f * dr.z;
-            }
-        }
-    }
-
-    return energy;
-}
-
-/***********************************************************************
- * Convenience function for zeroing the forces
- ***********************************************************************/
-/*
-void zero_forces(int n, Vec3 *force)
-{
-    for (int i = 0; i < n; ++i) {
-        force[i].x = 0.0;
-        force[i].y = 0.0;
-        force[i].z = 0.0;
-    }
-}
-*/
-
-void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
-
-	if ( nrhs > 6 || nlhs > 1 ) mexErrMsgTxt(HELPTXT);
-
-	double epot = 0.0f;
-	
-	double *f = mxGetPr(prhs[0]);
-	double *r = mxGetPr(prhs[1]);
-	double *z = mxGetPr(prhs[2]);
-	int *neighb_list = (int*)mxGetData(prhs[3]);
-	double *lbox = mxGetPr(prhs[4]);
-	double *params = mxGetPr(prhs[5]);
-
-	unsigned int npart = mxGetM(prhs[0]);
-	
-	double alpha = params[0]; 
-	double cutoff = params[1]; 
-	double coulomb = params[2];
-
-	epot = ewald_short_range(f, r,  z, lbox, alpha,  cutoff,  coulomb,  neighb_list, npart);
-	epot += ewald_long_range(f, r, z, lbox, alpha, 10 , coulomb, npart);
-
-	plhs[0] = mxCreateDoubleScalar(epot);
-
-}
+	return epot;
+}	
 
 

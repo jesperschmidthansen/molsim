@@ -268,6 +268,16 @@ classdef molsim < handle
 
 		end
  
+		function epot = ewald(this, params)
+			
+			if this.pairforce.first_call || this.pairforce.first_call_simulation  
+				this.doautosave(this.integrator.sidx);
+			end
+
+			epot = this.pairforce.ewald(this.atoms, params);
+		end
+
+
 		## Usage: harmonicbond(bond type)
 		##
 		## Calculates the bond forces using a harmonic bond potential
