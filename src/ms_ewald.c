@@ -315,10 +315,13 @@ double _ewald_remove_exclusion(double *force, double *pos, const double *charges
 
 		for ( int j=0; j<maxexcl; j++ ){
 	
-			int  m = exclusion_list[n + j*npart];
-			
+			int m = exclusion_list[n + j*npart];
+
 			if ( m == -1 ) break;	
-	
+
+			// C indexing	
+			m = m - 1;
+
 			for ( int k=0; k<3; k++ ){
 				dr[k] = pos[k*npart + n] - pos[k*npart + m];
 				_Wrap( dr[k], lbox[k] );
@@ -326,9 +329,11 @@ double _ewald_remove_exclusion(double *force, double *pos, const double *charges
 
 		  	double r2 = dr[0]*dr[0] + dr[1]*dr[1] + dr[2]*dr[2];
 			double r = sqrt(r2);
-			double qq = coulomb*charges[n]*charges[m];
 
-			double ar   = alpha*r;
+			// Factor 1/2 due to "double" counting. n excludes m and m exlcudes n
+			double qq = 0.5*coulomb*charges[n]*charges[m];
+
+			double ar = alpha*r;
 			double erfc_term = erf(ar);
     		double exp_term  = exp(-ar*ar);
 			

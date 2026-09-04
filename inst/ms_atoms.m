@@ -373,7 +373,15 @@ classdef ms_atoms < handle
 				case "molecules"
 					
 					for n=1:this.natoms
-						idxs = find( this.molidx == this.molidx(n) );						
+
+						idxs = find( this.molidx == this.molidx(n) );					
+					
+						# Remove self exclusion	
+						selfidx = find( idxs==n );
+						if isscalar(selfidx)
+							idxs(selfidx)=[]; idxs(end+1)=-1;
+						end
+	
 						this.exclude(n,1:length(idxs)) = idxs';	
 					end 
 						
