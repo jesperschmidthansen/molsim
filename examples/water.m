@@ -6,7 +6,7 @@ clear all;
 
 addpath("../inst/"); addpath("../src/"); addpath("../resources/setup/");
 
-niter = 100e3; dt = 5e-4;
+niter = 10e3; dt = 5e-4;
 dens0 = 3.16; temp0 = 298.15/78.2; 
 
 cutoff = 2.9;

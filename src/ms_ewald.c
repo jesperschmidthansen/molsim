@@ -1,32 +1,9 @@
-/*
- * ewald.c
- *
- * Reference Ewald implementation for point charges in an orthorhombic
- * periodic simulation box.
- *
- * Features:
- *   - Separate real-space and reciprocal-space functions
- *   - User-controlled real-space cutoff
- *   - User-controlled number of reciprocal vectors through kmax
- *   - Energy and forces
- *   - Optional exclusion of intramolecular charge interactions
- *
- * Assumptions:
- *   - 3D periodic boundary conditions
- *   - Orthorhombic box
- *   - Electrically neutral simulation cell
- *   - Tin-foil (conducting) boundary conditions
- *
- * Compile:
- *     gcc -O3 -Wall ewald.c -lm
- */
-
 #include "mex.h"
 #include <math.h>
 #include "ms_misc.h"
 #include <float.h>
 
-#define HELPTXT "Usage: epot = ms_ewald(force, positions, charges, neighbour list, lbox, [alpha, cutoff, col. fac], exclusion list)"
+#define HELPTXT "Usage: epot = ms_ewald(force, positions, charges, neighbour list, lbox, [alpha, cutoff, col. fac, no. wave vectors], exclusion list)"
 
 double _ewald_short_range(double *force, const double *pos,  const double *charges,  
 						const double *lbox,	double alpha,   double cutoff,  double coulomb,  
@@ -60,9 +37,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 	double alpha = params[0]; 
 	double cutoff = params[1]; 
 	double coulomb = params[2];
+	int nwave = (int)params[3];
+
 
 	epot = _ewald_short_range(f, r,  z, lbox, alpha,  cutoff,  coulomb,  neighb_list, npart);
-	epot += _ewald_long_range(f, r, z, lbox, alpha, 10 , coulomb, npart);
+	epot += _ewald_long_range(f, r, z, lbox, alpha, nwave , coulomb, npart);
 	epot += _ewald_remove_exclusion(f, r, z,  exclusion_list, max_exclusion, coulomb, alpha, lbox, npart);
 
 	plhs[0] = mxCreateDoubleScalar(epot);
@@ -227,15 +206,13 @@ double _ewald_long_range(double *force, const double *pos, const double *q, cons
     const double fourpi_over_V = 4.0 * M_PI / volume;
     const double alpha2 = alpha * alpha;
 
-    double retval = 0.0;
-	double *epot = &retval;
-	int i;
-	int nx, ny, nz;
+    double epot = 0.0;
+	int i, nx, ny, nz;
 	double kx, ky, kz, k2, kr, damping, C, D, s, c, prefactor;
 
 #pragma omp parallel for schedule(static) collapse(3)			        \
 		private(nx, ny, nz, kx, ky, kz, k2, kr, damping, C, D,s,c, prefactor)	\
-		reduction(+:epot[:1], force[:3*npart]) 
+		reduction(+:epot, force[:3*npart]) 
     for ( nx = -kmax; nx <= kmax; ++nx ) {
 
         kx = twopi * nx / lbox[0];
@@ -249,7 +226,12 @@ double _ewald_long_range(double *force, const double *pos, const double *q, cons
                 // k = 0 is excluded.
                 if ( nx == 0 && ny == 0 && nz == 0 )  continue;
 
-                kz = twopi * nz / lbox[2];
+                // keep only one member of (+k,-k)
+				if ( nz < 0 ) continue;
+				if ( nz == 0 && ny < 0 ) continue;
+				if ( nz == 0 && ny == 0 && nx <= 0 ) continue;
+				
+				kz = twopi * nz / lbox[2];
 				k2 = kx * kx + ky * ky + kz * kz;
 
                 //Ewald reciprocal-space damping.
@@ -263,7 +245,7 @@ double _ewald_long_range(double *force, const double *pos, const double *q, cons
                 }
 
                 // Because both +k and -k are explicitly included, the energy coefficient is 2*pi/V.
-                *epot +=  coulomb * (2.0 * M_PI / volume)*damping*(C * C + D * D);
+                epot +=  coulomb*fourpi_over_V*damping*(C * C + D * D);
 
                 for ( i = 0; i < npart; ++i ) {
 					
@@ -271,7 +253,7 @@ double _ewald_long_range(double *force, const double *pos, const double *q, cons
 
                     s = sin(kr); c = cos(kr);
 
-                    prefactor = coulomb*fourpi_over_V*q[i]*damping*(C * s - D * c);
+                   	prefactor = 2.0*coulomb*fourpi_over_V*q[i]*damping*(C * s - D * c);
 
                     force[i] += prefactor * kx;
                     force[npart + i] += prefactor * ky;
@@ -288,9 +270,9 @@ double _ewald_long_range(double *force, const double *pos, const double *q, cons
 
     for (int i = 0; i < npart; ++i) q2sum += q[i]*q[i];
 
-    *epot -=  coulomb * alpha / sqrt(M_PI) * q2sum;
+    epot -=  coulomb * alpha / sqrt(M_PI) * q2sum;
 
-	return retval;
+	return epot;
 }
 
 /*******************************************************************
