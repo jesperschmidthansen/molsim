@@ -391,7 +391,33 @@ classdef ms_atoms < handle
 	
 
 		end
-	end
 
+		function fplot(this, types)
+			
+			clf;
+			colors = [
+				1 0 0;    % red
+				0 0 1;    % blue
+				0 1 0;    % green
+				1 1 1;    % black 
+			];
+
+			ntypes = length(types);
+
+			for n=1:ntypes
+				idx = find( this.t==types(n) );
+				scatter3(this.r(idx, 1), this.r(idx, 2), this.r(idx, 3), ...
+				 			'o', 'markerfacecolor', colors(n,:));
+				hold on
+			end
+			hold off
+
+			axis equal;
+			xlim([0 this.lbox(1)]); ylim([0 this.lbox(2)]); zlim([0 this.lbox(3)]);
+			box on;
+			drawnow();
+		end
+
+	end
 end
 

@@ -43,7 +43,6 @@ function molslitpore(xyzmol, wthickness, rho)
 
 	natoms = natomsMols + natomsWall1 + natomsWall2;
 
-	fout = fopen("molslitpore.xyz", "w");	
 	fprintf(fout, "%d\n", natoms);
 	fprintf(fout, "%f %f %f\n", lbox(1), lbox(2), lbox(3)+wthickness(1)+wthickness(2));
 	
@@ -52,14 +51,14 @@ function molslitpore(xyzmol, wthickness, rho)
 		fprintf(fout, "%c %f %f %f %f %f %f %f %f\n", t(n), pos(n,1), pos(n,2), pos(n,3), ...
 				vel(n,1), vel(n,2), vel(n,3), mass(n), charge(n));
 	end	
-
+	
 	pos_w1(:,3) = pos_w1(:,3)+lbox(3);
 	for n=1:natomsWall1
 		fprintf(fout, "%c %f %f %f %f %f %f %f %f\n", t_w1(n), ...
 		   	pos_w1(n,1), pos_w1(n,2),pos_w1(n,3), vel_w1(n,1), vel_w1(n,2), vel_w1(n,3), ...
 			mass_w1(n), charge_w1(n));
 	end
-
+	
 	pos_w2(:,3) = pos_w2(:,3)+lbox(3)+wthickness(1);
 	for n=1:natomsWall2
 		fprintf(fout, "%c %f %f %f %f %f %f %f %f\n", t_w2(n), ...
@@ -74,10 +73,15 @@ end
 
 function [t pos vel mass charge] = wall(type, lbox, wallthickness, rho=1.0)
 
+	# From density get the distance between particles
 	dx = (1.0/rho)^(1/3);
-	nx = int64(lbox(1)/dx); ny = int64(lbox(2)/dx); nz = int64(wallthickness/dx);
+
+	# Calculate the number of particles in each direction
+	nx = floor(lbox(1)/dx); ny = floor(lbox(2)/dx); nz = floor(wallthickness/dx);
+
 	natoms = nx*ny*nz;
 
+	# Set positions
 	idx = 1;
 	for n=1:nz
 		for m=1:ny
@@ -91,6 +95,7 @@ function [t pos vel mass charge] = wall(type, lbox, wallthickness, rho=1.0)
 		end
 	end
 
+	# Assign velocity, mass, and charge.
 	vel = randn(rows(pos), 3); mass=ones(1, rows(pos)); charge = zeros(1, rows(pos));
 
 end
