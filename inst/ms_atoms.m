@@ -392,7 +392,7 @@ classdef ms_atoms < handle
 
 		end
 
-		function fplot(this, types)
+		function fplot(this, types, pretty=false)
 			
 			clf;
 			colors = [
@@ -404,20 +404,43 @@ classdef ms_atoms < handle
 
 			ntypes = length(types);
 
-			for n=1:ntypes
-				idx = find( this.t==types(n) );
-				scatter3(this.r(idx, 1), this.r(idx, 2), this.r(idx, 3), ...
-				 			'o', 'markerfacecolor', colors(n,:));
-				hold on
+			if pretty 
+				[xs,ys,zs] = sphere(20);
+ 				r = 1.;						
+				for n=1:ntypes
+					idx = find( this.t==types(n) );
+					nidx = length(idx);
+					for k=1:nidx
+						ia = idx(k);
+						surf(r*xs+this.r(ia,1), r*ys+this.r(ia, 2), r*zs+this.r(ia, 3), ...
+						 'EdgeColor','none', 'FaceColor', colors(n,:));
+						hold on
+					end
+				end
+			
+				axis equal;
+				camlight headlight;
+				lighting gouraud;
+				material shiny;
+				axis('off');
+
+			else 
+				for n=1:ntypes
+					idx = find( this.t==types(n) );
+					scatter3(this.r(idx, 1), this.r(idx, 2), this.r(idx, 3), ...
+								'o', 'markerfacecolor', colors(n,:));
+					hold on
+				end
+				axis equal;
+				xlim([0 this.lbox(1)]); ylim([0 this.lbox(2)]); zlim([0 this.lbox(3)]);
+				box on;
 			end
-			hold off
-
-			axis equal;
-			xlim([0 this.lbox(1)]); ylim([0 this.lbox(2)]); zlim([0 this.lbox(3)]);
-			box on;
-			drawnow();
+			
+			hold off;
+			pause(0.01);
 		end
-
+	
+	
 	end
 end
 
