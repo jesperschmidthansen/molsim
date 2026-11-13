@@ -392,24 +392,22 @@ classdef ms_atoms < handle
 
 		end
 
-		function fplot(this, types, pretty=false)
+		function aplot(this, types, typeplot="scatter", colors=[1,0,0; 0,0,1;0 1 0], mksize=[3, 3, 3])
 			
 			clf;
-			colors = [
-				1 0 0;    % red
-				0 0 1;    % blue
-				0 1 0;    % green
-				1 1 1;    % black 
-			];
 
 			ntypes = length(types);
-
-			if pretty 
-				[xs,ys,zs] = sphere(20);
- 				r = 1.;						
+			if ( ntypes > 3 && nargin < 3 ) 
+				error("No. of types is larger than 3. Specify the colors and maker sizes");
+			end	
+			
+			if strcmp("pretty", typeplot)
+				[xs,ys,zs] = sphere(10);
+ 				
 				for n=1:ntypes
 					idx = find( this.t==types(n) );
 					nidx = length(idx);
+					r = mksize(n);
 					for k=1:nidx
 						ia = idx(k);
 						surf(r*xs+this.r(ia,1), r*ys+this.r(ia, 2), r*zs+this.r(ia, 3), ...
@@ -423,12 +421,15 @@ classdef ms_atoms < handle
 				lighting gouraud;
 				material shiny;
 				axis('off');
+				set(gca,'color','k'); 
+				set(gcf,'color','k');
 
-			else 
+			elseif strcmp("scatter", typeplot) 
 				for n=1:ntypes
 					idx = find( this.t==types(n) );
-					scatter3(this.r(idx, 1), this.r(idx, 2), this.r(idx, 3), ...
-								'o', 'markerfacecolor', colors(n,:));
+					plot3(this.r(idx, 1), this.r(idx, 2), this.r(idx, 3), ...
+							'o', 'markersize', mksize(n), ...
+							'markerfacecolor', colors(n,:));
 					hold on
 				end
 				axis equal;
